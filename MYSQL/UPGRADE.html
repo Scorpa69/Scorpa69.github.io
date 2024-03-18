@@ -1,0 +1,25 @@
+<!--
+title: UPGRADE
+description: 
+published: true
+date: 2023-12-05T11:13:40.031Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-12-05T09:34:05.823Z
+-->
+
+<h1>5.7 to 8.0 en mode DOCKER</h1>
+<p>Arrêter le docker mysql</p>
+<p>Changer la version de l'image docker</p>
+<p>Ajouter un cap_<i>add avec la valeur SYS_</i>NICE dans le compose au niveau du mysql</p>
+<p>Démarrer le docker mysql</p>
+<p>ouvrir un shell ds le docker mysql</p>
+<p>se connecter à mysql en root</p>
+<p>Passer cette commande pour chaque user de l'instance mysql :</p>
+<pre><code class="language-plaintext">ALTER USER 'someuser'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'somepassword';</code></pre>
+<p>Ajouter les commandes suivantes dans le compose ds la section de “command” de mysql :</p>
+<pre><code class="language-plaintext">  - --default-authentication-plugin=caching_sha2_password
+  - --host_cache_size=0
+  - --innodb_redo_log_capacity=64M # remplacement de --innodb_log_file_size=64M</code></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>

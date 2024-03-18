@@ -1,0 +1,30 @@
+<!--
+title: NTP
+description: 
+published: true
+date: 2023-09-18T12:38:46.078Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:38:45.019Z
+-->
+
+<p>Problème de temps windows dans AD =&gt; PDC avec source de temps externe et le reste se synchro sur le PDC (Ne pas désactiver le service d'intégration hyper-v pour la date et l'heure) :</p>
+<p>Sur tous les AD Virutels : reg add HKLM\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\VMICTimeProvider /v Enabled /t reg_dword /d 0</p>
+<ul>
+  <li>Sur le PDC : w32tm /config /manualpeerlist:“0.pool.ntp.org,0x1” /syncfromflags:MANUAL /reliable:yes</li>
+  <li>Sur le PDC : w32tm /config /update</li>
+  <li>Sur le PDC : w32tm /resync</li>
+  <li>Sur le PDC : w32tm /resync /rediscover</li>
+  <li>Sur les DC sauf le PDC : w32tm /config /syncfromflags:DOMHIER /update&nbsp;</li>
+  <li>Sur les DC sauf le PDC : Restart-Service w32time ou net start "w32time"</li>
+  <li>Sur les DC sauf le PDC : w32tm /resync /force ou&nbsp;w32tm /resync /nowait</li>
+</ul>
+<p>&nbsp;</p>
+<p>Voir la source et le status du NTP sur une machine :</p>
+<ul>
+  <li>w32tm /query /status</li>
+  <li>w32tm /query /source</li>
+  <li>w32tm /query /configuration</li>
+</ul>
+<p>&nbsp;</p>
+<p>w32tm /config /manualpeerlist:192.168.1.1 /syncfromflags:manual /reliable:yes /update</p>

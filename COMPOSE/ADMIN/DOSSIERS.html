@@ -1,0 +1,233 @@
+<!--
+title: DOSSIERS
+description: 
+published: true
+date: 2024-03-07T10:06:28.930Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-02-06T09:37:19.108Z
+-->
+
+<h1>Bonnes Pratiques structure des dossiers Docker Prod avec dockremap : (exemple pour tpm)</h1>
+<p>&nbsp;</p>
+<figure class="table">
+  <table>
+    <tbody>
+      <tr>
+        <td>Nom</td>
+        <td>chemin</td>
+        <td>chown</td>
+        <td>chmod</td>
+        <td>chmod Recursif</td>
+        <td>chown recursif</td>
+      </tr>
+      <tr>
+        <td>SDA os linux</td>
+        <td>/</td>
+        <td>NA</td>
+        <td>NA</td>
+        <td>NA</td>
+        <td>NA</td>
+      </tr>
+      <tr>
+        <td>SDB</td>
+        <td>/data</td>
+        <td>dockremap:dockremap</td>
+        <td>775</td>
+        <td>Non</td>
+        <td>Non</td>
+      </tr>
+      <tr>
+        <td>nomapp</td>
+        <td>/data/nomapp</td>
+        <td>dockremap:dockremap</td>
+        <td>775</td>
+        <td>Non</td>
+        <td>Non</td>
+      </tr>
+      <tr>
+        <td>build</td>
+        <td>/data/nomapp/build</td>
+        <td>admin_ac:dockremap</td>
+        <td>750</td>
+        <td>Oui</td>
+        <td>Oui</td>
+      </tr>
+      <tr>
+        <td>cert</td>
+        <td>/data/nomapp/cert</td>
+        <td>dockremap:dockremap</td>
+        <td>755</td>
+        <td>Non</td>
+        <td>Oui</td>
+      </tr>
+      <tr>
+        <td>conf</td>
+        <td>/data/nomapp/conf</td>
+        <td>dockremap:dockremap</td>
+        <td>755</td>
+        <td>Non</td>
+        <td>Non</td>
+      </tr>
+      <tr>
+        <td>secret</td>
+        <td>/data/nomapp/sec</td>
+        <td>dockremap:dockremap</td>
+        <td>755</td>
+        <td>Non</td>
+        <td>Oui</td>
+      </tr>
+      <tr>
+        <td>langue</td>
+        <td>/data/nomapp/lang</td>
+        <td>500033:dockremap</td>
+        <td>750</td>
+        <td>Oui</td>
+        <td>Oui</td>
+      </tr>
+      <tr>
+        <td>upload</td>
+        <td>/data/nomapp/upload</td>
+        <td>500033:dockremap</td>
+        <td>750</td>
+        <td>Oui</td>
+        <td>Oui</td>
+      </tr>
+      <tr>
+        <td>volume</td>
+        <td>/data/nomapp/volume</td>
+        <td>dockremap:dockremap</td>
+        <td>755</td>
+        <td>Non</td>
+        <td>Non</td>
+      </tr>
+      <tr>
+        <td>volume app</td>
+        <td>/data/nomapp/volume/app</td>
+        <td>dockremap:dockremap</td>
+        <td>755</td>
+        <td>Non</td>
+        <td>Non</td>
+      </tr>
+      <tr>
+        <td>volume sql</td>
+        <td>/data/nomapp/volume/bdd</td>
+        <td>500999:dockremap</td>
+        <td>750</td>
+        <td>Oui</td>
+        <td>Oui</td>
+      </tr>
+      <tr>
+        <td>fichiers certificat</td>
+        <td>&nbsp;/data/nomapp/cert/certificat.key et crt</td>
+        <td>&nbsp;dockremap:dockremap</td>
+        <td>750</td>
+        <td>NA</td>
+        <td>NA</td>
+      </tr>
+      <tr>
+        <td>docker-compose.yml</td>
+        <td>/data/nomapp/</td>
+        <td>admin_ac:dockremap</td>
+        <td>750</td>
+        <td>NA</td>
+        <td>NA</td>
+      </tr>
+      <tr>
+        <td>02-teampasswordmanager.ini</td>
+        <td>/data/nomapp/conf</td>
+        <td>500033:dockremap</td>
+        <td>750</td>
+        <td>NA</td>
+        <td>NA</td>
+      </tr>
+      <tr>
+        <td>config.php</td>
+        <td>/data/nomapp/conf</td>
+        <td>500033:dockremap</td>
+        <td>750</td>
+        <td>NA</td>
+        <td>NA</td>
+      </tr>
+      <tr>
+        <td>my.cnf</td>
+        <td>/data/nomapp/conf</td>
+        <td>500999:dockremap</td>
+        <td>750</td>
+        <td>NA</td>
+        <td>NA</td>
+      </tr>
+      <tr>
+        <td>.rp</td>
+        <td>/data/nomapp/sec</td>
+        <td>dockremap:dockremap</td>
+        <td>750</td>
+        <td>NA</td>
+        <td>NA</td>
+      </tr>
+      <tr>
+        <td>.up</td>
+        <td>/data/nomapp/sec</td>
+        <td>dockremap:dockremap</td>
+        <td>750</td>
+        <td>NA</td>
+        <td>NA</td>
+      </tr>
+    </tbody>
+  </table>
+</figure>
+<h1>Exemple des commandes pour Mypass :</h1>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data &amp;&amp; chmod 775 /data</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/mypass &amp;&amp; chmod 775 /data/mypass</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown -R dockremap:dockremap /data/mypass/cert &amp;&amp; chmod 755 /data/mypass/cert</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/mypass/conf &amp;&amp; chmod 755 /data/mypass/conf</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown -R dockremap:dockremap /data/mypass/sec &amp;&amp; chmod 755 /data/mypass/sec</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown -R 500033:dockremap /data/mypass/lang &amp;&amp; chmod -R 750 /data/mypass/lang</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown -R 500033:dockremap /data/mypass/upload &amp;&amp; chmod -R 750 /data/mypass/upload</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/mypass/volume &amp;&amp; chmod 755 /data/mypass/volume</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/mypass/volume/app &amp;&amp; chmod 755 /data/mypass/volume/app</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown -R 500999:dockremap /data/mypass/volume/bdd &amp;&amp; chmod -R 750 /data/mypass/volume/bdd</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/mypass/cert/wildcard_ac.crt &amp;&amp; chmod 750 /data/mypass/cert/wildcard_ac.crt</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/mypass/cert/wildcard_ac.key &amp;&amp; chmod 750 /data/mypass/cert/wildcard_ac.key</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext"> chown admin_ac:dockremap /data/mypass/docker-compose.yml &amp;&amp; chmod 750 /data/mypass/docker-compose.yml</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown 500033:dockremap /data/mypass/conf/02-teampasswordmanager.ini &amp;&amp; chmod 750 /data/mypass/conf/02-teampasswordmanager.ini</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown 500033:dockremap /data/mypass/conf/config.php &amp;&amp; chmod 750 /data/mypass/conf/config.php</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown 500999:dockremap /data/mypass/conf/my.cnf &amp;&amp; chmod 750 /data/mypass/conf/my.cnf</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/mypass/sec/.up &amp;&amp; chmod 750 /data/mypass/sec/.up</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/mypass/sec/.rp &amp;&amp; chmod 750 /data/mypass/sec/.rp</code></pre>
+<p><a href="/ABSYS/TPM/VDCSTPM02-DEV">PUIS</a></p>
+<h1>Commande pour Zabbix (a valider)</h1>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data &amp;&amp; chmod 775 /data</code></pre>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/zabsup &amp;&amp; chmod 775 /data/zabsup</code></pre>
+<pre><code class="language-plaintext">chown -R admin_ac:dockremap /data/zabsup/build &amp;&amp; chmod -R 750 /data/zabsup/build</code></pre>
+<pre><code class="language-plaintext">chown -R dockremap:dockremap /data/zabsup/cert &amp;&amp; chmod 755 /data/zabsup/cert</code></pre>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/zabsup/conf &amp;&amp; chmod 755 /data/zabsup/conf</code></pre>
+<pre><code class="language-plaintext">chown -R dockremap:dockremap /data/zabsup/sec &amp;&amp; chmod 755 /data/zabsup/sec</code></pre>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/zabsup/volume &amp;&amp; chmod 755 /data/zabsup/volume</code></pre>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/zabsup/volume/app &amp;&amp; chmod 755 /data/zabsup/volume/app</code></pre>
+<pre><code class="language-plaintext">chown -R 500999:dockremap /data/zabsup/volume/bdd &amp;&amp; chmod -R 750 /data/zabsup/volume/bdd</code></pre>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/zabsup/cert/certificat.crt &amp;&amp; chmod 750 /data/zabsup/cert/certificat.crt</code></pre>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/zabsup/cert/certificat.key &amp;&amp; chmod 750 /data/zabsup/cert/certificat.key</code></pre>
+<pre><code class="language-plaintext"> chown admin_ac:dockremap /data/zabsup/docker-compose.yml &amp;&amp; chmod 750 /data/zabsup/docker-compose.yml</code></pre>
+<pre><code class="language-plaintext">chown admin_ac:dockremap /data/zabsup/conf/odbcinst.ini &amp;&amp; chmod 750 /data/zabsup/conf/odbcinst.ini</code></pre>
+<pre><code class="language-plaintext">chown admin_ac:dockremap /data/zabsup/conf/userparameter_mysql.conf &amp;&amp; chmod 750 /data/zabsup/conf/userparameter_mysql.conf</code></pre>
+<pre><code class="language-plaintext">chown admin_ac:dockremap /data/zabsup/conf/my.cnf &amp;&amp; chmod 750 /data/zabsup/conf/my.cnf</code></pre>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/zabsup/sec/.up &amp;&amp; chmod 750 /data/zabsup/sec/.up</code></pre>
+<pre><code class="language-plaintext">chown dockremap:dockremap /data/zabsup/sec/.rp &amp;&amp; chmod 750 /data/zabsup/sec/.rp</code></pre>

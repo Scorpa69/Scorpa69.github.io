@@ -1,0 +1,57 @@
+<!--
+title: PASS GEN
+description: 
+published: true
+date: 2023-09-18T12:36:59.188Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:36:57.980Z
+-->
+
+<h1>Commande :</h1>
+<pre><code class="language-plaintext">pwgen &lt;nombre de caractères&gt; &lt;nombre de mots de passe&gt;&lt;options&gt;</code></pre>
+<p>&nbsp;</p>
+<figure class="table" style="width:1108px;">
+  <table style="background-color:rgb(255, 255, 255);">
+    <thead>
+      <tr>
+        <th style="border-bottom:2px solid rgb(221, 221, 221);border-top:0px;padding:5px;vertical-align:bottom;">Options</th>
+        <th style="border-bottom:2px solid rgb(221, 221, 221);border-top:0px;padding:5px;vertical-align:bottom;">Action ou signification</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;"><strong>-y</strong></td>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;">insère au moins <strong>1 caractère spécial</strong> (comme &amp; # [ ~ &gt; = …)</td>
+      </tr>
+      <tr>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;"><strong>-1</strong></td>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;">affiche <strong>un mot de passe par ligne</strong></td>
+      </tr>
+      <tr>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;"><strong>-0</strong></td>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;">génère des mots de passe ne contenant <strong>pas de chiffres</strong></td>
+      </tr>
+      <tr>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;"><strong>-A</strong></td>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;">génère des mots de passe ne contenant <strong>pas de lettres majuscules</strong></td>
+      </tr>
+      <tr>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;"><strong>-c</strong></td>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;">inclut <strong>au moins une lettre majuscule</strong> dans le mot de passe généré</td>
+      </tr>
+      <tr>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;"><strong>-B</strong></td>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;">ne met <strong>pas de caractères qui pourraient porter à confusion</strong> (comme <i>1 et l</i> ou <i>O et 0</i>)</td>
+      </tr>
+      <tr>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;"><strong>-s</strong></td>
+        <td style="border-top:1px solid rgb(221, 221, 221);padding:5px;vertical-align:top;">génère des <strong>mots de passe complètement aléatoires</strong>, difficiles à mémoriser. Conseillé pour les mots de passe qui doivent être vraiment sécurisés (mot de passe root, mot de passe de serveur web, etc.)</td>
+      </tr>
+    </tbody>
+  </table>
+</figure>
+<h1>Générer un secret de 32 caractères sans majuscule et sans caractère spécial :</h1>
+<pre><code class="language-plaintext">pwgen 32 1 -A</code></pre>
+<h1>Mot de passe Admin avec caractère spécial :</h1>
+<pre><code class="language-plaintext">pwgen 24 2 -sy</code></pre>

@@ -1,0 +1,34 @@
+<!--
+title: LOGS
+description: 
+published: true
+date: 2023-09-18T12:38:39.476Z
+tags: windows, log, journaux
+editor: ckeditor
+dateCreated: 2023-09-18T12:38:38.420Z
+-->
+
+<p>VOIR SI LE PC OU SERVEUR A REDEMARRE :</p>
+<p>Get-EventLog -LogName System -After (Get-Date).AddDays(-1) -Before $(Get-Date) | Where-Object {($_.EventID -eq 1074) -or ($_.EventID -eq 41) -or ($_.EventID -eq 6006) -or ($_.EventID -eq 6008)} | Select-Object EventID,TimeGenerated,Message | FL</p>
+<p>&nbsp;</p>
+<p>LOG ENTRE DATES :</p>
+<p>Get-EventLog -LogName System -After '7/15/21 18:00:00' -Before '7/16/21 10:00:00' | Out-File -FilePath 'c:\users\A09\desktop\journaux\log.txt'</p>
+<p>&nbsp;</p>
+<p>Get-EventLog -LogName System | Out-File -FilePath 'c:\users\A09\desktop\journaux\log.txt'</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Get-EventLog -LogName Application -Source Outlook | Where-Object {$_.EventID -eq 63} |Select-Object -Property Source, EventID, InstanceId, Message</p>
+<p>&nbsp;</p>
+<p>Get-EventLog -LogName DPM Alerts -computername VIDFSAV01 -entrytype ERROR, WARNING |Select-Object -Property Source, EventID, InstanceId, Message | Out-File -FilePath 'c:\users\A09\desktop\journaux\logdpmvidfsav01.txt'</p>
+<p>&nbsp;</p>
+<p>Get-EventLog -computername VIDFSAV01 -list</p>
+<p>&nbsp;</p>
+<p>Le Paramètre : -EntryType peut-être :</p>
+<p>&nbsp; &nbsp; Error</p>
+<p>&nbsp; &nbsp; Information</p>
+<p>&nbsp; &nbsp; FailureAudit</p>
+<p>&nbsp; &nbsp; SuccessAudit</p>
+<p>&nbsp; &nbsp; Warning</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Get-EventLog -after (get-date).AddDays(-4) | where {$_.InstanceId -eq 1010} | Select-Object -Property Source, EventID, InstanceId, Message</p>

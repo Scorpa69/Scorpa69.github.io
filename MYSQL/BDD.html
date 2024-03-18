@@ -1,0 +1,47 @@
+<!--
+title: BDD
+description: 
+published: true
+date: 2023-09-18T12:37:31.260Z
+tags: mysql, bdd
+editor: ckeditor
+dateCreated: 2023-09-18T12:37:30.017Z
+-->
+
+<h1>Voir les bases:</h1>
+<p>show databases;</p>
+<p>&nbsp;</p>
+<h1>Purge LOG BDD :&nbsp;</h1>
+<p>PURGE BINARY LOGS BEFORE NOW();</p>
+<p>&nbsp;</p>
+<h1>Voir les fichier de log et leur taille:</h1>
+<p>ls -l --block-size=M /var/lib/mysql/</p>
+<p>&nbsp;</p>
+<h1>Supprimer une base de données :</h1>
+<ul>
+  <li>Se connecter en root sur mysql</li>
+  <li>Drop database nomdelabase;</li>
+  <li>FIN</li>
+</ul>
+<p>&nbsp;</p>
+<h1>Taille des tables d'une BDD :</h1>
+<p>SELECT table_name AS "Tables", round(((data_length + index_length) / 1024 / 1024), 2) AS "Size (MB)" FROM information_schema.tables WHERE table_schema =&nbsp; 'mysql';</p>
+<p>&nbsp;</p>
+<p>SELECT table_name AS "Tables", round(((data_length + index_length) / 1024 / 1024), 2) AS "Size (MB)" FROM information_schema.tables WHERE table_schema =&nbsp; 'zabbix';</p>
+<p>&nbsp;</p>
+<h1>Taille de chaque BDD ds mysql:&nbsp;</h1>
+<p>SELECT table_schema, round(sum(data_length+index_length)/1024/1024,4) AS "Size (MB)" FROM information_schema.tables GROUP BY table_schema;</p>
+<p>&nbsp;</p>
+<h1>Taille des BDD et LOG en Mo en command line :</h1>
+<p>ls -l --block-size=M /var/lib/mysql/</p>
+<p>&nbsp;</p>
+<h1>VERIFIER LES BASES:</h1>
+<p>mysqlcheck -c -u root -p --all-databases</p>
+<p>&nbsp;</p>
+<h1>VERIFIER UNE BASE:</h1>
+<p>mysqlcheck -c zabbix -u root -p$(cat /root/.sqlrcreds)</p>
+<p>&nbsp;</p>
+<h1>Change Char SET:</h1>
+<p>ALTER DATABASE zabbix CHARACTER SET utf8 COLLATE utf8_bin;</p>
+<p>OU</p>
+<p>mysql -u root -p$(cat /root/.sqlrcreds) -e "ALTER DATABASE zabbix CHARACTER SET utf8 COLLATE utf8_bin;"</p>

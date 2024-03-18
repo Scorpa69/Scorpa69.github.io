@@ -1,0 +1,40 @@
+<!--
+title: LDAP
+description: 
+published: true
+date: 2023-09-18T12:39:31.205Z
+tags: zabbix, ldap
+editor: ckeditor
+dateCreated: 2023-09-18T12:39:30.146Z
+-->
+
+<h1>Changer le serveur LDAP depuis la base :(Arrêt d'un LDAP configuré ds Zabbix)</h1>
+<h2>Créer un user mysql avec full accès depuis l'extérieur :</h2>
+<ol>
+  <li>mysql -uroot -p$(cat /root/.sqlrcreds)</li>
+  <li>use mysql;</li>
+  <li>CREATE USER 'modif'@'%' IDENTIFIED BY 'password';</li>
+  <li>GRANT ALL PRIVILEGES ON &nbsp;*.* TO 'modif'@'%';</li>
+  <li>FLUSH PRIVILEGES;</li>
+</ol>
+<h2>Ouvrir le port 3306 :</h2>
+<p>ufw allow 3306/tcp</p>
+<h2>Arrêter le serveur zabbix :</h2>
+<p>systemctl stop zabbix-server</p>
+<h2>Se connecter avec HEIDI SQL : (ou un autre client sql)</h2>
+<ol>
+  <li>Sélectionner la base zabbix</li>
+  <li>sélectionner la table config</li>
+  <li>sélectionner la clé ldap_host</li>
+  <li>allé sur l'onglet "données"</li>
+  <li>Modifier la valeur du serveur LDAP</li>
+  <li>Enregistrer</li>
+</ol>
+<h2>Démarrer le serveur Zabbix :</h2>
+<p>systemctl start zabbix-server</p>
+<h2>Si authentification OK :</h2>
+<ol>
+  <li>Supprimer le user avec full accès créé au début : drop user ‘modif’@'%';</li>
+  <li>Fermer le port 3306 : ufw deny 3306/tcp&nbsp;</li>
+</ol>
+<p>FIN</p>

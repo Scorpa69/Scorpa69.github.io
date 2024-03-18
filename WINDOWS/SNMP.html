@@ -1,0 +1,19 @@
+<!--
+title: SNMP
+description: 
+published: true
+date: 2023-09-18T12:39:05.029Z
+tags: snmp
+editor: ckeditor
+dateCreated: 2023-09-18T12:39:03.690Z
+-->
+
+<p>Installation SNMP sur W10 :</p>
+<p>Info sur l'installation : Get-Service -Name snmp*</p>
+<p>Avant 1803 : Enable-WindowsOptionalFeature -online -FeatureName SNMP</p>
+<p>Après 1803 : Add-WindowsCapability -Online -Name "SNMP.Client~~~~0.0.1.0"</p>
+<p>et pour l'enlever :Remove-WindowsCapability -Online -Name "SNMP.Client~~~~0.0.1.0"</p>
+<p>&nbsp;</p>
+<p>Installation SNMP sur serveur Core : depuis CMD il faut taper powershell pour passer en Powershell</p>
+<p>Get-WindowsFeature *SNMP* ==&gt; Savoir si le service est déjà installé</p>
+<p>Install-WindowsFeature SNMP-Service -IncludeAllSubFeature -Verbose ==&gt; Commande pour l'installer</p>

@@ -1,0 +1,112 @@
+<!--
+title: FAIL2BAN à refaire
+description: 
+published: true
+date: 2024-01-31T15:57:22.379Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:36:46.302Z
+-->
+
+<h1>CONF PERSO à tester sur le ftp azure debian</h1>
+<pre><code class="language-plaintext">[INCLUDES]
+before = paths-debian.conf
+
+[DEFAULT]
+ignoreip = 127.0.0.1/8            #adresses IP ignorées par les actions de fail2ban
+bantime  = 600                   #temps de bannissement en secondes
+maxretry = 3                      #nombre d'essais au bout du quel fail2ban bannit notre intrus
+banaction = iptables-multiport      # Méthode de BAN (iptables = Que le port concerné / iptables-multiport = Tous les ports / ...)
+protocol = tcp               # protocole par défaut des jails définies ci-dessous
+enabled = true             # Statut par défaut des jails définies ci-dessous (par défaut tout désactivé)
+
+[proftpd]
+
+enabled = true
+
+port     = 21,990,2222,2223,61000:61100
+logpath  = %(proftpd_log)s
+backend  = %(proftpd_backend)s
+
+[recidive]
+enabled = true
+logpath = /var/log/fail2ban.log
+banaction = %(banaction_allports)s
+bantime = 5w
+findtime = 1d
+maxretry = 3</code></pre>
+<h1>SFTP</h1>
+<pre><code class="language-plaintext">[sshd]
+enabled = true
+port = ALL
+bantime = 15m
+findtime = 15m
+maxretry = 3
+
+[recidive]
+enabled = true
+logpath = /var/log/fail2ban.log
+banaction = %(banaction_allports)s
+bantime = 5w
+findtime = 1d
+maxretry = 3</code></pre>
+<h1>SSH :</h1>
+<p>créer un fichier de conf</p>
+<pre><code class="language-plaintext">nano /etc/fail2ban/jail.d/ssh.conf</code></pre>
+<p>et ajouter</p>
+<pre><code class="language-plaintext">[ssh] 
+enabled = true 
+port = ssh
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3
+bantime = 900</code></pre>
+<h1>PROXMOX : (AI à Valider)</h1>
+<p>To configure Fail2ban to protect SSH and the Proxmox web interface on port 8006, you can follow these steps:</p>
+<p>Install Fail2ban on your Proxmox server if it is not already installed. You can do this using the package manager of your operating system.</p>
+<p>Create a new configuration file for Proxmox in the Fail2ban jail directory by running the following command:</p>
+<p>Copy</p>
+<pre><code class="language-plaintext">sudo nano /etc/fail2ban/jail.d/proxmox.conf</code></pre>
+<p>&nbsp;</p>
+<ol>
+  <li>Add the following configuration to the file:</li>
+</ol>
+<p>ini</p>
+<p>Copy</p>
+<pre><code class="language-plaintext">[proxmox] 
+enabled = true 
+port = 8006,ssh
+filter = proxmox
+logpath = /var/log/daemon.log
+maxretry = 3 
+bantime = 1800 </code></pre>
+<p>This configuration will monitor the logs in <code>/var/log/daemon.log</code> for failed SSH login attempts and failed attempts to access the Proxmox web interface on port 8006. After three failed attempts, the offending IP will be blocked for 30 minutes (1800 seconds).</p>
+<ol>
+  <li>Create a new filter for Proxmox by running the following command:</li>
+</ol>
+<p>Copy</p>
+<pre><code class="language-plaintext">sudo nano /etc/fail2ban/filter.d/proxmox.conf</code></pre>
+<p>&nbsp;</p>
+<ol>
+  <li>Add the following configuration to the file:</li>
+</ol>
+<p>routeros</p>
+<p>Copy</p>
+<pre><code class="language-plaintext">[Definition]
+failregex = ^.*authentication failure;.*rhost=&lt;HOST&gt;.*
+            ^.*pam_unix\(sshd:auth\): authentication failure.*
+            ^.*authentication failure; .* from &lt;HOST&gt;.*
+            ^.*authentication failure from &lt;HOST&gt;.*
+            ^.*authentication failure; logname=.* uid=.* euid=.* tty=.* ruser=.* rhost=&lt;HOST&gt;.*
+            ^.*authentication failure; .* ruser=.* rhost=&lt;HOST&gt;.*
+            ^.*Failed login \(authenticat.* from &lt;HOST&gt; port .*$
+            ^.*authentication failure; .* rhost=&lt;HOST&gt;.*
+            ^.*pam_unix\(ssh:auth\): authentication failure.*
+            ^.*Failed password for .* from &lt;HOST&gt;.*
+            ^.*authentication failure; logname=.* uid=.* euid=.* tty=.* ruser=.* rhost=.*  user=.*</code></pre>
+<p>This filter will match failed login attempts for both SSH and the Proxmox web interface.</p>
+<p>Save and close the files.</p>
+<p>Restart the Fail2ban service to apply the changes:</p>
+<p>Copy</p>
+<pre><code class="language-plaintext">sudo systemctl restart fail2ban</code></pre>
+<p>Fail2ban is now configured to protect your Proxmox server from brute-force attacks on SSH and the web interface on port 8006. You can monitor Fail2ban's activity by checking the logs at <code>/var/log/fail2ban.log</code>.</p>

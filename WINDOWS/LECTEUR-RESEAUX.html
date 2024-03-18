@@ -1,0 +1,28 @@
+<!--
+title: LECTEUR RESEAUX
+description: 
+published: true
+date: 2023-09-18T12:38:35.997Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:38:34.762Z
+-->
+
+<p>LISTE DES PARTAGES MAPPES</p>
+<p>net use</p>
+<p>&nbsp;</p>
+<p>SUPPRESSION PARTAGE FANTOME</p>
+<p>net use <a href="file://pc/chemin">\\pc\chemin</a> /DELETE</p>
+<p>&nbsp;</p>
+<p>SUPPRESSION PARTAGE LECTEUR</p>
+<p>net use lettrelecteur: /DELETE</p>
+<p>&nbsp;</p>
+<p>MONTAGE D'UN CHEMIN RESEAU</p>
+<p>net use <a href="file://UNC">\\UNC</a> /USER:&lt;utilisateur&gt; &lt;mot de passe&gt;</p>
+<p>&nbsp;</p>
+<p>MONTAGE PARTAGE NON PERSISTENT SUR UNE LETTRE et SANS SAUVEGARDE MDP</p>
+<p>net use lettrelecteur: <a href="file://pc/chemin">\\pc\chemin</a> password /user:domaine\nomuser /persistent:no</p>
+<p>net use lettrelecteur: <a href="file://pc/chemin">\\pc\chemin</a> /user:domaine\nomuser password /persistent:no</p>
+<p>&nbsp;</p>
+<p>MONTAGE PARTAGE PERSISTENT SUR UNE LETTRE et AVEC SAUVEGARDE MDP</p>
+<p>net use lettrelecteur: <a href="file://pc/chemin">\\pc\chemin</a> password /user:domaine\nomuser /savecred /persistent:yes</p>

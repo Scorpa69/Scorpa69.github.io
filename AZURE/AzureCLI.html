@@ -1,0 +1,119 @@
+<!--
+title: AzureCLI
+description: 
+published: true
+date: 2024-03-06T13:07:14.584Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:35:34.994Z
+-->
+
+<h2>Connexion</h2>
+<pre><code class="language-plaintext">az login --tenant id_tenant</code></pre>
+<h2>Sélection de la souscription</h2>
+<pre><code class="language-plaintext">az account set --subscription "Nom_Abo"</code></pre>
+<h2>Lister les ressources azure</h2>
+<pre><code class="language-plaintext">az resource list [--location]
+                 [--name]
+                 [--namespace]
+                 [--resource-group]
+                 [--resource-type]
+                 [--tag]</code></pre>
+<h2>Créer un ressource groupe</h2>
+<pre><code class="language-plaintext">az group create --location
+                --name
+               [--managed-by]
+               [--tags]</code></pre>
+<h2><strong>Create VMs</strong></h2>
+<figure class="table" style="width:852px;">
+  <table style="background-color:rgb(255, 255, 255);border-bottom:1px solid var(--theme-table-border-dark);border-left:1px solid var(--theme-table-border-dark);border-right:1px solid var(--theme-table-border-dark);border-top:1px solid var(--theme-table-border-dark);">
+    <thead>
+      <tr>
+        <th style="padding:0.5rem;vertical-align:top;">Task</th>
+        <th style="padding:0.5rem;vertical-align:top;">Azure CLI commands</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:0.5rem;vertical-align:top;">Create a resource group</td>
+        <td style="padding:0.5rem;vertical-align:top;">
+          <pre><code class="language-plaintext">az group create --name myResourceGroup --location eastus</code></pre>
+          <p>&nbsp;</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0.5rem;vertical-align:top;">Create a Linux VM</td>
+        <td style="padding:0.5rem;vertical-align:top;">
+          <pre><code class="language-plaintext">az vm create --resource-group myResourceGroup --name myVM --image LinuxImageName</code></pre>
+          <p>&nbsp;</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0.5rem;vertical-align:top;">Create a Windows VM</td>
+        <td style="padding:0.5rem;vertical-align:top;">
+          <pre><code class="language-plaintext">az vm create --resource-group myResourceGroup --name myVM --image win2016datacenter</code></pre>
+          <p>&nbsp;</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</figure>
+<h2><strong>Manage VM state</strong></h2>
+<figure class="table" style="width:852px;">
+  <table style="background-color:rgb(255, 255, 255);border-bottom:1px solid var(--theme-table-border-dark);border-left:1px solid var(--theme-table-border-dark);border-right:1px solid var(--theme-table-border-dark);border-top:1px solid var(--theme-table-border-dark);">
+    <thead>
+      <tr>
+        <th style="padding:0.5rem;vertical-align:top;">Task</th>
+        <th style="padding:0.5rem;vertical-align:top;">Azure CLI commands</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:0.5rem;vertical-align:top;">Start a VM</td>
+        <td style="padding:0.5rem;vertical-align:top;">
+          <pre><code class="language-plaintext">az vm start --resource-group myResourceGroup --name myVM</code></pre>
+          <p>&nbsp;</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0.5rem;vertical-align:top;">Stop a VM</td>
+        <td style="padding:0.5rem;vertical-align:top;">
+          <pre><code class="language-plaintext">az vm stop --resource-group myResourceGroup --name myVM</code></pre>
+          <p>&nbsp;</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0.5rem;vertical-align:top;">Deallocate a VM</td>
+        <td style="padding:0.5rem;vertical-align:top;">
+          <pre><code class="language-plaintext">az vm deallocate --resource-group myResourceGroup --name myVM</code></pre>
+          <p>&nbsp;</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0.5rem;vertical-align:top;">Restart a VM</td>
+        <td style="padding:0.5rem;vertical-align:top;">
+          <pre><code class="language-plaintext">az vm restart --resource-group myResourceGroup --name myVM</code></pre>
+          <p>&nbsp;</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0.5rem;vertical-align:top;">Redeploy a VM</td>
+        <td style="padding:0.5rem;vertical-align:top;">
+          <pre><code class="language-plaintext">az vm redeploy --resource-group myResourceGroup --name myVM</code></pre>
+          <p>&nbsp;</p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0.5rem;vertical-align:top;">Delete a VM</td>
+        <td style="padding:0.5rem;vertical-align:top;">
+          <pre><code class="language-plaintext">az vm delete --resource-group myResourceGroup --name myVM</code></pre>
+          <p>&nbsp;</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</figure>
+<h2>Container Instance (Multi Container with YAML)</h2>
+<pre><code class="language-plaintext">az container create --resource-group &lt;resource-group&gt; --file ci-my-app.yaml</code></pre>
+<h2>Deploy a template .json</h2>
+<p>az deployment group create --name DeployLocalTemplate --resource-group rgname --template-file fichierjson --verbose</p>

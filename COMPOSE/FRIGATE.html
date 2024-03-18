@@ -1,0 +1,212 @@
+<!--
+title: FRIGATE
+description: 
+published: true
+date: 2023-09-18T12:35:51.488Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:35:50.230Z
+-->
+
+<h1>Exemple IA ChatGPT</h1>
+<p>Voici un exemple de fichier Docker Compose pour exécuter Frigate en production :</p>
+<pre><code class="language-plaintext">version: "3"
+
+services:
+  frigate:
+    image: blakeblackshear/frigate:latest
+    container_name: frigate
+    restart: always
+    environment:
+      - MQTT_HOST=&lt;mqtt_host&gt;
+      - MQTT_PORT=&lt;mqtt_port&gt;
+      - MQTT_USERNAME=&lt;mqtt_username&gt;
+      - MQTT_PASSWORD=&lt;mqtt_password&gt;
+      - FRIGATE_RTSP_PASSWORD=&lt;frigate_rtsp_password&gt;
+      - FRIGATE_RTSP_USERNAME=&lt;frigate_rtsp_username&gt;
+      - FRIGATE_SAVE_CLIPS=&lt;frigate_save_clips&gt;
+      - FRIGATE_SAVE_CLIP_PATH=&lt;frigate_save_clip_path&gt;
+      - FRIGATE_SAVE_CLIP_RETENTION=&lt;frigate_save_clip_retention&gt;
+      - FRIGATE_SAVE_CLIP_CLEANUP=&lt;frigate_save_clip_cleanup&gt;
+      - FRIGATE_SAVE_SNAPSHOTS=&lt;frigate_save_snapshots&gt;
+      - FRIGATE_SAVE_SNAPSHOT_PATH=&lt;frigate_save_snapshot_path&gt;
+      - FRIGATE_SAVE_SNAPSHOT_RETENTION=&lt;frigate_save_snapshot_retention&gt;
+      - FRIGATE_SAVE_SNAPSHOT_CLEANUP=&lt;frigate_save_snapshot_cleanup&gt;
+    volumes:
+      - /path/to/frigate/config:/config
+      - /path/to/frigate/clips:/clips
+      - /path/to/frigate/snapshots:/snapshots
+    ports:
+      - "5000:5000"
+</code></pre>
+<p>Assurez-vous de remplacer les variables <code>&lt;mqtt_host&gt;</code>, <code>&lt;mqtt_port&gt;</code>, <code>&lt;mqtt_username&gt;</code>, <code>&lt;mqtt_password&gt;</code>, <code>&lt;frigate_rtsp_password&gt;</code>, <code>&lt;frigate_rtsp_username&gt;</code>, <code>&lt;frigate_save_clips&gt;</code>, <code>&lt;frigate_save_clip_path&gt;</code>, <code>&lt;frigate_save_clip_retention&gt;</code>, <code>&lt;frigate_save_clip_cleanup&gt;</code>, <code>&lt;frigate_save_snapshots&gt;</code>, <code>&lt;frigate_save_snapshot_path&gt;</code>, <code>&lt;frigate_save_snapshot_retention&gt;</code>, et <code>&lt;frigate_save_snapshot_cleanup&gt;</code> avec vos propres valeurs.</p>
+<p>Ce fichier Docker Compose définit un service nommé "frigate" qui utilise l'image Docker "blakeblackshear/frigate:latest". Il définit également des variables d'environnement pour la configuration de Frigate, telles que l'hôte MQTT, le port, le nom d'utilisateur et le mot de passe. Il monte également des volumes pour les fichiers de configuration, les clips vidéo et les captures d'écran. Le port 5000 est exposé pour accéder à l'interface Web de Frigate.</p>
+<p>Pour exécuter ce fichier Docker Compose, il suffit de se placer dans le répertoire contenant le fichier et d'exécuter la commande suivante :</p>
+<pre><code class="language-plaintext">docker-compose up -d
+</code></pre>
+<p>Cela créera et exécutera le conteneur Frigate en arrière-plan. Vous pouvez ensuite accéder à l'interface Web de Frigate en accédant à l'adresse IP de votre serveur sur le port 5000.</p>
+<h1>Exemple IA GPT-4</h1>
+<p>Frigate est un système de reconnaissance de personnes, de véhicules et d'animaux basé sur OpenCV et TensorFlow. Pour déployer Frigate à l'aide de Docker Compose pour la production, vous pouvez utiliser le fichier <code>docker-compose.yml</code> suivant.</p>
+<p>Assurez-vous d'abord d'avoir installé Docker et Docker Compose sur votre système.</p>
+<p>Créez un fichier <code>docker-compose.yml</code> avec le contenu suivant:</p>
+<pre><code class="language-plaintext">version: '3.8'
+
+services:
+  frigate:
+    container_name: frigate
+    image: blakeblackshear/frigate:stable-amd64
+    restart: unless-stopped
+    shm_size: '1g'
+    environment:
+      - FRIGATE_RTSP_PASSWORD=your_rtsp_password
+    volumes:
+      - /dev/bus/usb:/dev/bus/usb
+      - /etc/localtime:/etc/localtime:ro
+      - ./config:/config:ro
+      - ./media:/media
+    ports:
+      - "5000:5000"
+      - "1935:1935"
+
+  frigate-nginx:
+    container_name: frigate-nginx
+    image: nginx:alpine
+    restart: unless-stopped
+    volumes:
+      - ./nginx:/etc/nginx/conf.d:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - frigate
+</code></pre>
+<p>Ensuite, créez un répertoire <code>config</code> et ajoutez-y un fichier <code>config.yml</code> avec la configuration appropriée.</p>
+<p>Exemple de <code>config.yml</code>:</p>
+<pre><code class="language-plaintext">mqtt:
+  host: your_mqtt_broker
+  user: your_mqtt_user
+  password: your_mqtt_password
+
+cameras:
+  front_door:
+    ffmpeg:
+      inputs:
+        - path: rtsp://your_camera_address:554/cam/realmonitor?channel=1&amp;subtype=0
+          roles:
+            - detect
+            - rtmp
+    width: 1920
+    height: 1080
+    fps: 5
+    motion:
+      mask: poly,0,0,1920,0,1920,1080,0,1080
+    zones:
+      front_steps:
+        coordinates: 100,100,200,200
+        filters:
+          person:
+            min_area: 5000
+            max_area: 100000
+            threshold: 0.7
+</code></pre>
+<p>Créez également un répertoire <code>nginx</code> et un fichier <code>default.conf</code> avec la configuration Nginx pour servir l'interface utilisateur de Frigate:</p>
+<pre><code class="language-plaintext">server {
+    listen 80;
+
+    location / {
+        proxy_pass http://frigate:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /api {
+        proxy_pass http://frigate:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /static {
+        proxy_pass http://frigate:5000/static;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+</code></pre>
+<p>Maintenant, vous êtes prêt à démarrer Frigate avec Docker Compose:</p>
+<pre><code class="language-plaintext">docker-compose up -d
+</code></pre>
+<p>Cela lancera Frigate et un serveur Nginx pour servir l'interface utilisateur. Vous pouvez accéder à l'interface utilisateur de Frigate à l'aide de l'adresse IP de votre hôte et du port 80.</p>
+<h1>Example IA SAGE</h1>
+<pre><code class="language-plaintext">version: '3.7'
+services:
+  frigate:
+    image: blakeblackshear/frigate:stable
+    container_name: frigate
+    environment:
+      - FRIGATE_RTSP_PASSWORD=your_rtsp_password
+      - FRIGATE_MQTT_HOST=mqtt://your_mqtt_host:1883
+      - FRIGATE_WEBSOCKETS=true
+      - FRIGATE_LOG_LEVEL=info
+    volumes:
+      - ./config:/config
+      - /dev/shm/frigate:/dev/shm/frigate
+    devices:
+      - /dev/video0:/dev/video0
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
+  mqtt:
+    image: eclipse-mosquitto:2.0.10
+    container_name: mqtt
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    ports:
+      - "1883:1883"
+    restart: unless-stopped</code></pre>
+<h1>Example Editeur :</h1>
+<pre><code class="language-plaintext">version: "3.9"
+services:
+ frigate:
+   container_name: frigate
+   # privileged: true # this may not be necessary for all setups
+   restart: unless-stopped
+   image: blakeblackshear/frigate:stable
+   shm_size: "1024mb" # update for your cameras based on calculation above
+   devices:
+     # - /dev/bus/usb:/dev/bus/usb # passes the USB Coral, needs to be modified for other versions
+     # - /dev/apex_0:/dev/apex_0 # passes a PCIe Coral, follow driver instructions here https://coral.ai/docs/m2/get-started/#2a-on-linux
+     - /dev/dri/renderD128 # for intel hwaccel, needs to be updated for your hardware
+   volumes:
+     - /etc/localtime:/etc/localtime:ro
+     - config:/config/config.yml:ro
+     - data:/media/frigate
+     - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
+       target: /tmp/cache
+       tmpfs:
+         size: 1000000000
+   ports:
+     - "5000:5000"
+     - "1935:1935" # RTMP feeds
+   environment:
+     FRIGATE_RTSP_PASSWORD: "password"
+volumes:
+ config:./config
+ data:./data</code></pre>
+<h1>FICHIER CONFIG:</h1>
+<pre><code class="language-plaintext">/config/config.yml
+mqtt:
+ host: mqtt.server.com
+cameras:
+ back:
+   ffmpeg:
+     inputs:
+       - path: rtsp://viewer:{FRIGATE_RTSP_PASSWORD}@10.0.10.10:554/cam/realmonitor?channel=1&amp;subtype=2
+         roles:
+           - detect
+           - rtmp
+   detect:
+     width: 1280
+     height: 720</code></pre>
+<p>&nbsp;</p>

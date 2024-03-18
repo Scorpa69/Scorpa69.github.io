@@ -1,0 +1,21 @@
+<!--
+title: AZURE AD CONNECT
+description: 
+published: true
+date: 2023-09-18T12:37:50.867Z
+tags: windows, azure, connect, ad
+editor: ckeditor
+dateCreated: 2023-09-18T12:37:49.724Z
+-->
+
+<p>Se connecter en powershell à Azure AD:</p>
+<p>Enter-PSSession -ComputerName vrbxaad01.cyborg.dom -Credential CYBORG\A09_Admin</p>
+<p>&nbsp;</p>
+<p>Lancer une synchro AD vers Azure AD en incrémentiel :</p>
+<p>Start-ADSyncSyncCycle –PolicyType Delta</p>
+<p>&nbsp;</p>
+<p>Lister les users qui sont supprimées dans O365 :</p>
+<p>Get-MsolUser –ReturnDeletedUsers</p>
+<p>&nbsp;</p>
+<p>Supprimer un utilisateur de la corbeille O365 :</p>
+<p>Remove-MsolUser -UserPrincipalName "qnap@absyscyborg.com" -RemoveFromRecycleBin</p>

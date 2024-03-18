@@ -1,0 +1,85 @@
+<!--
+title: ASTUCES
+description: 
+published: true
+date: 2023-09-18T12:37:49.052Z
+tags: openssl, ssl
+editor: ckeditor
+dateCreated: 2023-09-18T12:37:47.878Z
+-->
+
+<h1>Swith User in PS</h1>
+<p>New-PSSession -Credential $cred | Enter-PSSession</p>
+<p>Si erreur wirm faire un wirm quickconfig puis relancé la commande ci-dessus</p>
+<h1>Export Accès Rapide :</h1>
+<p>Exporter la clé : Ordinateur\HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Ribbon</p>
+<h1>OneDrive Dans Explorateur : Suppression</h1>
+<p>Passer à 0 la clé de registre suivante : regedit.msc</p>
+<p>"System.IsPinnedToNameSpaceTree"</p>
+<p>qui est dans</p>
+<p>X86 : HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}</p>
+<p>et</p>
+<p>X64 : HKEY_CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}</p>
+<p>&nbsp;</p>
+<h1>Changer le mdp d'un compte local</h1>
+<p>Get-LocalUser -Name "admin" | Set-LocalUser -Password $NewPwd -UserMayChangePassword $true -PasswordNeverExpires $true</p>
+<p>&nbsp;</p>
+<h1>Nom Machine :</h1>
+<p>Voir le nom : hostname</p>
+<p>Renommer un pc : Rename-Computer -NewName "DC1" | shutdown -r -t 0</p>
+<p>Rename-Computer -NewName "vlabsrv3" | shutdown -r -t 0</p>
+<p>ou&nbsp;</p>
+<p>Rename-Computer -NewName "DC1"</p>
+<p>shutdown -r -t 0</p>
+<p>&nbsp;</p>
+<h1>Téléchargement de fichier en command :</h1>
+<p>wget -Uri $uri -OutFile "C:\temp\netframework.exe" -Verbose</p>
+<p>wget -uri <a href="https://cdn.zabbix.com/zabbix/binaries/stable/6.0/6.0.2/zabbix_agent2-6.0.2-windows-amd64-openssl.msi">https://cdn.zabbix.com/zabbix/binaries/stable/6.0/6.0.2/zabbix_agent2-6.0.2-windows-amd64-openssl.msi</a> -outfile "C:\users\a09_admin\desktop\zabbix_agent2-6.0.2-windows-amd64-openssl.msi"</p>
+<p>wget -uri <a href="https://cdn.zabbix.com/zabbix/binaries/stable/6.0/6.0.1/zabbix_agent2-6.0.1-windows-amd64-openssl.msi">https://cdn.zabbix.com/zabbix/binaries/stable/6.0/6.0.1/zabbix_agent2-6.0.1-windows-amd64-openssl.msi</a> -outfile "C:\users\a09_admin\desktop\zabbix_agent2-6.0.1-windows-amd64-openssl.msi"</p>
+<p>iwr -uri <a href="https://cdn.zabbix.com/zabbix/binaries/stable/6.0/6.0.1/zabbix_agent2-6.0.1-windows-amd64-openssl.msi">https://cdn.zabbix.com/zabbix/binaries/stable/6.0/6.0.1/zabbix_agent2-6.0.1-windows-amd64-openssl.msi</a> -outfile "C:\users\a09_admin\desktop\zabbix_agent2-6.0.1-windows-amd64-openssl.msi"</p>
+<p>iwr -uri <a href="https://cdn.zabbix.com/zabbix/binaries/stable/6.0/6.0.1/zabbix_agent2-6.0.1-windows-amd64-openssl.msi">https://cdn.zabbix.com/zabbix/binaries/stable/6.0/6.0.1/zabbix_agent2-6.0.1-windows-amd64-openssl.msi</a> -outfile "C:\users\a09\desktop\zabbix_agent2-6.0.1-windows-amd64-openssl.msi"</p>
+<p>iwr -uri <a href="https://github.com/zabbix/zabbix/blob/master/templates/power/apc/apc_ups_smart_3000_xlm_snmp/template_power_apc_ups_smart_3000_xlm_snmp.yaml">https://github.com/zabbix/zabbix/blob/master/templates/power/apc/apc_ups_smart_3000_xlm_snmp/template_power_apc_ups_smart_3000_xlm_snmp.yaml</a> -outfile "C:\users\a09\desktop\template_power_apc_ups_smart_3000_xlm_snmp.yaml"</p>
+<p>iwr -uri <a href="https://tlc.compagnons-arcadie.com/Setup_CompagnonLR.exe">https://tlc.compagnons-arcadie.com/Setup_CompagnonLR.exe</a> -outfile "c:\users\a09_admin\desktop\setup_compagnonsLR.exe"</p>
+<p>iwr -uri <a href="https://updates.compagnons-arcadie.com/lr/7.2.22.620.zip">https://updates.compagnons-arcadie.com/lr/7.2.22.620.zip</a> -credential update -outfile "c:\users\a09\desktop\7.2.22.620.zip"</p>
+<p>iwr -uri&nbsp;<a href="https://h30279.www3.hpe.com/prdownloads/HPE_3PAR_3.3.2_MU1_QR482-11623.iso?downloadid=_QH9iGLFpsfe1Jlyu0OWyFYTO-qpNjLE_yNkb_6RYta_K3HztJMv0BQigMATeTPzjxBVmeNN2S2Y5xWgt6VVdGp794MCCMPhF1IGk6zuBKlR2-i3rrK4oJ3E0ZRtdK5ppZ1ASo_Jxd0dVrRBNhYj_q55ume-vomd&amp;merchantId=SW_USB&amp;rnid=313.0&amp;bpid=SWD&amp;egid=F&amp;__dlk__=1659536808_89927910ae6c3df2ada7da22e3476278">https://h30279.www3.hpe.com/prdownloads</a>/HPE_3PAR_3.3.2_MU1_QR482-11623.iso&nbsp; -outfile "c:\users\a09_admin\desktop\HPE_3PAR_3.3.2_MU1_QR482-11623.iso</p>
+<p>iwr -uri <a href="https://raw.githubusercontent.com/zabbix/community-templates/main/Network_Appliances/template_speedtest_lan_monitoring/5.4/template_speedtest_lan_monitoring.yaml">https://raw.githubusercontent.com/zabbix/community-templates/main/Network_Appliances/template_speedtest_lan_monitoring/5.4/template_speedtest_lan_monitoring.yaml</a> -outfile "C:\Users\A09\Nextcloud\1-INFRA_AC\Projet\ZBX\Template\template_speedtest_lan.yaml"</p>
+<p>iwr -uri <a href="https://raw.githubusercontent.com/zabbix/community-templates/main/Network_Appliances/template_speedtest_wan_isp_monitoring/6.0/template_speedtest_wan_isp_monitoring.yaml">https://raw.githubusercontent.com/zabbix/community-templates/main/Network_Appliances/template_speedtest_wan_isp_monitoring/6.0/template_speedtest_wan_isp_monitoring.yaml</a> -outfile "C:\Users\A09\Nextcloud\1-INFRA_AC\Projet\ZBX\Template\template_speedtest_wan.yaml"</p>
+<p>iwr -uri "<a href="https://go.microsoft.com/fwlink/?linkid=2217421&amp;clcid=0x40c">https://go.microsoft.com/fwlink/?linkid=2217421&amp;clcid=0x40c</a>" -outfile "C:\Users\A09_admin\desktop\ODBC_17-FRA.exe"&nbsp; &nbsp; =&gt; fonctionne, testé le 19/01/23</p>
+<p>iwr -uri "<a href="https://bootstrap.pypa.io/get-pip.py">https://bootstrap.pypa.io/get-pip.py</a>" -outfile "C:\Users\A09\desktop\get-pip.py"</p>
+<p>iwr -uri <a href="https://cdn.zabbix.com/zabbix/binaries/stable/6.0/6.0.13/zabbix_agent2-6.0.13-windows-amd64-openssl.msi">https://cdn.zabbix.com/zabbix/binaries/stable/6.0/6.0.13/zabbix_agent2-6.0.13-windows-amd64-openssl.msi</a> -outfile "C:\users\a09_admin\desktop\zabbix_agent2-6.0.13-windows-amd64-openssl.msi"</p>
+<p>&nbsp;</p>
+<h1>CHECKSUM :</h1>
+<p>Se placer dans le dossier qui contient le fichier puis</p>
+<p>Get-FileHash .\CentOS-7-x86_64-NetInstall-1908.iso -Algorithm SHA256 | Format-List</p>
+<p>"Hash du dessus" -eq "Hash de l'editeur"</p>
+<p>si true c'est OK</p>
+<p>ou</p>
+<p>certutil -hashfile FirmwareUpgradeWizard_v4.3.0.exe MD5</p>
+<p>&nbsp;</p>
+<h1>Vider la corbeille de tous les utilisateurs de l’ordinateur :</h1>
+<p>rd /s c:\$Recycle.Bin</p>
+<p>&nbsp;</p>
+<h1>Assistance Windows :</h1>
+<p>msra /offerra</p>
+<p>&nbsp;</p>
+<h1>Installer Open Manage sans les prérequis:</h1>
+<p>To install the software you will need to open a command prompt and browse to the msi file typically located at :</p>
+<p>C:\OpenManage\windows\SystemsManagementx64\</p>
+<p>From here run the following command:</p>
+<p>msiexec /i SysMgmtx64.msi SYSTEMCHECK=NO</p>
+<p>&nbsp;</p>
+<h1>Enlever la veille prolonger:</h1>
+<p>powercfg -h off</p>
+<p>&nbsp;</p>
+<h1>Empêcher les connexions distantes au serveur :</h1>
+<p>change logon /drainuntilrestart "jusqu'au prochain redemarrage"</p>
+<p>&nbsp;</p>
+<p>change logon /drain /disable "tout le temps"</p>
+<p>&nbsp;</p>
+<p>change logon /enable "pour les autorisées à nouveau"</p>
+<p>&nbsp;</p>
+<h1>OPENSSL :</h1>
+<p>Installer avec choco</p>
+<p>ajouter variables en cli :</p>
+<p>set OPENSSL_CONF=C:\OpenSSL-Win64\bin\openssl.cfg</p>
+<p>set Path=%Path%;'C:\OpenSSL-Win64\bin'</p>

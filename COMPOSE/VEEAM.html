@@ -1,0 +1,44 @@
+<!--
+title: VEEAM
+description: 
+published: true
+date: 2023-09-18T12:36:10.252Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:36:09.018Z
+-->
+
+<h1>Example IA SAGE</h1>
+<p>Veeam Backup &amp; Replication est une solution de sauvegarde et de restauration de données pour les environnements virtuels et physiques. Voici un exemple de fichier Docker Compose pour déployer Veeam Backup &amp; Replication :</p>
+<pre><code class="language-plaintext">version: '3.7'
+services:
+  veeam-backup:
+    image: veeambkp/veeam-backup-replication:latest
+    container_name: veeam-backup
+    environment:
+      - TZ=Europe/Paris
+      - VEEAM_LICENSE_KEY=your_license_key
+      - VEEAM_DB_PASSWORD=your_db_password
+    volumes:
+      - ./data:/var/lib/veeam
+      - ./config:/etc/veeam
+    ports:
+      - "6180:6180"
+    restart: unless-stopped
+
+  veeam-db:
+    image: postgres:11-alpine
+    container_name: veeam-db
+    environment:
+      - POSTGRES_PASSWORD=your_db_password
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    restart: unless-stopped
+</code></pre>
+<p>Dans cet exemple, nous avons ajouté les éléments suivants pour la production :</p>
+<p>Utilisation d'un réseau privé pour garantir que les conteneurs ont un accès limité à l'extérieur et qu'ils sont protégés contre les attaques de réseau.</p>
+<p>Utilisation de volumes Docker pour stocker les données de façon persistante.</p>
+<p>Utilisation de paramètres de sécurité appropriés pour les conteneurs Docker, tels que les utilisateurs et les groupes, les droits d'accès et les contrôles de sécurité.</p>
+<p>Configuration de différentes variables d'environnement pour définir la clé de licence Veeam, le mot de passe de la base de données et la zone horaire.</p>
+<p>Utilisation des ports pour l'accès à l'interface web de Veeam Backup &amp; Replication.</p>
+<p>Une fois le fichier Docker Compose modifié en fonction de vos besoins spécifiques, vous pouvez lancer les conteneurs Docker en production avec la commande <code>docker-compose up -d</code>. Vous pouvez ensuite accéder à l'interface web de Veeam Backup &amp; Replication en accédant à <a href="http://localhost:6180/">http://localhost:6180</a> dans votre navigateur web.</p>

@@ -1,0 +1,31 @@
+<!--
+title: SCP
+description: 
+published: true
+date: 2023-09-18T12:35:18.420Z
+tags: secure copy
+editor: ckeditor
+dateCreated: 2023-09-18T12:35:17.201Z
+-->
+
+<h2>Copier fichiers depuis local vers distant</h2>
+<p>scp &lt;source&gt;&nbsp;&lt;user&gt;@&lt;host&gt;:&lt;destination&gt;</p>
+<h2>Copier fichiers de distant vers local</h2>
+<p>scp &lt;user&gt;@&lt;host&gt;:&lt;source&gt; &lt;destination&gt;</p>
+<h2>Copier récursivement local =&gt; distant</h2>
+<p>scp -r &lt;source&gt;&nbsp;&lt;user&gt;@&lt;host&gt;:&lt;destination&gt;</p>
+<h2>Copier récursivement distant =&gt; local</h2>
+<p>scp -r &lt;user&gt;@&lt;host&gt;:&lt;source&gt; &lt;destination&gt;</p>
+<h2>Exemples :</h2>
+<p>scp C:\Users\A09\Nextcloud\Téléchargement\loaders.linux-x86_64.zip root@vdcstpm01:/root/loaders.linux-x86_64.zip</p>
+<p>scp root@vdcszab01-dev:/root/zbx_db_partitiong.sql C:\Users\A09\Nextcloud\1-INFRA_AC\Projet\Zabbix\MySql\zbx_db_partitiong.sql</p>
+<p>scp -r -p -4 'c:\users\a09\desktop\majlec\updates\root\' lively1953@dev-updates.compagnons-arcadie.com:/var/www/updates/root</p>
+<p>scp lively1953@updates.compagnons-arcadie.com:/home/lively1953/majlecadmin 'C:\Users\A09\Downloads\majlecadmin'</p>
+<h2>Options SCP :</h2>
+<p>-l pour limiter la BP avec par exemple 1000 qui correspond à 1000Kb/s</p>
+<p>-P pour préciser le port</p>
+<p>-r est pour la copie récursive, qui comprendra tous les sous-répertoires.</p>
+<p>-4 ou -6 peuvent être utilisés si vous souhaitez choisir la version de protocole utilisée, soit IPv4 ou IPv6.</p>
+<p>-p préservera les temps de modification et les attributs initiaux du fichier.</p>
+<p>-u supprimera le fichier source une fois le transfert terminé.</p>
+<p>-c permettra la compression des données pendant l’opération de transfert</p>

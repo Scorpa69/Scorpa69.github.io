@@ -1,0 +1,44 @@
+<!--
+title: AUTOMATION
+description: 
+published: true
+date: 2023-11-27T11:37:27.074Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-11-27T11:33:44.249Z
+-->
+
+<h1>Démarrage d'un application (web app et sql server)</h1>
+<h2>Powershell workflow:</h2>
+<pre><code class="language-plaintext">workflow&nbsp;Start_PPU&nbsp;{
+ &nbsp;&nbsp; try&nbsp;{
+ &nbsp;&nbsp; "Logging&nbsp;in&nbsp;to&nbsp;Azure..."
+ &nbsp;&nbsp;&nbsp;Connect-AzAccount&nbsp;-Identity
+ &nbsp;&nbsp; }
+ &nbsp;&nbsp; catch&nbsp;{
+ &nbsp;&nbsp;&nbsp;Write-Error&nbsp;-Message&nbsp;$_.Exception
+ &nbsp;&nbsp; throw&nbsp;$_.Exception
+ &nbsp;&nbsp; }
+ &nbsp;&nbsp;&nbsp;Start-AzMySqlFlexibleServer&nbsp;-ResourceGroupName&nbsp;"rg-app-password_pusher-dev-frc"&nbsp;-Name&nbsp;mysql-ppu-dev-vnet
+ &nbsp;&nbsp;&nbsp;Start-AzWebApp&nbsp;-ResourceGroupName&nbsp;"rg-app-password_pusher-dev-frc"&nbsp;-Name&nbsp;"ppu-dev-mysql"
+}</code></pre>
+<h1>Modif SKU Plan App : (attention au sku!!)</h1>
+<pre><code class="language-plaintext">workflow UpSaclePlan {
+	param (
+	[Parameter(Mandatory=$false)]
+	[String]$PlanAppName = "asp-ppu-dev",
+   	
+	[Parameter(Mandatory=$false)]
+	[String]$ResourceGroupName = "rg-app-password_pusher-dev-frc"
+	
+	)
+    try {
+    "Logging in to Azure..."
+    Connect-AzAccount -Identity
+    }
+    catch {
+    Write-Error -Message $_.Exception
+    throw $_.Exception
+    }
+	Set-AzAppServicePlan -Name $PlanAppName -ResourceGroupName $ResourceGroupName -Tier "PremiumV3" -WorkerSize "Medium"
+}</code></pre>

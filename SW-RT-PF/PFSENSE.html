@@ -1,0 +1,35 @@
+<!--
+title: PFSENSE
+description: 
+published: true
+date: 2024-01-08T07:24:01.727Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-08T07:24:01.727Z
+-->
+
+<h1>IPSEC MOBILE CLIENT</h1>
+<h2>1 Création d'une authorité de certification :</h2>
+<p><br>- Aller dans system/certificate manager/CAs puis cliquer sur Add<br>- Remplir les elements suivant du formulaire<br>Descritptive Name : Un nom parlant<br>Method : Create an internal...<br>Key Length : 3072 ou plus<br>Digest Algorithm : SHA384 ou plus<br>Life Time : 3560 (10ans)<br>Common name : mettre la meme chose que dans descriptive name<br>country code : FR<br>State : Gironde<br>City : Parempuyre<br>Organization : SCP<br>- Cliquer sur Save</p>
+<h2>2 Création du certificat server :</h2>
+<p><br>- Aller dans system/certificate manager/Certificates puis cliquer sur Add<br>- Remplir les elements suivant du formulaire<br>Method : Create an internal...<br>Descriptive name : un nom parlant<br>Selectionner l'authorité créer à l'etape 1<br>Key Length : 3072 ou plus<br>Digest Algorithm : SHA384 ou plus<br>Life Time : 3560 (10ans)<br>country code : FR<br>State : Gironde<br>City : Parempuyre<br>Organization : SCP<br>OU : SCP Admin<br>Email : mbo@scp69.fr<br>Common name : vpn.scp69.ovh<br>Certificate Type : Server certificate<br>Alternative name : FQDN ou Hostname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vnp.scp69.ovh<br>- Cliquer sur Save</p>
+<h2>3 IPSec Mobile Client :</h2>
+<p><br>- Aller dans VPN/IPSec/Mobiles Clients<br>- Cocher Enable IPSec Mobile Client<br>- Selectionner Local Database<br>- Group Auth laisser sur none<br>- Cocher Provide virtual IP to clients<br>- Renseigner un réseau hors du subnet du LAN exemple 172.28.1.0/28 (16 adresses dispo)<br>- Décocher : provide IPv6, provide domain name to clients, allow clients to save pwd, provide list of split DNS<br>- Cocher Provide DNS to clients et mettre l'ip du DNS Local (192.168.33.254)<br>- Laisser le reste Décocher<br>- Cliquer sur Save</p>
+<h2>4 Création de la phase 1:</h2>
+<p>&nbsp;<br>- Aller dans VPN/IPSec/Tunnels puis cliquer sur add P1<br>- Remplir les elements suivants du formulaire<br>Disable décoché<br>Key exchange version : IKEv2<br>Internet protocol : IPv4<br>Interface : WAN<br>Description : VPN Client - Mobile Client - Ph1<br>Authentication Method : EAP-MSChav2<br>My identifier : Distinguished name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vpn.scp69.ovh<br>peer identifier : Any<br>My certificate : Le certificat créé précédemment<br>Proposal : AES 256 SHA256 DH14<br>Life Time : 28800<br>Dead peer detection : cocher pour activer<br>- Cliquer sur Save</p>
+<h2>5 Création de la phase 2 :&nbsp;</h2>
+<p><br>- Aller dans VPN/IPSec/Tunnels puis cliquer sur add P2<br>- Remplir les elements suivants du formulaire<br>Disable décoché<br>Mode : Tunnel IPv4<br>Local Network : LAN Subnet<br>NAT/BINAT : None<br>Description : VPN Ph2 par exemple<br>Protocol : ESP<br>Encryption Algo : coher AES et selectionner Auto (""config fonctionnelle mais à l'occaz fo tester avec 256 bits a la place d'Auto"")<br>Hash Algorithms : cocher SHA256 (""A voir si cela fonctionne avec l'iPhone, à suivre"")<br>PFS Key Group : 14(2048 bit) (""dans les tutos et la doc pfsense ils disent de mettre sur off mais cela fait des deco au bout d'une heure, probleme de rekeying du faite de l'augmentation de sécu sur l'IPSec Natif Windows"")<br>Lifetime : 3600<br>- Cliquer sur Save</p>
+<h2>6 Création de la pré shared key pour chaque client :</h2>
+<p><br>- Aller dans VPN/IPSec/Pre-shared Keys puis cliquer sur add<br>- Identifier : nomdelutilisateur<br>- pre-shared key : pwd mini 16 caractères voir 20<br>- Cliquer sur Save</p>
+<h2>7 Recup du certificat (clé publique du server) :</h2>
+<p><br>- Aller dans system/certificate manager/CAs<br>- cliquer sur le soleil à droite<br>- copier le certificat sur le poste client</p>
+<h2>8 Config côté client :</h2>
+<p><br>- installer le certificat sur l'ordinateur (pas utilisateur) dans racines de confiance<br>- PS en admin : Add-VpnConnection -Name "SCPVPN" -ServerAddress "vpn.scp69.ovh" –TunnelType IKEv2 -EncryptionLevel Required -AuthenticationMethod EAP -SplitTunneling –AllUserConnection<br>- PS en admin : Add-VpnConnectionRoute -ConnectionName "VPN_NAME" -DestinationPrefix 192.168.33.0/24 -PassThru<br>- PS en admin : Add-VpnConnectionRoute -ConnectionName "SCPVPN"</p>
+<p>Set-VpnConnectionIPsecConfiguration -ConnectionName "SCPVPN" -AuthenticationTransformConstants SHA256 -CipherTransformConstants AES256 -DHGroup Group14 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PFSgroup PFS2048 -Force -DestinationPrefix 10.5.0./16 -PassThru</p>
+<p>&nbsp;</p>
+<p>Add-VpnConnection -Name "ABRVPN" -ServerAddress "abr.scp69.ovh" –TunnelType IKEv2 -EncryptionLevel Required -AuthenticationMethod EAP -SplitTunneling –AllUserConnection</p>
+<p>Add-VpnConnectionRoute -ConnectionName "ABRVPN" -DestinationPrefix 192.168.103.0/24 -PassThru</p>
+<p>Set-VpnConnectionIPsecConfiguration -ConnectionName "ABRVPN" -AuthenticationTransformConstants SHA256 -CipherTransformConstants AES256 -DHGroup Group14 -EncryptionMethod AES256 -IntegrityCheckMethod SHA256 -PFSgroup PFS2048 -PassThru -ForceGet-VpnConnection -AllUserConnection</p>
+<p>&nbsp;</p>
+<h3>LISTE DES VPN DANS WINDOWS :&nbsp;</h3>
+<p>Get-VpnConnection -AllUserConnection</p>

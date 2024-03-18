@@ -1,0 +1,47 @@
+<!--
+title: ANSIBLE
+description: 
+published: true
+date: 2023-09-18T12:35:47.702Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:35:46.462Z
+-->
+
+<h1>Ansible server in a Docker container using Docker Compose:</h1>
+<p>Install Docker and Docker Compose: Install Docker and Docker Compose on the host machine. You can follow the installation instructions provided by Docker for your operating system.</p>
+<p>Create a Docker Compose file: Create a Docker Compose file to define the Ansible server container and its configuration. Here is an example Docker Compose file:</p>
+<pre><code class="language-plaintext">version: "3"
+
+services:
+  ansible:
+    image: ansible/ansible-runner:latest
+    volumes:
+      - ./ansible:/ansible
+      - ./ssh:/root/.ssh
+    environment:
+      - ANSIBLE_HOST_KEY_CHECKING=False
+      - ANSIBLE_INVENTORY=/ansible/inventory/hosts
+      - ANSIBLE_CONFIG=/ansible/ansible.cfg
+      - ANSIBLE_STDOUT_CALLBACK=yaml
+    entrypoint: ["sleep", "infinity"]</code></pre>
+<p>This Docker Compose file creates a Docker container running the latest version of the Ansible Runner image. It also mounts two volumes to the container: one for the Ansible playbooks and inventory, and one for the SSH keys used to connect to the managed hosts. It sets some environment variables to configure the Ansible Runner, and sets the entrypoint to "sleep infinity" to keep the container running.</p>
+<ol>
+  <li>Create the Ansible configuration files: Create the Ansible configuration files for the Ansible server container. You will need an inventory file and an Ansible configuration file. Here is an example inventory file:</li>
+</ol>
+<pre><code class="language-plaintext">[webservers]
+web1 ansible_host=192.168.0.1
+web2 ansible_host=192.168.0.2</code></pre>
+<p>And here is an example Ansible configuration file:</p>
+<pre><code class="language-plaintext">[defaults]
+inventory = /ansible/inventory/hosts
+remote_user = root</code></pre>
+<ol>
+  <li>Start the Docker container using Docker Compose: Start the Docker container using Docker Compose by running the following command in the same directory where the Docker Compose file is located:</li>
+</ol>
+<pre><code class="language-plaintext">docker-compose up -d</code></pre>
+<p>This command will start the Docker container in detached mode, so it runs in the background.</p>
+<ol>
+  <li>Verify the Ansible server container is running: Verify that the Ansible server container is running by running the following command:</li>
+</ol>
+<pre><code class="language-plaintext">docker ps</code></pre>

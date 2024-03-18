@@ -1,0 +1,46 @@
+<!--
+title: A TRIER
+description: 
+published: true
+date: 2023-09-18T12:36:41.513Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:36:40.163Z
+-->
+
+<h2>REDEMARER ARRETER&nbsp;</h2>
+<pre><code class="language-plaintext">sudo reboot now 
+sudo poweroff (now)</code></pre>
+<h2>AFFICHER LE CONTENU D'UN FICHIER EN LIVE (fichier log)</h2>
+<pre><code class="language-plaintext">tail -f /chemin/nomfichier</code></pre>
+<h2>AFFICHER LE CONTENU D'UN FICHIER</h2>
+<pre><code class="language-plaintext">tail -n 20 /chemin/nomfichier  </code></pre>
+<p>(l'option -n permet de voir les 20 dernière lignes du fichier sinon c'est 10 par defaut)</p>
+<h2>CHANGER LE MDP DU USER COURANT</h2>
+<pre><code class="language-plaintext">sudo passwd (user)</code></pre>
+<h2>HYPER-V INTEGRATION</h2>
+<pre><code class="language-plaintext">nano /etc/initramfs-tools/modules </code></pre>
+<p>Ajouter les lignes suivantes dans le fichier :</p>
+<pre><code class="language-plaintext">hv_vmbus 
+hv_storvsc 
+hv_blkvsc 
+hv_netvsc</code></pre>
+<p>Puis:</p>
+<pre><code class="language-plaintext">apt-get install linux-virtual linux-cloud-tools-virtual linux-tools-virtual 
+update-initramfs -u 
+reboot now</code></pre>
+<h2>COMMANDE INSTALL VEEAM AGENT</h2>
+<pre><code class="language-plaintext">apt-get install unzip dkms lvm2 nfs-client smbclient samba system-config-samba cifs-utils 
+wget "http://repository.veeam.com/.private/deb/veeam/veeam_3.0.2.1185_amd64.deb" 
+wget "http://repository.veeam.com/.private/deb/veeamsnap/veeamsnap_3.0.2.1185_all.deb" 
+dpkg -i veeamsnap_3.0.2.1185_all.deb sudo dpkg -i veeam_3.0.2.1185_amd64.deb
+apt-get install veeam
+veeam (pour configurer la sauvegarde)</code></pre>
+<h2>CHGT NOM MACHINE</h2>
+<pre><code class="language-plaintext">nano /etc/hostname
+nano /etc/hosts
+reboot</code></pre>
+<h2>Defilement du bootstrap</h2>
+<p>debugg du demarrage&nbsp;</p>
+<pre><code class="language-plaintext">dmes -H</code></pre>
+<p>&nbsp;</p>

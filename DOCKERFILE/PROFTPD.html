@@ -1,0 +1,45 @@
+<!--
+title: PROFTPD
+description: 
+published: true
+date: 2024-01-10T14:02:08.624Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-10T14:02:08.624Z
+-->
+
+<h1>Self Signed : à tester</h1>
+<pre><code class="language-plaintext">FROM alpine:latest
+# Install ProFTPD and required dependencies 
+RUN apk --no-cache add proftpd openssl 
+# Copy the ProFTPD configuration file 
+COPY proftpd.conf /etc/proftpd/proftpd.conf 
+# Generate a self-signed SSL certificate 
+RUN mkdir /etc/proftpd/ssl \
+    &amp;&amp; openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+       -keyout /etc/proftpd/ssl/proftpd.key \
+       -out /etc/proftpd/ssl/proftpd.crt \
+       -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=example.com" 
+# Expose the FTP port 
+EXPOSE 21 
+# Start ProFTPD server 
+CMD ["/usr/sbin/proftpd", "--nodaemon"]</code></pre>
+<h1>Let'Encrypt : à tester</h1>
+<pre><code class="language-plaintext">FROM alpine:latest
+# Install ProFTPD and required dependencies 
+RUN apk --no-cache add proftpd openssl certbot 
+# Set default values for environment variables 
+ENV EMAIL your-email@example.com
+ENV DOMAIN your-domain.com
+# Copy the ProFTPD configuration template 
+COPY proftpd.conf.template /etc/proftpd/proftpd.conf.template 
+# Expose the FTP and SSL ports 
+EXPOSE 21 990 
+# Generate a self-signed SSL certificate temporarily for initial setup 
+RUN mkdir /etc/proftpd/ssl \
+    &amp;&amp; openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+       -keyout /etc/proftpd/ssl/proftpd.key \
+       -out /etc/proftpd/ssl/proftpd.crt \
+       -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=example.com" 
+# Start ProFTPD server in the background 
+CMD /bin/sh -c "envsubst &lt; /etc/proftpd/proftpd.conf.template &gt; /etc/proftpd/proftpd.conf &amp;&amp; certbot certonly --standalone --agree-tos --email $EMAIL -d $DOMAIN &amp;&amp; proftpd -n"</code></pre>

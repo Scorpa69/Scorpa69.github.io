@@ -1,0 +1,103 @@
+<!--
+title: MYSQL_CONV
+description: 
+published: true
+date: 2024-02-13T15:15:18.186Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-17T09:09:57.865Z
+-->
+
+<h1>ETAPE 1</h1>
+<pre><code class="language-plaintext">mkdir -p /data/conv/volume/bdd &amp;&amp; chown -R dockremap:dockremap /data/conv/ &amp;&amp; chown -R 500999:dockremap /data/conv/volume/bdd &amp;&amp; touch /data/conv/docker-compose.yml &amp;&amp; chown admin_ac:dockremap /data/conv/docker-compose.yml</code></pre>
+<p>Le fichier compose est son dossier “compose” sont créés directement dans VSCODE</p>
+<pre><code class="language-plaintext">version: '3.7'
+services:
+  mysqlconv:
+    container_name: mysqlconv
+    image: mysql:5.7.42-debian # 8.0.35-debian 5.7.42-debian
+    cap_add:
+      - SYS_NICE
+    networks:
+      backend:
+    volumes:
+      - /data/conv/volume/bdd:/var/lib/mysql:rw
+    environment:
+      - MYSQL_USER=tpm_user
+      - MYSQL_PASSWORD=
+      #- MYSQL_PASSWORD_FILE=/run/secrets/sql_user
+      - MYSQL_DATABASE=tpm_db
+      - MYSQL_ROOT_PASSWORD=
+      #- MYSQL_ROOT_PASSWORD_FILE=/run/secrets/sql_root
+    secrets:
+      - sql_user
+      - sql_root
+#    command:
+#      - mysqld
+#      - --default-authentication-plugin=caching_sha2_password
+    deploy:
+      resources:
+        limits:
+          cpus: "0.6"
+          memory: 2048M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 5
+        window: 120s
+    restart: on-failure
+    stop_grace_period: 1m
+networks:
+  backend:
+    driver: "bridge"
+    internal: "true"
+    enable_ipv6: "false"
+    ipam:  
+      config:
+        - subnet: "172.100.201.8/29"
+#secrets:
+#  sql_user:
+#    file: /data/mypass/sec/.up
+#  sql_root:
+#    file: /data/mypass/sec/.rp</code></pre>
+<p>ETAPE 2</p>
+<pre><code class="language-plaintext">version: '3.7'
+services:
+  mysql:
+    container_name: mysqlconv
+    image: mysql:8.0.35-debian # 8.0.35-debian 5.7.42-debian
+    cap_add:
+      - SYS_NICE
+    networks:
+      backend:
+    volumes:
+      - /data/conv/volume/bdd:/var/lib/mysql:rw
+    environment:
+      - MYSQL_USER=tpm_user
+      - MYSQL_PASSWORD=
+      - MYSQL_DATABASE=tpm_db
+      - MYSQL_ROOT_PASSWORD=
+    command:
+      - mysqld
+      - --default-authentication-plugin=caching_sha2_password
+    deploy:
+      resources:
+        limits:
+          cpus: "0.6"
+          memory: 2048M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 5
+        window: 120s
+    restart: on-failure
+    stop_grace_period: 1m
+networks:
+  backend:
+    driver: "bridge"
+    internal: "true"
+    enable_ipv6: "false"
+    ipam:  
+      config:
+        - subnet: "172.100.201.8/29"</code></pre>
+<p>&nbsp;</p>

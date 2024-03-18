@@ -1,0 +1,58 @@
+<!--
+title: XCP NG
+description: 
+published: true
+date: 2024-01-08T09:01:53.822Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-08T09:01:53.822Z
+-->
+
+<p>IMPORT VM WINDOWS :</p>
+<ul>
+  <li>Remove Hyper-V tools from every VM if installed</li>
+  <li>Install an NFS Server somewhere. (You can also use Win-scp directly from Hyper-V and copy "$uuidger -r".vhd directly to storage and rescan after that)</li>
+  <li>Create an NFS share on that server.</li>
+  <li>Mount the NFS share as a Storage Repository in XenCenter or XOA.</li>
+  <li>Make sure the hyper-v virtual disk is not fixed type, use hyper-v mgmt to convert to dynamic vhd if needed.</li>
+  <li>Copy the VHD file you want to import to the NFS share. -use uuidgen -r to generate uuid and use it to rename vhd file.</li>
+  <li>Create a new VM in xcp-ng with no disks.</li>
+  <li>Attach the VHD from the NFS share to your new VM.</li>
+  <li>Install Xenserver Tools.</li>
+  <li>If everything work well move virtual disk using XCP-ng center from temporary storage to dedicated storage on the fly, VM can be turned on and disk can be online.</li>
+</ul>
+<p>&nbsp;</p>
+<p>GEUST TOOL ON DEBIAN : Monter l'iso gest tool sur la vm)</p>
+<p>mount /dev/cdrom /mnt</p>
+<p>bash /mnt/Linux/install.sh</p>
+<p>umount /dev/cdrom</p>
+<p>Pas besoin de reboot c'est un vieux message</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Ajouter des ISO dans la libairie défaut :</p>
+<p>Copier le fichier iso : scp 'D:\NextCloud\ISO\Boot\clonezilla-live-2.8.1-12-amd64.iso' root@smboxcp2:/opt/xensource/packages/iso</p>
+<p>scp 'C:\Users\mboa\Downloads\haos_generic-x86-64-8.4.img' root@smboxcp:/var/opt/ISO</p>
+<p>&nbsp;</p>
+<p>Puis se connecter au serveur XCP :&nbsp;</p>
+<p>xe cd-list =&gt; list des iso</p>
+<p>xe sr-list =&gt; list des repo d'iso et leur uuid</p>
+<p>xe sr-scan uuid=xxxxx-xxxxx-xxxxx-xxxx&nbsp; =&gt; pour rescanner le repo&nbsp; iso grace à son uuid</p>
+<p>xe sr-create name-label ="ISO Repository" type=iso device-config:location=/opt/xensource/packages/iso device-config:legacy_mode=true content-type=iso</p>
+<p>xe sr-create name-label=LocalISO type=iso device-config:location=/var/opt/xen/ISO_Store device-config:legacy_mode=true content-type=iso</p>
+<p>xe sr-create name-label="ISO" type=iso device-configuration:location=/var/opt/xen/ISO_Store device-config:legacy_mode=true content-type=iso</p>
+<p>&nbsp;</p>
+<p>xe sr-create host-uuid=ce5807ce-f1dc-411c-9eda-b07d0fe9e7f5 type=ext content-type=disk name-label="SSD" device-config:device=/dev/md0</p>
+<p>&nbsp;</p>
+<p>xe sr-create host-uuid=ce5807ce-f1dc-411c-9eda-b07d0fe9e7f5&nbsp;type=zfs content-type=disk name-label="MECA" device-config:location=/mnt/meca/</p>
+<p>&nbsp;</p>
+<p>yum install microcode_ctl&nbsp; pour installer les driver non-free d'intel</p>
+<p>&nbsp;</p>
+<p>&nbsp;zpool create tank raidz sde sdf sdg sdh sdi sdj sdk sdl</p>
+<p>&nbsp;</p>
+<p>zpool create meca raidz sde sdf sdg sdh sdi sdj sdk sdl -m /mnt/meca</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>AGENT ZABBIX sur XCP :</p>
+<p>rpm -Uvh&nbsp;</p>

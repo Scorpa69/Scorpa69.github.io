@@ -1,0 +1,115 @@
+<!--
+title: CHOCOLATEY
+description: 
+published: true
+date: 2023-09-18T12:37:52.555Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:37:51.467Z
+-->
+
+<h1>INSTALL</h1>
+<p>Set-ExecutionPolicy AllSigned -Scope Process</p>
+<p>[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))</p>
+<h1>COMMANDE</h1>
+<p>Liste des programme installé en local (tous mêmes ceux installé sans choco):&nbsp;</p>
+<pre><code class="language-plaintext">choco list -i</code></pre>
+<p>Liste des programme installé en local avec choco uniquement :</p>
+<pre><code class="language-plaintext">choco list</code></pre>
+<p>Installer une appli :&nbsp;</p>
+<pre><code class="language-plaintext">choco install nom_app</code></pre>
+<p>Désinstaller une appli :</p>
+<pre><code class="language-plaintext">choco uninstall nom_app</code></pre>
+<p>Chercher une appli :&nbsp;</p>
+<pre><code class="language-plaintext">choco search &lt;filter&gt; </code></pre>
+<p>Mise à jour de toutes &nbsp;les app :&nbsp;</p>
+<pre><code class="language-plaintext">cup all</code></pre>
+<p>Mise à jour d'une app :</p>
+<pre><code class="language-plaintext">cup nom_app</code></pre>
+<h2>LISTE COMMANDES:</h2>
+<p><strong>Commands</strong></p>
+<ul>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/search">search</a>&nbsp;- searches remote or local packages (alias for list)</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/list">list</a>&nbsp;- lists remote or local packages</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/find">find</a>&nbsp;- searches remote or local packages (alias for search)</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/info">info</a>&nbsp;- retrieves package information. Shorthand for choco search pkgname --exact --verbose</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/install">install</a>&nbsp;- installs packages from various sources</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/pin">pin</a>&nbsp;- suppress upgrades for a package</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/outdated">outdated</a>&nbsp;- retrieves packages that are outdated. Similar to upgrade all --noop</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/upgrade">upgrade</a>&nbsp;- upgrades packages from various sources</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/uninstall">uninstall</a>&nbsp;- uninstalls a package</li>
+  <li><a href="https://docs.chocolatey.org/en-us/create/commands/pack">pack</a>&nbsp;- packages nuspec, scripts, and other Chocolatey package resources into a nupkg file</li>
+  <li><a href="https://docs.chocolatey.org/en-us/create/commands/push">push</a>&nbsp;- pushes a compiled nupkg to a source</li>
+  <li><a href="https://docs.chocolatey.org/en-us/create/commands/new">new</a>&nbsp;- generates files necessary for a chocolatey package from a template</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/source">source</a>&nbsp;- view and configure default sources</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/sources">sources</a>&nbsp;- view and configure default sources (alias for source)</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/config">config</a>&nbsp;- Retrieve and configure config file settings</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/feature">feature</a>&nbsp;- view and configure choco features</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/features">features</a>&nbsp;- view and configure choco features (alias for feature)</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/setapikey">setapikey</a>&nbsp;- retrieves, saves or deletes an apikey for a particular source (alias for apikey)</li>
+  <li><a href="https://docs.chocolatey.org/en-us/create/commands/api-key">apikey</a>&nbsp;- retrieves, saves or deletes an apikey for a particular source</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/unpackself">unpackself</a>&nbsp;- re-installs Chocolatey base files</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/support">support</a>&nbsp;- provides support information</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/help">help</a>&nbsp;- displays top level help information for choco</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/export">export</a>&nbsp;- exports list of currently installed packages</li>
+  <li><a href="https://docs.chocolatey.org/en-us/create/commands/template">template</a>&nbsp;- get information about installed templates</li>
+  <li><a href="https://docs.chocolatey.org/en-us/create/commands/templates">templates</a>&nbsp;- get information about installed templates (alias for template)</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/download">download</a>&nbsp;- downloads packages - optionally internalizing all remote resources</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/synchronize">synchronize</a>&nbsp;- synchronizes against system installed software - generates missing packages</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/sync">sync</a>&nbsp;- synchronizes against system installed software - generates missing packages</li>
+  <li><a href="https://docs.chocolatey.org/en-us/choco/commands/optimize">optimize</a>&nbsp;- optimizes installation, reducing space usage</li>
+  <li><a href="https://docs.chocolatey.org/en-us/create/commands/convert">convert</a>&nbsp;- converts packages from one type to another type</li>
+</ul>
+<p>&nbsp;</p>
+<h1>Liste APP poste pro</h1>
+<pre><code class="language-plaintext">7zip
+7zip.install
+autohotkey
+autohotkey.install
+autohotkey.portable
+azure-cli
+brave
+chocolatey
+chocolatey-compatibility.extension
+chocolatey-core.extension
+chocolatey-dotnetfx.extension
+chocolatey-windowsupdate.extension
+crystaldiskmark
+DotNet
+dotnetfx
+filezilla
+github-desktop
+gpg4win
+greenshot
+heidisql
+iperf3
+jre8
+k-litecodecpackfull
+KB2919355
+KB2919442
+KB2999226
+KB3033929
+KB3035131
+KB3118401
+microsoft-windows-terminal
+mRemoteNG
+netfx-4.7.2
+nextcloud-client
+nmap
+notepadplusplus
+notepadplusplus.install
+openssh
+openssl
+orca
+powershell-core
+teamviewer
+unchecky
+vcredist140
+vcredist2015
+veeam-agent
+veracrypt
+virtualmachineconverter
+visualstudiocode
+vscode
+vscode.install
+WinPcap</code></pre>

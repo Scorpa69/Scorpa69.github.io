@@ -1,0 +1,77 @@
+<!--
+title: ANSIBLE
+description: 
+published: true
+date: 2024-02-08T08:23:14.558Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-02-08T08:23:14.558Z
+-->
+
+<h1>Exemple IA LLAMA2 local</h1>
+<p>1. Download and install Ansible from https://www.ansible.com/downloads/. Make sure that you have sufficient disk space available for</p>
+<p>storing the Ansible files, which can be as much as a few hundred megabytes depending on the size of your installation.</p>
+<p>2. Create a new user in Debian 11.6 with sudo permissions and enable the `sudo` command by running the following commands:</p>
+<p>```</p>
+<p>$ cat /etc/sudoers.d/* | grep -vE "^#" | xargs sed 's/^/# /' | sed -e 's/^#//' | sed -e 's/^ALL *= 1/ALL/g' &gt; /etc/sudoers</p>
+<p>$ chown root:root /etc/sudoers.d/*</p>
+<p>```</p>
+<p>3. Install the necessary Python packages using Ansible Galaxy by running the following command:</p>
+<p>```</p>
+<p>$ ansible-galaxy install --role-files ansible.cfg --roles-path-dir ./ansible_roles</p>
+<p>```</p>
+<p>4. Create a new directory where you will store your Ansible configuration files and set up the storage configuration using the following</p>
+<p>command:</p>
+<p>```</p>
+<p>$ mkdir /var/lib/ansible/reports</p>
+<p>$ chown root:root /var/lib/ansible/reports</p>
+<p>```</p>
+<p>5. Install and configure Ansible Tower by running the following commands:</p>
+<p>```</p>
+<p>$ apt install -y ansible-tower</p>
+<p>$ ansible-tower setup</p>
+<p>$ ansible-tower run /usr/local/bin/ansible-playbook --extra-vars "ansible_user=administrator"</p>
+<p>--private-key=/home/administrator/.ssh/id_rsa --ssh-options='-o StrictHostKeyChecking=no' -i ./ansible.cfg -e ansible_inventory="hosts:</p>
+<p>/home/administrator/ansible_roles"</p>
+<p>```</p>
+<p>6. Install and configure Ansible Tower Agent by running the following commands:</p>
+<p>```</p>
+<p>$ apt install -y ansible-tower-agent</p>
+<p>$ systemctl enable --now ansible-tower-agent.service</p>
+<p>$ systemctl start ansible-tower-agent.service</p>
+<p>```</p>
+<p>7. To deploy your infrastructure using Ansible, first create a new file called `inventory` in the root directory of your project (e.g.,</p>
+<p>`/home/administrator/ansible_roles`). This file should contain a list of hosts to be managed by Ansible. Here's an example inventory file:</p>
+<p>```</p>
+<p>[all]</p>
+<p>127.0.0.1</p>
+<p>[windows_servers]</p>
+<p>127.0.0.2</p>
+<p>127.0.0.3</p>
+<p>```</p>
+<p>8. Create a new file called `ansible.cfg` in the same directory as your inventory file (e.g., `/home/administrator/ansible_roles`). This</p>
+<p>file should contain Ansible configuration options, such as the location of your inventory file and the list of roles to be managed by</p>
+<p>Ansible. Here's an example `ansible.cfg` file:</p>
+<p>```</p>
+<p>[defaults]</p>
+<p>inventory = inventory.ini</p>
+<p>roles_path = ./ansible_roles</p>
+<p>inventory_template = inventory-template.j2</p>
+<p>```</p>
+<p>9. Create a new file called `inventory-template.j2` in the same directory as your inventory file (e.g.,</p>
+<p>`/home/administrator/ansible_roles`). This file should contain Ansible configuration options, such as the name of your project and the</p>
+<p>list of roles to be managed by Ansible. Here's an example `inventory-template.j2` file:</p>
+<p>```</p>
+<p>project_name = my-project</p>
+<p>ansible_playbooks = ./ansible/roles/*.yml</p>
+<p>ansible_hostnames = $hosts</p>
+<p>ansible_become = true</p>
+<p>ansible_sudo = false</p>
+<p>ansible_user = administrator</p>
+<p>ansible_ssh_privatekey_path = /home/administrator/.ssh/id_rsa</p>
+<p>ansible_ssh_extra_args = -o StrictHostKeyChecking=no</p>
+<p>```</p>
+<p>10. To run Ansible and manage your infrastructure, open a terminal window (e.g., `cmd` on Windows or `terminal` on macOS) and navigate to</p>
+<p>the directory where you want to install and configure Ansible Tower Agent. Then run the following command:</p>
+<p>```</p>
+<p>$ ansible-playbook --private-key=/home/administrator/.ssh/id_rsa -i inventory.ini</p>

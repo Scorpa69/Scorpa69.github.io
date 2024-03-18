@@ -1,0 +1,79 @@
+<!--
+title: CERTIFICAT
+description: 
+published: true
+date: 2023-11-22T14:33:56.269Z
+tags: key, pem, crt, csr
+editor: ckeditor
+dateCreated: 2023-09-18T12:35:07.590Z
+-->
+
+<h1>PFX to CRT and KEY</h1>
+<h2>Extract key crypted from pfx</h2>
+<pre><code class="language-plaintext">openssl pkcs12 -in yourfilename.pfx -nocerts -out keyfilename-encrypted.key</code></pre>
+<h2>Extract crt from pfx</h2>
+<pre><code class="language-plaintext">openssl pkcs12 -in yourfilename.pfx -clcerts -nokeys -out certificatename.crt</code></pre>
+<h2>Extrat key uncrypted from key crypted</h2>
+<pre><code class="language-plaintext">openssl rsa -in keyfilename-encrypted.key -out keyfilename-decrypted.key</code></pre>
+<h1>Création d'un certificat autosigné</h1>
+<h2>Création du fichier de config CNF :</h2>
+<pre><code class="language-plaintext">[ req ]
+default_bits = 2048
+default_md = sha256
+default_keyfile = nom_serveur.key
+encrypt_key = no
+prompt = no
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+prompt = no
+[ req_distinguished_name ]
+countryName = CODE_PAYS
+stateOrProvinceName = Région
+localityName = Ville
+organizationName = Nom entreprise
+commonName = fqdn_serveur
+[ req_ext ]
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = nom_serveur1
+DNS.2 = nom_serveur2</code></pre>
+<h2>Création du CSR et de la clé :</h2>
+<pre><code class="language-plaintext">openssl.exe  req -new -sha256 -nodes -out nom_serveur.csr -newkey rsa:2048 -keyout nom_serveur.key -config nom_serveur.cnf</code></pre>
+<h2>Création du certificat autosigné avec la clé et le CSR :</h2>
+<pre><code class="language-plaintext">openssl x509 -req -days 10000 -in nom_serveur.csr -signkey nom_serveur.key -out nom_serveur.crt</code></pre>
+<h1>Création d'un certificat signé par une CA d'entreprise Windows</h1>
+<h2>Création du fichier de config CNF :</h2>
+<pre><code class="language-plaintext">[ req ]
+default_bits = 2048
+default_md = sha256
+default_keyfile = vdcszab02-dev.key
+encrypt_key = no
+prompt = no
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+prompt = no
+[ req_distinguished_name ]
+countryName = FR
+stateOrProvinceName = Ile de France
+localityName = Paris
+organizationName = Absys Cyborg
+commonName = vdcszab02-dev.cyborg.dom
+[ req_ext ]
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = vdcszab02-dev
+DNS.2 = zabsupdev.cyborg.dom
+DNS.3 = zabsupdev
+DNS.4 = web
+DNS.5 = web.zbx.loc</code></pre>
+<h2>Création du CSR pour le soumettre à la CA Windows</h2>
+<pre><code class="language-plaintext">openssl req -config vdcszab02-dev.cnf -new -out vdcszab02-dev.csr</code></pre>
+<h1>Divers :</h1>
+<h2>Retrouver les nom de la CA :&nbsp;</h2>
+<pre><code class="language-plaintext">certutil -config - -ping</code></pre>
+<h2>Liste Modèles certificats d'une CA d'entreprise windows :</h2>
+<pre><code class="language-plaintext">certutil -config vdcsacs01.cyborg.dom\SIDFDC01 –catemplates &gt; templates.txt</code></pre>
+<p>OU (-config CAHostName\CAName)</p>
+<pre><code class="language-plaintext">certutil -config vdcsacs01.cyborg.dom\SIDFDC01 –catemplates</code></pre>
+<h1>Création d'une CA local pour signer des certificats</h1>
+<p>A FAIRE <a href="https://www.linuxtricks.fr/wiki/openssl-creation-de-certificats-et-ca-autosignes">https://www.linuxtricks.fr/wiki/openssl-creation-de-certificats-et-ca-autosignes</a></p>

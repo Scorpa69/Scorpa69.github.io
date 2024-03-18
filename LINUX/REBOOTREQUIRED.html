@@ -1,0 +1,13 @@
+<!--
+title: REBOOT-REQUIRED
+description: 
+published: true
+date: 2023-09-18T12:37:03.014Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:37:01.798Z
+-->
+
+<pre><code class="language-plaintext">if [ -f /var/run/reboot-required ]; then echo 'reboot required' fi</code></pre>
+<p>Afficher les packets qui demande le reboot :</p>
+<pre><code class="language-plaintext">cat /var/run/reboot-required.pkgs</code></pre>

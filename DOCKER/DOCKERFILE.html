@@ -1,0 +1,26 @@
+<!--
+title: DOCKERFILE
+description: 
+published: true
+date: 2023-09-18T12:36:19.857Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:36:18.630Z
+-->
+
+<h1>Exemple IA zabbix-agent + mysql sur alpine : A tester !!!</h1>
+<pre><code class="language-plaintext"># Use the Alpine base image
+FROM alpine:latest
+
+# Update the package repository and install required packages
+RUN apk update &amp;&amp; \
+    apk add --no-cache zabbix-agent mysql-client
+
+# Copy the Zabbix agent configuration file
+COPY zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf
+
+# Expose the Zabbix agent port
+EXPOSE 10050
+
+# Start the Zabbix agent
+CMD ["zabbix_agentd", "-c", "/etc/zabbix/zabbix_agentd.conf", "-f"]</code></pre>

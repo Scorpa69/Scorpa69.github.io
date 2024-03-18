@@ -1,0 +1,109 @@
+<!--
+title: NETWORK
+description: 
+published: true
+date: 2024-02-14T13:55:35.969Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:36:54.253Z
+-->
+
+<h2>Port en écoute :</h2>
+<pre><code class="language-plaintext">ss -tulnp</code></pre>
+<h2>Port distant ouvert</h2>
+<pre><code class="language-plaintext">curl -v telnet://ip:port</code></pre>
+<h2>Port Ouvert :</h2>
+<pre><code class="language-plaintext">ss -ap</code></pre>
+<h2>Port Forwarding: <a href="https://www.digitalocean.com/community/tutorials/how-to-forward-ports-through-a-linux-gateway-with-iptables">source</a></h2>
+<pre><code class="language-plaintext">nano /etc/sysctl.conf</code></pre>
+<p>et décommenter la ligne : net.ipv4.ip_forward=1</p>
+<pre><code class="language-plaintext">sysctl -p</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">sysctl --system</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">iptables -A FORWARD -i eth0 -o eth1 -p tcp --syn --dport 80 -m conntrack --ctstate NEW -j ACCEPT</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">iptables -A FORWARD -i eth0 -o eth1 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">iptables -A FORWARD -i eth1 -o eth0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">iptables -P FORWARD DROP</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to-destination 10.0.0.1</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">iptables -t nat -A POSTROUTING -o eth1 -p tcp --dport 80 -d 10.0.0.1 -j SNAT --to-source 10.0.0.2</code></pre>
+<p>Une fois valider et avant de faire un reboot, on backup les règles :</p>
+<pre><code class="language-plaintext">service netfilter-persistent save</code></pre>
+<h2>Afficher IP Public:</h2>
+<pre><code class="language-plaintext">wget -qO- http://ipecho.net/plain | xargs echo</code></pre>
+<h2>Voir la config IP complète :</h2>
+<pre><code class="language-plaintext">ip a</code></pre>
+<h2>Modifier la config réseaux :</h2>
+<pre><code class="language-plaintext">nano /etc/network/interfaces</code></pre>
+<h3>Exemple :</h3>
+<pre><code class="language-plaintext">auto eth0
+allow-hotplug eth0
+iface eth0 inet static
+       address 10.78.50.54/23
+       gateway 10.78.51.254
+       # dns-* options are implemented by the resolvconf package, if installed
+       dns-nameservers 10.78.50.1 10.92.50.2 10.159.50.1
+       dns-search cyborg.dom</code></pre>
+<h2>Modifier les DNS :</h2>
+<pre><code class="language-plaintext">nano /etc/resolv.conf</code></pre>
+<h3>Exemple :</h3>
+<pre><code class="language-plaintext">search cyborg.dom
+nameserver 10.78.50.2
+nameserver 10.78.50.1
+nameserver 10.159.50.2</code></pre>
+<h2>Vider le cache DNS :</h2>
+<pre><code class="language-plaintext">resolvectl flush-caches</code></pre>
+<p>Si erreur : <code>Failed to flush caches: Unit dbus-org.freedesktop.resolve1.service not found</code></p>
+<pre><code class="language-plaintext">systemctl status systemd-resolved.service</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">systemctl enable systemd-resolved</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">systemctl start systemd-resolved</code></pre>
+<h2>Désactiver IPV6</h2>
+<p style="text-align:justify;">Vous n’avez pas besoin de l’IPv6 sur votre réseau local, mais vous ne savez pas comment le désactiver sur Debian/Ubuntu. Voici la solution.</p>
+<h4 style="text-align:justify;">Etape 1 – Vérifier que l’IPv6 est activé</h4>
+<p style="text-align:justify;">Avant de vouloir désactiver l’IPv6, il faut au moins vérifier s’il est activé :</p>
+<p><a href="https://alexbacher.fr/cdn-cgi/l/email-protection">[email&nbsp;protected]</a></p>
+<p>:~# more /proc/net/if_inet6&nbsp;</p>
+<p>00000000000000000000000000000001 01 80 10 80 &nbsp; &nbsp; &nbsp;lo &nbsp;</p>
+<p>200141d00001cd6b0000000000000001 04 80 00 80 &nbsp; &nbsp; eth0</p>
+<p>fe80000000000000021cc0fffe3c31ea 04 40 20 80 &nbsp; &nbsp; eth0</p>
+<p style="text-align:justify;">Si le fichier existe ET s’il y a quelque chose dedans (car le fichier peut exister, mais être vide) : ipv6 est actif. Ici on voit qu’il y a des instructions ipv6 pour le loopback et l’interface eth0.</p>
+<p style="text-align:justify;">&nbsp;</p>
+<h4 style="text-align:justify;">Etape 2 – Désactiver IPV6 avec la méthode SYSCTL</h4>
+<p style="text-align:justify;">On désactive ipv6 pour toutes les interfaces :</p>
+<pre><code class="language-plaintext">sysctl -w net.ipv6.conf.all.disable_ipv6=1</code></pre>
+<p style="text-align:justify;">On désactive l’auto configuration pour toutes les interfaces :</p>
+<pre><code class="language-plaintext">sysctl -w net.ipv6.conf.all.autoconf=0</code></pre>
+<p style="text-align:justify;">On désactive ipv6 de la configuration par défaut :</p>
+<pre><code class="language-plaintext">sysctl -w net.ipv6.conf.default.disable_ipv6=1</code></pre>
+<p style="text-align:justify;">On désactive l’auto configuration par défaut :</p>
+<pre><code class="language-plaintext">sysctl -w net.ipv6.conf.default.autoconf=0</code></pre>
+<p style="text-align:justify;">Vu que les commandes sont prises en compte en temps réel. Il suffit de refaire un <strong>ifconfig</strong> ou un <code>more <strong>/proc/net/if_inet6</strong></code> pour vérifier que inet6 n’apparaît plus pour le premier et que le fichier est vide pour le second :</p>
+<p>ifconfig eth0 &nbsp; &nbsp; &nbsp;</p>
+<p>more /proc/net/if_inet6</p>
+<p>&nbsp;</p>
+<h4 style="text-align:justify;">Etape 3 – Rendre la désactivation de l’IPv6 persistante</h4>
+<p style="text-align:justify;">Les commandes <strong>sysctl</strong> passées dans l’étape 2 sont des commandes dynamiques. Les paramètres sauteront au prochain redémarrage.</p>
+<p style="text-align:justify;">Avant tout, vérifiez que les commandes passées dans l’étape 2 n’engendre pas de problématiques sur votre réseau.</p>
+<p style="text-align:justify;">Une fois que vous êtes prêts, pour rendre les commandes persistantes il faut sauvegarder les paramètres dans le fichier <strong>/etc/sysctl.conf</strong>. Pour cela rien de plus simple il faut ajouter, à la fin du fichier, les lignes suivantes :</p>
+<pre><code class="language-plaintext">nano /etc/sysctl.conf
+</code></pre>
+<p># désactivation de ipv6 pour toutes les interfaces</p>
+<pre><code class="language-plaintext">net.ipv6.conf.all.disable_ipv6 = 1
+</code></pre>
+<p># désactivation de l’auto configuration pour toutes les interfaces</p>
+<pre><code class="language-plaintext">net.ipv6.conf.all.autoconf = 0
+</code></pre>
+<p># désactivation de ipv6 pour les nouvelles interfaces (ex:si ajout de carte réseau)</p>
+<pre><code class="language-plaintext">net.ipv6.conf.default.disable_ipv6 = 1
+</code></pre>
+<p># désactivation de l’auto configuration pour les nouvelles interfaces</p>
+<pre><code class="language-plaintext">net.ipv6.conf.default.autoconf = 0</code></pre>
+<p style="text-align:justify;">Pour appliquer les paramètres entrés dans le fichier.&nbsp; Exécutez la commande suivante et vous allez retrouver les 4 paramètres :</p>
+<pre><code class="language-plaintext">sysctl -p net.ipv6.conf.all.disable_ipv6 = 1 net.ipv6.conf.all.autoconf = 0 net.ipv6.conf.default.disable_ipv6 = 1 net.ipv6.conf.default.autoconf = 0</code></pre>

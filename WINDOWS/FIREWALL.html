@@ -1,0 +1,50 @@
+<!--
+title: FIREWALL
+description: 
+published: true
+date: 2023-09-18T12:38:15.801Z
+tags: windows, commande, parefeu
+editor: ckeditor
+dateCreated: 2023-09-18T12:38:14.539Z
+-->
+
+<p>Activation Règle pour AD pour le RPC:</p>
+<p>Set-NetFirewallRule –Name '*Remote Event Log Management*' -Profile Domain -Enabled True -Action Allow -RemoteAddress 10.78.50.1 10.78.50.2 10.159.50.2 10.31.50.1 10.13.50.1 10.92.50.1</p>
+<p>&nbsp;</p>
+<p>Set-NetFirewallRule –Name '*Remote Event Log Management*' -Profile Domain -Enabled True -Action Allow</p>
+<p>&nbsp;</p>
+<p>Get-NetFirewallRule –Name '*Remote Event Log Management*'</p>
+<p>&nbsp;</p>
+<p>ACTIVATION DE L'ACCES AUX JOURNAUX A DISTANCE:</p>
+<p>Set-NetFirewallRule -displayname '*Gestion à distance des journaux des événements*' -Profile Domain -Enabled True -Action Allow&nbsp;</p>
+<p>&nbsp;</p>
+<p>Ajout d'une règle dans le pare feu&nbsp; avec filtrage par l'IP source:</p>
+<p>New-NetFirewallRule –Name "zabbix" -DisplayName "Autoriser Zabbix (10050)" -Profile Domain -Enabled True -Protocol TCP -LocalPort 10050 -Action Allow -RemoteAddress 10.78.90.23</p>
+<p>&nbsp;</p>
+<p>Ajout d'une règle dans le pare feu&nbsp; avec filtrage par Service :</p>
+<p>New-NetFirewallRule –Name "zabbix" -DisplayName "Autoriser Service Zabbix (10050)" -Profile Domain -Enabled True -Protocol TCP -LocalPort 10050 -Action Allow -service "Zabbix Agent"</p>
+<p>&nbsp;</p>
+<p>Ajout d'un règle pour ouvrir le port 10050 dans le pare feu :</p>
+<p>New-NetFirewallRule –Name "zabbix" -DisplayName "Autoriser Zabbix (10050)" -Profile Domain -Enabled True -Protocol TCP -LocalPort 10050 -Action Allow</p>
+<p>&nbsp;</p>
+<p>Suppression d'une règle:</p>
+<p>Remove-NetFirewallRule -Name zabbix</p>
+<p>&nbsp;</p>
+<p>Voir les règles avec filtrage sur le service :</p>
+<p>Get-NetFirewallServiceFilter</p>
+<p>&nbsp;</p>
+<p>Voir l'état du pare feu profile domaine :</p>
+<p>netsh advfirewall show domain state</p>
+<p>&nbsp;</p>
+<p>ACTIVER LE PARE FEU :</p>
+<p>Set-NetFirewallProfile -Profile Public,Private,Domain -Enabled true</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>ACTIVER FILESANDPRINT :</p>
+<p>netsh advfirewall set -Profile Private type=fileandprint enable=yes</p>
+<p>&nbsp;</p>
+<p>New-NetFirewallRule -DisplayName "Partage de fichiers et d’imprimantes" -Group "Partage de fichiers et d’imprimantes" -Profile Private -Enabled True -Action Allow</p>
+<p>&nbsp;</p>
+<p>$rules=Get-NetFirewallRule</p>
+<p>$DisplayGroups=foreach ($rule in $rules){$rule.displaygroup}</p>
+<p>$DisplayGroups | Select-Object -Unique</p>

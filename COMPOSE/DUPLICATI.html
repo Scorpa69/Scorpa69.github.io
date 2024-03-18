@@ -1,0 +1,38 @@
+<!--
+title: DUPLICATI
+description: 
+published: true
+date: 2023-09-18T14:44:04.079Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T14:44:02.553Z
+-->
+
+<pre><code class="language-plaintext">version: "2.1"
+
+services:
+
+  duplicati:
+    image: linuxserver/duplicati:latest
+    container_name: duplicati
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/Paris
+    volumes:
+      - config:/config
+      - backups:/backups
+      - /var/lib/docker:/source
+    ports:
+      - 8200:8200
+    restart: unless-stopped
+    networks:
+      - lan
+
+volumes:
+  config:
+  backups:
+
+networks:
+  lan:
+    driver: bridge</code></pre>

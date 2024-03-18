@@ -1,0 +1,94 @@
+<!--
+title: USER/GROUP
+description: 
+published: true
+date: 2024-03-04T15:50:22.489Z
+tags: windows, user, gestion
+editor: ckeditor
+dateCreated: 2023-09-18T12:39:13.921Z
+-->
+
+<h1>GROUPE</h1>
+<p>Copier les membres d'un groupe vers un autre :</p>
+<pre><code class="language-plaintext">Get-ADGroupMember "Consultants Absys Cyborg" -Recursive | Get-ADUser | ForEach-Object { Add-ADGroupMember -Identity "GS_Users_MYPASS" -Members $_ }</code></pre>
+<p>Liste des noms des personnes d'un groupe et export dans un onglet excel :</p>
+<pre><code class="language-plaintext">Get-AdGroupMember -Identity "GS_Users_MYPASS" -Recursive | select name | sort-object name | Export-Excel 'C:\Users\A09\OneDrive - Absys Cyborg\Bureau\liste_user_mypass.xlsx' -WorksheetName 'user_mypass_5'</code></pre>
+<h1>USERS AD :</h1>
+<h2>COMPTE AD BLOQUé ou Expiré :</h2>
+<pre><code class="language-plaintext">Get-ADUser -Identity xxx -Properties PasswordExpired,PasswordLastSet,PasswordNeverExpires | Select Samaccountname,PasswordExpired,PasswordLastSet,PasswordNeverExpires,LockedOut,AccountLockoutTime&nbsp;</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">Get-ADUser -Filter "Name -eq 'Mehdi BOUBEHIRA'" -Properties PasswordExpired,PasswordLastSet,PasswordNeverExpires | Select Samaccountname,PasswordExpired,PasswordLastSet,PasswordNeverExpires,LockedOut,AccountLockoutTime&nbsp;</code></pre>
+<h2>DEBLOQUER COMPTE AD :</h2>
+<p>Unlock-ADAccount -Identity XXX</p>
+<h2>Ajouter user AD aux groupes admin d'une machine:</h2>
+<p>Add-LocalGroupMember -Group 'Administrators' -Member cyborg\c72&nbsp;</p>
+<p>Add-LocalGroupMember -Group 'Administrateurs' -Member cyborg\c72&nbsp;</p>
+<h2>Supprimer user AD aux groupes admin d'une machine:</h2>
+<p>Remove-LocalGroupMember -Group 'Administrateurs' -Member cyborg\c72&nbsp;</p>
+<h2>Afficher l'horodatage de la dernière synchro AD</h2>
+<p>stsadm -o sync -LListOldDatabases 0</p>
+<h2>Forcer la resynchro AD</h2>
+<p>stsadm -o sync -DeleteOldDatabases 0</p>
+<h2>Info Compte AD :</h2>
+<p>Get-ADUser -Identity b44</p>
+<p>Get-ADUser -Identity Sys_NAV_Synergie_TAL -Properties LockedOut,AccountLockoutTime | Select samaccountname,LockedOut,AccountLockoutTime</p>
+<h2>Compte AD Désactivé ou pas :</h2>
+<p>Get-ADUser -Identity xxx | Select samaccountname,Enabled</p>
+<h2>TOUT LES USERS AVEC UNE DESCRITPION QUI CONTIENT CONSULANT ou Chef de Projet</h2>
+<p>Get-ADUser -filter 'description -like "*consultant*" -and Enabled -eq "True"' -properties cn,mail,description | select cn,description,mail,distinguishedName | Export-Csv c:\users\A09\desktop\usersconsultantsAC3.csv</p>
+<p>Get-ADUser -filter 'description -like "chef de projet" -or description -like "directeur de projet" -and Enabled -eq "True"' -properties cn,mail,description | select cn,description,mail,distinguishedName | Export-Csv c:\users\A09\desktop\usersotherconsultantAC.csv</p>
+<h2>TOUTES LES INFO D'UN USER</h2>
+<p>Get-ADUser -Identity xxx -Properties *</p>
+<h2>LAST LOGON</h2>
+<p>Get-ADUser -filter {enabled -eq $true} -Properties * | Select-Object Name, LastlogonDate, @{N='LastLogon'; E={[DateTime]::FromFileTime($_.LastLogon)}}|Sort-Object LastLogonDate -Descending</p>
+<h2>FAIRE UNE SYNCHRO AD AZURE :</h2>
+<ul>
+  <li>Enter-PSSession -ComputerName vrbxaad01.cyborg.dom -Credential CYBORG\A09_Admin</li>
+  <li>Start-ADSyncSyncCycle –PolicyType Delta</li>
+  <li>FIN</li>
+</ul>
+<p>&nbsp;</p>
+<h1>GESTION DES USERS LOCAUX EN LIGNE COMMANDE EN :</h1>
+<h2>Commande PS :</h2>
+<ul>
+  <li><strong>Add-LocalGroupMember</strong> — Ajouter un utilisateur au groupe local</li>
+  <li><strong>Disable-LocalUser</strong> — Désactiver un compte d’utilisateur local</li>
+  <li><strong>Enable-LocalUser</strong> — Activer un compte d’utilisateur local</li>
+  <li><strong>Get-LocalGroup</strong> — Afficher les préférences du groupe local</li>
+  <li><strong>Get-LocalGroupMember</strong> — Afficher la liste de tous les membres du groupe local</li>
+  <li><strong>Get-LocalUser</strong> — Afficher les préférences d’un compte d’utilisateur local</li>
+  <li><strong>New-LocalGroup</strong> — Créer un nouveau groupe local</li>
+  <li><strong>New-LocalUser</strong> — Créer un nouveau compte d’utilisateur local</li>
+  <li><strong>Remove-LocalGroup</strong> — Supprimer un groupe local</li>
+  <li><strong>Remove-LocalGroupMember</strong> — Supprimer un membre d’un groupe local</li>
+  <li><strong>Remove-LocalUser</strong> — Supprimer un compte d’utilisateur local</li>
+  <li><strong>Rename-LocalGroup</strong> — Renommer un groupe local</li>
+  <li><strong>Rename-LocalUser</strong> — Renommer un compte d’utilisateur local</li>
+  <li><strong>Set-LocalGroup</strong> — Modifier les paramètres d’un groupe local</li>
+  <li><strong>Set-LocalUser</strong> — Modifier les paramètres de compte d’un utilisateur local</li>
+</ul>
+<h2>AJOUTER UN USER:</h2>
+<p>net user nomutilisateur motdepasse /add</p>
+<p>&nbsp;</p>
+<h2>CHANGER DE GROUPE UN USER:</h2>
+<p>net localgroup nomdugroupe nomutilisateur /add</p>
+<p>&nbsp;</p>
+<h2>SUPPRIMER UN USER:</h2>
+<p>net user nomutilisateur motdepasse /delete</p>
+<p>&nbsp;</p>
+<h2>CHANGER LE MDP DU USER:</h2>
+<p>net user nomutilisateur *</p>
+<p>net user administrateur *</p>
+<p>&nbsp;</p>
+<h2>ACTIVATION USER:</h2>
+<p>net user nomutilisateur /active:yes</p>
+<p>&nbsp;</p>
+<h2>DESACTIVATION USER:</h2>
+<p>net user nomutilisateur /active:no</p>
+<p>net user administrateur /active:no</p>
+<p>&nbsp;</p>
+<h2>SUPPRESSION EXPIRATION MDP:</h2>
+<p>wmic useraccount where "name='mboa'" set passwordexpires=FALSE</p>
+<p>&nbsp;</p>
+<h2>VOIR LISTE DES COMPTES:</h2>
+<p>wmic useraccount list full</p>

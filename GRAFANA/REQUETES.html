@@ -1,0 +1,220 @@
+<!--
+title: REQUETES
+description: 
+published: true
+date: 2023-09-18T12:36:29.695Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:36:28.371Z
+-->
+
+<h1>Création d'un Dashboard : Carte de France avec les agences et les problèmes zabbix (json)</h1>
+<pre><code class="language-plaintext">{
+    "datasource": null,
+    "editable": true,
+    "gnetId": null,
+    "hideControls": false,
+    "id": 1,
+    "links": [],
+    "panels": [
+        {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": "ZabSupDev",
+            "fill": 1,
+            "id": 1,
+            "interval": null,
+            "legend": {
+                "alignAsTable": true,
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "rightSide": true,
+                "show": true,
+                "total": false,
+                "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 6,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+                {
+                    "group": [
+                        {
+                            "type": "csv",
+                            "path": "/var/lib/grafana/csv/agences.csv"
+                        }
+                    ],
+                    "select": [
+                        [
+                            {
+                                "type": "field",
+                                "params": [
+                                    "Agence"
+                                ]
+                            }
+                        ],
+                        [
+                            {
+                                "type": "field",
+                                "params": [
+                                    "Ville"
+                                ]
+                            }
+                        ],
+                        [
+                            {
+                                "type": "field",
+                                "params": [
+                                    "Latitude"
+                                ]
+                            }
+                        ],
+                        [
+                            {
+                                "type": "field",
+                                "params": [
+                                    "Longitude"
+                                ]
+                            }
+                        ]
+                    ],
+                    "type": "table"
+                },
+                {
+                    "expr": "SELECT events.value, hosts.host\nFROM events\nJOIN items ON events.objectid = items.itemid\nJOIN hosts ON events.source = hosts.hostid\nWHERE hosts.name = $agence\nAND items.name = 'Nom de l'élément matériel'\nAND events.value = 1\nAND events.severity &gt;= 3",
+                    "format": "time_series",
+                    "instant": false,
+                    "intervalFactor": 1,
+                    "legendFormat": "{{host}}",
+                    "refId": "A",
+                    "step": 30
+                }
+            ],
+            "thresholds": [],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Carte des agences et des problèmes de matériel",
+            "tooltip": {
+                "shared": true,
+                "sort": 0,
+                "value_type": "individual"
+            },
+            "type": "worldmap",
+            "worldmap": {
+                "center": [
+                    47,
+                    2
+                ],
+                "mapCenterLatitude": 47,
+                "mapCenterLongitude": 2,
+                "maxDataSize": "10000",
+                "showLegend": true,
+                "zoom": 5
+            },
+            "xaxis": {
+                "buckets": null,
+                "mode": "time",
+                "name": null,
+                "show": true,
+                "values": []
+            },
+            "yaxes": [
+                {
+                    "format": "short",
+                    "label": null,
+                    "logBase": 1,
+                    "max": null,
+                    "min": null,
+                    "show": true
+                },
+                {
+                    "format": "short",
+                    "label": null,
+                    "logBase": 1,
+                    "max": null,
+                    "min": null,
+                    "show": true
+                }
+            ]
+        }
+    ],
+    "schemaVersion": 16,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+        "list": []
+    },
+    "time": {
+        "from": "now-6h",
+        "to": "now"
+    },
+    "timepicker": {
+        "refresh_intervals": [
+            "5s",
+            "10s",
+            "30s",
+            "1m",
+            "5m",
+            "15m",
+            "30m",
+            "1h",
+            "2h",
+            "1d"
+        ],
+        "time_options": [
+            "5m",
+            "15m",
+            "1h",
+            "6h",</code></pre>
+<h1>Exemple de Model JSON de dashboard Grafana :</h1>
+<pre><code class="language-plaintext">{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations &amp; Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "liveNow": false,
+  "panels": [],
+  "refresh": "",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "MAP",
+  "version": 0,
+  "weekStart": ""
+}</code></pre>

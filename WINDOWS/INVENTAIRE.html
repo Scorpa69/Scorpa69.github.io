@@ -1,0 +1,29 @@
+<!--
+title: INVENTAIRE
+description: 
+published: true
+date: 2023-09-18T12:38:31.713Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:38:30.281Z
+-->
+
+<p>Get-ADComputer -Filter * -properties * | where {$_.OperatingSystem -ilike “Windows Server 2012 *”} | Select Name, OperatingSystem</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>TOUT LES SERVEUR AVEC MSSQL :</p>
+<p>Get-ADComputer -filter 'serviceprincipalname -like "*mssql*" -and operatingsystem -like "Windows Server*"' -properties ipv4address | ft name,ipv4address</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>LISTE DES CONNEXIONS SANS DHCP AVEC DNS CONFIGURE D'UN PC:</p>
+<p>Get-WmiObject Win32_NetworkAdapterConfiguration | Where-Object {$_.DHCPEnabled -ne 'True' -and $_.DNSServerSearchOrder -ne $null} | Export-Csv c:\users\A09\desktop\IPFxeAC.csv</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>LISTE MACHINE WINDOWS SERVER DANS CSV :</p>
+<p>Get-ADComputer -Filter '(OperatingSystem -like "Windows Server*")' -properties * | Sort-Object Name | select-object Name, Operatingsystem, Enabled, IPV4Address| Export-Csv c:\users\A09\desktop\ListServeur.csv</p>
+<p>&nbsp;</p>
+<p>POUR TROUVER SI DES LOGICIEL CONTENANT DELL DS LE NOM SONT INSTALLE:</p>
+<p>Get-WmiObject -Class Win32_Product | where-object name -match "^dell.*"</p>
+<p>&nbsp;</p>
+<p>POUR LISTER TOUS LES PROGRAMME INSTALLE:</p>
+<p>Get-WmiObject -Class Win32_Product</p>

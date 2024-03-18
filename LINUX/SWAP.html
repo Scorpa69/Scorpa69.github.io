@@ -1,0 +1,21 @@
+<!--
+title: SWAP
+description: 
+published: true
+date: 2024-03-05T10:02:11.456Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:37:07.335Z
+-->
+
+<pre><code class="language-plaintext">nano /etc/sysctl.conf</code></pre>
+<p>&nbsp;ajouter&nbsp;</p>
+<pre><code class="language-plaintext">vm.swappiness = 20</code></pre>
+<p>à la fin du fichier cela permet de déclencher le swap à 90% d'utilisation de mémoire vive</p>
+<pre><code class="language-plaintext">sysctl -p /etc/sysctl.conf</code></pre>
+<p>Pour vider le swap :</p>
+<pre><code class="language-plaintext">swapoff -a &amp;&amp; swapon -a</code></pre>
+<p>Désactiver le swap</p>
+<pre><code class="language-plaintext">swapoff -a</code></pre>
+<p>Activer le swap</p>
+<pre><code class="language-plaintext">swapon -a</code></pre>

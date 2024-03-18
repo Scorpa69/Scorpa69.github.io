@@ -1,0 +1,150 @@
+<!--
+title: DISK
+description: 
+published: true
+date: 2024-01-08T09:17:02.722Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:36:44.111Z
+-->
+
+<h1>Occupation Disk</h1>
+<pre><code class="language-plaintext">du / -h --max-depth=1 2&gt; /dev/null | sort -h -r</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">du /var/lib/docker -h --max-depth=1 2&gt; /dev/null | sort -h -r</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">du /var/lib/docker/500000.500000 -h --max-depth=1 2&gt; /dev/null | sort -h -r</code></pre>
+<h1>Info partition</h1>
+<pre><code class="language-plaintext">lsblk -f</code></pre>
+<p>Ou</p>
+<pre><code class="language-plaintext">fdisk -l</code></pre>
+<p>Ou</p>
+<pre><code class="language-plaintext">fdisk -l /dev/sdb</code></pre>
+<p>&nbsp;</p>
+<h1>OPTION DE LA COMMANDE FDISK :</h1>
+<p>&nbsp; &nbsp;a&nbsp; toggle a bootable flag</p>
+<p>&nbsp; &nbsp;b&nbsp; edit bsd disklabel</p>
+<p>&nbsp; &nbsp;c&nbsp; toggle the dos compatibility flag</p>
+<p>&nbsp; &nbsp;d&nbsp; delete a partition</p>
+<p>&nbsp; &nbsp;l&nbsp; list known partition types</p>
+<p>&nbsp; &nbsp;m&nbsp; print this menu</p>
+<p>&nbsp; &nbsp;n&nbsp; add a new partition</p>
+<p>&nbsp; &nbsp;o&nbsp; create a new empty DOS partition table</p>
+<p>&nbsp; &nbsp;p&nbsp; print the partition table</p>
+<p>&nbsp; &nbsp;q&nbsp; quit without saving changes</p>
+<p>&nbsp; &nbsp;s&nbsp; create a new empty Sun disklabel</p>
+<p>&nbsp; &nbsp;t&nbsp; change a partition's system id</p>
+<p>&nbsp; &nbsp;u&nbsp; change display/entry units</p>
+<p>&nbsp; &nbsp;v&nbsp; verify the partition table</p>
+<p>&nbsp; &nbsp;w&nbsp; write table to disk and exit</p>
+<p>&nbsp; &nbsp;x&nbsp; extra functionality (experts only)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h1>CREATION UTILISATION D'UN DISQUE DATA&nbsp;</h1>
+<p>(physique ou pas) (exemple pour nextcloud = on déplace les data du dossier d'origine vers le nouveau dossier DATA et on fait pointer le dossier d'origine vers le dossier DATA, comme ça pas de modif de config nulle part, c'est transparent)</p>
+<pre><code class="language-plaintext">sudo fdisk /dev/sdb</code></pre>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m pour l'aide</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g pour créer une parttion GPT vide</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;p pour voir l'existant</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n pour faire une nouvelle partition</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;w ecrire la table et quitter fdisk</p>
+<pre><code class="language-plaintext">sudo mkfs.ext4 /dev/sdb1</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">sudo mkdir -p /media/ncdata</code></pre>
+<p>sudo blkid pour avoir UUID</p>
+<p>sudo nano /etc/fstab (pour ajouter la partition et le point de montage créé au dessus)<br>Ajouter la ligne correspondant à la partition dans le fichier fstab comme dans l'exemple ci-dessous<br>/dev/sdb1&nbsp; &nbsp; &nbsp;/media/ncdata&nbsp; &nbsp; &nbsp;ext4&nbsp; &nbsp; defaults,&nbsp; &nbsp; &nbsp;0&nbsp; &nbsp; &nbsp;2<br>UUID= /media/ncdata ext4 defaults 0 2<br>sudo mount -all (pour relire fstab et monter la partition créée)<br>mount (pour voir les partition montées)</p>
+<p>sudo chown -R root:root /media/ncdata/data<br>sudo chmod 0770 /media/ncdata/data</p>
+<p>sudo mv /var/snap/nextcloud/common/nextcloud/data /media/ncdata/&nbsp;<br>sudo ln -s /media/ncdata/data/ /var/snap/nextcloud/common/nextcloud/data</p>
+<p>&nbsp;</p>
+<h1>POUR RECUPERER DE L'ESPACE SUR DATA:</h1>
+<pre><code class="language-plaintext">sudo tune2fs /dev/sdb1 -m 0 -L DATA</code></pre>
+<h1>AGRANDIR PARTITION AVEC GPARTED :</h1>
+<p>Faire un point de contrôle de la vm ds scvmm (chaud ou froid)</p>
+<p>Charger le cd gparted sur la vm sur scvmm puis changer le boot order : cd depuis la console du G_HPV</p>
+<p>Se connecter à puis Allumer la VM</p>
+<p>Demarrer gparted</p>
+<p>Deplacer le swap à la fin de la partition</p>
+<p>Agrandir la partition OS (sda2 en général)</p>
+<p>Appliquer</p>
+<p>Eteindre gparted (le cd s'éjecte tout seul)</p>
+<p>Changer boot order : fichier uefi</p>
+<p>Vérifier que la vm redémarre bien</p>
+<p>&nbsp;</p>
+<h1>AGRANDIR LA PARTTION SDB1 DU DISK SDB &nbsp;:</h1>
+<p>Agrandir le disque voulu de la vm</p>
+<p>Agrandir la parttion sdb :</p>
+<p>Arrêter les services susceptibles d'accéder au disk !!!!!</p>
+<p>SI on a assez d'espace pour sauvegarder</p>
+<pre><code class="language-plaintext">dump -0uf /home/tpm/sdb1.dump /dev/sdb1</code></pre>
+<p>Démonter le disque en utilisant sont chemin de montage</p>
+<pre><code class="language-plaintext">umount chemin_montage</code></pre>
+<p>agrandissement de la partition</p>
+<pre><code class="language-plaintext">fdisk /dev/sdb</code></pre>
+<p>P pour voir le numéro de partition</p>
+<p>D pour supprimer la partition voulu</p>
+<p>N pour créer une nouvelle partition avec la bonne taille</p>
+<p>N &nbsp;pour ne pas supprimer la signature !!!!!&nbsp;</p>
+<p>W</p>
+<pre><code class="language-plaintext">e2fsck -f /dev/sdb1</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">resize2fs /dev/sdb1</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">mount chemin_montage</code></pre>
+<p>&nbsp;</p>
+<h1>DIMINUER UNE PARTITION NON SYSTEM : diminution de sdb1 de 1Go à 800Mo dans notre exemple</h1>
+<p>&nbsp;</p>
+<figure class="image"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArcAAAEDCAIAAACgTLveAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAABsASURBVHhe7d1/jF1lncfxdv8xAm4rG1hDN0AW1qQYYY0K2xCgiXatP8omVGxiFTEhU6WUTUQKRpEWJOKwmqx1XGmabBepSUGauOCvrSalZrOgEANGm7hoqLGNQhbBn/Gv2ffcz5mH03ufuXfaTjt3Zt6v3FzOec5zftzLzP1+znPOnS4eHx9fJEmS1OMvmv9KkiQdyZQgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkuoWj4+PN5ND6RW3LWumJGm++POdh5opabg5liBJkurmxljC9hv/LbOSNKeNfP7DPDuWoLnCsQRJklRnSpAkSXWmBEmSVGdKkCRJdaYESZJUZ0qQJEl1pgRJklRnSpAkSXWmBEmSVGdKkCRJdaYESZJUZ0qQJEl1pgRJklTnvwmpWfP1bQ89eOd9zUzLm6+8dOOOzUzQ4Qf/+d/PPvWztK+85m0r3/+2cy86L7MnGrseu26UnV77L9c3TS03v3nD8wd/1cwc6Z4f3HvGOa9hgi3wEnL8r7v8onfcuJbnTpcGS7+xbc8fXvw90+zonZuuyoq9srurb7vmnZvWNk0t97z7kz/e/9RUh6qh4r8JqbnFsQTNMjIBla/9SClNhjh1yWmlfd99337wzv/IWjOCEHDtmf+UIt2FxgfuvI9Ecsx1l+Nn+yXiUMWp5eSGzIKlvMCyd17dllU3TZU8gkjR24Et82hmJGlGmRI0yy6+8lJOkdsPzolppyJSpG/+6h2lfedzX7v6tg9krRPti9eN/vGl32dIo48cFY+xn+46delptHDMZ5zzGmp5hklIPCzasvdzGQLZ+dEvJhaQCZIYSD+szo5YnUU7b/oijVOhw9e37WlmJvVfRZKOhylBw4gqS0U896Lzm/lJU11uoD9n6tee+U88tqz6SDllz2hB+1SbpTw4xac93Ta+dj3TnPqnA5hmlXdMPf7fi02l/K98/0TE2Xfff3WaF1372esp/xx28g19stN9X/42z2yfnMHEm6+8lN0xwX77DycQL8r4BJit9mc7ee08eIHtVydJ02dK0DCifPKgoFIFm6apUSa3rLrpuYO/zoWJU5ecRoHMipyjU6E5204J51T++YO/TiM9kzmy1usu//uJbXW29o1te153+UU0pqXqnh/cu/O5r5U+qf0EAuo9E88+9QzPeRUTizuDCpl49umJGt/crHDFy7cplEj040cHXD4ol12qQwvgtbevbtDtwTvvIxvlTZCk6TMlaEhltJ+6ztlwLuGnvVeG3Lfs/WwuTNz81TsoyQ9+qunPdv740u+ZTeYoIwT0zAQtTJdRCvZ1ypLTrp+8fZK9t8/dq+iQ4QoiQq47EFl4PvOcv55YPCm7e/7ZX5Wz/zNaHUrnP7w0ZS1P1GBf2d2+L08MJLDZEkEwkQk6r51XtGXv5zqXaSaGKzjIDGBI0vSZEjTLysB4Hhtfuz7tFLmxn+6iwlF6KfAp2NWhBc7OS3mOd9y4lmKZk2mK6NWfuIYVCRwDRwjIIlTTd266qr21gUr1zeWGE+eCKy7KTRsZHflGZyCBo+0snMgfPPOqM2Zw9W0fKIMliRFldEGSpsmUoFlGgaeMlUcuzxe0bNyxOff3Ue87lwyOuAxPUacoEgLaUeOed3+SRc9N9qSyUvXpRnpISxUn6GQROqcST1OJI5TkMiCRgYGMKBQ58jPOffkyxPOtDqXzqUv6BZQkGDa1ZdVN7Jry33W0ZSiiPcDATnkeOCgiSV1MCZplXd9xIBY0C47UCRMTAaKr1FGYqZoZJOh6lFsNqP0UVLr1/yJlBiragSOXObas+gjTU52Il3P39kBCbjKglpdMk2sEOPfCiSSRPNG+BSG3MqB9s0IvEkaCVLbcm3tKyCh7RIYZSoiRpGkyJWhI7fxo9xf8cuZ9Ss+1gAsuv4gT8ZXX/GOJGtRRHk0l3v8UxZ4T7ut3bCZhtDd75uQ5ffRGjZyOsy7TU5XYXG4ggpBj0gIOJhO5NMB+E1BKt0QKKn2CCFEjlw/YYxlpmAoHkz4cWHvAIMrFF/aYREVISmJoH6EkTYd/e1GzhupFjdy4Y3Nv9aJqjl03ygQVMS3PHfwVjRTFm796R1qKDL8zUc7mqdycstOTCs2iU5eeumXv52jv2mNmmSYunLL01LKvIh3KXzvoRfXN1Q0KdtffX8q6zcyk9ovlBXaNT1Ddt+z9bDUldP3tRfb77FPPXHzlpenMMdBS3pzchDGxWgsv4eYH70iA0Czyby9qbnEsQcOIUkptpiJSa/P4yf6nqJG9EQFUSoorq5TOTOdLCl1/HIkNUiwf6NyimFmqO6V6YvuDvn9YlYsU6L1vkY2z3xIvUsJLRABLeUWlbHMkU0WEXmyN7U/VmU2198Uu2BHvpxFB0tFyLEGSTh7HEjS3OJYgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkupMCZIkqc6UIEmS6haPj483k0PpFbcta6Ykab74852HmilpuDmWIEmS6oZ9LEGSJM0WxxIkSVKdKUGSJNWZEiRJUt2w35eweN13mylJkuaj8d1vaaaGj2MJkiSpbm6MJdz9seHNWZI0X936aT+BT6y8w44lSJKkuceUIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJOuEOHXjy1jcs7nrs+dSGF37586bHTMhe2Gwz32NgB3UxJUiSTpLzL3nrFR+8pTy+/9D2bevfdMxBYdfm91Dy//Tb3zTzixZlurQ8+u+focOP9j6YWXR10ECmBEnSSbLsgje+/ca7y2Pzwz+jcQbP7Ekhd/9wfP3oA818j4Ed1MWUIEmaHaf/zd8uW/7GQweezCyn/qNrzuPsn8e2976pPQbwzc/fuvWK02mhPeMHZZCAdqZZl+m005lpemYiQw48d3UINrLjQ6to5MEq339oe7Ogs4hGnrMFHhxedrpwmBIkSbPmlX/56kxQninehIZcjPjT735DbX7m8e9kadBCsGApa/FMZxrT//x/eGv6FBeuuvr8SyYaX7/qajr8XWe6Cztlm0SHbITN7vnUhgSOgpbSgdneo5rfTAmSpFlz6MCTCQoXrx3Z9JUn1o8+kIsRuSjw9JG3FFCn04FZnkkMTKy89hamkxja6JxkQFygA9tPe9u+nZ9hRfZLBx7XfWkvwYKwUoY3QAfa06H3qOY9U4IkaRZkqP+FX/6cMp+WdqVnmvRAMmjmOy65qlLpj9kzj3+HvV9yZHpY2RkweOaxl0cLCBnNVOeoiCaHfvJyhpj3TAmSpJMkXzrIY9fm93DKftUn7i1n+eX+gDy6IgLK5YkZkWLftc3M/vF3L++6u8OrZvIYhp8pQcOo/VGSx9YrTm/fcDQjBn5zemCH48HG2XJ5gUy3BznBLB+jWTq65rz2TVUxsEPBIvrwHvZ+7IIzqmxkZr+5LvVqfxPy9kdf4FEiAr/g/CgyWzrMbCboteyCiaGLrl+KzJ6ywKJAH6YEDa/cc5QHHy5Eh23vfVOz7OiloLY/ETJdWgZ2mEEU+K67qZmmpQSFdCh3U1O/iRHtnDSwQy9eyL6dR9yWFfuOvFdLOnHa34TsCgGc2dNy1SfuzdJyGaKP3JfQR/8OfKrQ4fEj43V+HfjwyaxMCRpeuecoj/WjD/DxQWnsuv34ePAZMVtfrS6FmY23d1HaiSw88xG26StPcL6Vzyxee7m5emCHKjp0DRiQTvqvIp0cBAiCLD/YhF0e29YPPiXIGX/ycfWTISmBHEAHuqWxjc8WPlVG15yXne740Cp+HWjsHy8WFFOC5oyL145wqvG/kyWND4WZ+mr1wA5MB32m+mp12WnpkDuzmsVHYss8k0JS3XlmmomMJbCRrMjpVO7hIiHlxCs3Vw/s0Ef75aA6ugDegbwVPPjgNknoRMv5AD/b/Ozxm8XP9unLBpTqKz54Cx8LWaV8MrTx28GvBj+9dDj0kyd7fx/51SOjsyM68OAXk/5stlksU4LmKD5EqHZ8BOR6xHF+tXpgh2CnbJPPkfRhLc5O+GRpFnfQIVvjwfHs+PCqBIIuOVOhAx9wTPCcfJCsUD7LMgu2mcPLaxzYoQ/2Vfpw8L2fmxwwASjhKS2sQuJpRyLpaPHzefcPx8kBzXwNvzX04ZH7FfLFyCxiRdr5Oc9sQVHPKtd9aS+zdGC6vRe2kw5sjd+73g4EBdYtfejfLOgsojFRvqAPj2ZmATAlaM6gjlK3Ul/LJwi/7TzyUXI8X60e2AEDv1rNTmkvR8WDGpwc0CVjAEyQKnKynpdGO43/d6ip3DmkyHSK+sAOU0mqyHUN9piBhPbHIkgDeUUcfz43c6jt3CBpgTAlaG7grDen6amjaBdyplnUVcNm5avV7dOOTJeK3sbWSrYo2P7AkYDjxIkXz+yFKMAj0aR8HfyFzqE+vmdizIA8Qcxigvf27f88kbTofKIPT9KwMSVoeOU8Ow9OZF/5qldz+l7Onsvl/zx6T3N7ByePxzF8tXqqA+BQeTlMUIA3P/wzztd5TujZ0/lbsH81eTm2PTCQ6bz8gR2mwtLU/n07P5NjSG5oy3baf862XB5u707SQmBK0PDiXJySxqNr6BtUOM5rL56bX63mlD0rchKfos5zGaU4dODJUunLuTv9M/aQSwYDO/Sx8tqJ9yr1ns69/bPx9r1gGWNA2a+kBcKUoOFVvglJCGiaJs3pr1aXU/PH9zTfQqTAly2ThNhgDoYzfhaRADLGQEuuDgzs0AfvG+9YpnsHEpArNRxYbsxk+9/814lRB1YcGEGkafpR6x9a5EHu7xqp4sevfMuGH+/ecayBHYL29CmRuo3fmmzEm3OnYkrQnHQivlo9sAPFlZJ5/F+tLnWaz69cN9k2+feUaGcpE7kfkw4syhcsmSUtlTo9sEMfF68dYUdEhOqRszRjNrzG6rFJx4nfMn552zf28hvX/kJQfrXLLCWc3/F2DhjYoVfCbpfcndPMqMaUoDmJisWDTxk+XPg9XzkTX60e2IEzeGrzjHy1mrXYVHsQgupOS9kadXrTV54oHSjnGTjJLAZ26C8vtpk5ElEg3+MomYC9XPelvVP1l45W7nrh5yr35eTHnhqfE3qeS+plKb8X/Cjy60a2oHE6HaoIu9l+wR6JGs2MprB4fHy8mRxKi9d9l+e7P/aWzEqSTppbP32iPoGp0O2hrFvfsJhnkihhN8NXLCVDZCmhPOWcFtoHdkhjsKPRNedlmkWbdj1R4i+pouQG9ltyMI2PT34fmDh+ydqRExeR8w6P7x7eGudYgiTpZGvX8tRjpH5ntn3tLPcOo9zHw3OfDlMpwxVgI11DC0F04FEOiYm0ZHYBMiVIkmbTnjubGnzJVSMU8kyXr/uiXE/8029/M7BDJnolVezbOXGtkIncptA1SEDISHR4/aqr809W5qIejf3zxzxmSpAkzZodH1qVE/e3n+B/Y2nlB29h+0SEb3a+R52qX74eleiQv9/6ysl/GKVM0Fi9V2khMCVIkmZHvijEBOf0uYexBIX2Hy0tf7GDgj2wQyaqcnvv9x/anisIvbkkAxXLOn/LNS1MZDp/V20BMiVIkmbBrsl/oS03LaYR+SJue4S/VOhcNRjYYSqvn/zHV0kD1P7eexITGg51/gZJWpjIdLn1YaExJUiSTjbO5vNtxq6IgPwdUgp5vrZAt/yzZBT4VPGBHfoo+2p/17fIHyUjFnB4yQeZoLH9N8sXFFOCJOmkerTzZ04yzcStk3+BsXwfMvcM0o2WXZ1/MZWKXgr8wA59ECPoRkToHUgAOSPtJI+tV5xe/l4Zjf1HKeYxU4Ikabis7/zz6+VcnyK9adcT7XGCgR36oHPugagiQ/DIRQ0wkZbMLkD+VSVJUt2J+6tKCv+qkiRJmqtMCZIkqc6UIEmS6kwJkiSpzpQgSZLqTAmSJKnOlCBJkupMCZIkqW5u/FUlSZLmK/+qkiRJmnuGfSxBkiTNFscSJElSnSlBkiTVmRIkSVLdsN+XsHXr1mZKkqT56Pbbb2+mho9jCZIkqW5ujCWMjIxkVpKkeWP79u08O5YgSZLmHlOCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqjMlSJKkOlOCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqjMlSJKkOlOCdIQNGzac1eOuu+46ePBg06ODbsuXL+9qHGYPP/wwL4TnZn4mrFixYvXq1c3MycJO8z8lmtYaXmz7/+a6devGxsaaZZKmx5QgVWw8EtWF4nT//fc3ixctevHFF1/qaOYXnrz2oX0HyAdop6Lvfe97pD1izRzKdtKsMyVIFTfccMPHWw4cOHDhhRdu3ryZSpMOu3fvPnz4MI2ZXYCWLFnyPx3N/MnCHnnn3/e+9zXzNaSB5IPLLrss/6dYK6usWbPmnHPO6fSSNJgpQRqMikix4ZnykxYmzjrrrHImPTY2lmFtdI1sky3Svnz5ctrbK2atp59+Oj2DbpwENzOLFnHiywY7GziL8+CpLhnQTgdCDOum84oVK9qHEb/4xS/aHcrWqtcOaEnj/fffX8b5mShvQukQvYfa7sB+eWmZDl44PdsHmVWyBTZ1bCf9rJVtJiLwzDTJYHR09Fvf+tbGjRs7vSbQM/87gulj26M0j5kSpGkhInAaSmHrLSTkAAoMp6q5PEECePHFF7OImkeJzSKe6da+bDEQ+2ILlPZsmWOg1vbZwsjICEeYzmeffTa7Q7Osg1mOLR2YZWsZHeHYWLGMlIBpWmhnd7xAtpa1mGh3K3KoZe9UZTZ+VEWXHbEKrzFb4FWzwWMo24888kgmbrjhhkwU7bEfDpXttzMK03kJzbwkU4I0fRmppnpltuAMmBNWTlVzeYITVp5pp+pQcmgvizi1PaoL+ZRnnrPBrM6Ougp/G0fY1TnH0CyePL1Oh3vvvZeWDCdQlSnP7fzBNFsjJZAJWFTWYoJdNJ1aug6VjfN8VC+W10UVLztiU0uXLs1mj0oJFhlFmAq74/B4aRzq4cOHeWaalj5vr7QAmRKk40VtoxL3VhcKcAptM9+pW/1LVxc2u2bNGqpXM985P6aSpbT3Yl9dnXlun/qztWaqc9gcXskQrMtmU2LZxf79+3PkdGOWat3ntJ4O7KXrkn+SRzMzCKuzkfZ7xbrMpr1pOj7knlxZYJrXkreFtyjvCc/l7ZqpPUrzgClBmq6UybPPPjuzxejoKKWUs/YUoXXr1qX00r+3THJ+3EwNwkYoV6W2BRtnUe94RnTtLrPl8geqHSLFMsMJeU7NptiziJbcmrC6cw2F9ra8M70vdvryjpFF8jIjwatPOqkqSSU5oKq8gfyPywTK8ZfkJMmUIE0LBZtT7Zx/N02TaNk9eSN9Lqhv6Nx+SHvvWWm7Zke7D9Nlln1Rty677DK22WWqAYn2ppDZaeYSdkcaeOSRR1iLHHD55ZeXqpkxebBrGqnlXXU070nX3gdql/9Uaw4gL7Ct9w3v713velcm+lw7KFGv/ULa73wmJJkSpMGoH5zE8/zxzg0HXUq1o57RgSpFC52peUy0z7w5u22f4KYa7d+/P7PoOk2nVJM5OKfvXKmfcEPHVGWsa/UvfOELPE//GkeOPBcXKM9pLK8OHEAGGNqNSJopFyxibGysnRs4Zmbb10raR8vqvHtEqLzM4A3kuYSVaWI7OXgSAP/X8oZzYO13nj55W3iLckg8l7fraPcozWOLx8fHm8mhtHXrVp5HRkYyK51oGzp/iqfUyKDg8Tw6OlounHOeSuOBAweYXr16dcpkFlH8KEK5xS/3zFPtcvLKKvSkWLJiSlE6sNm0sy4ThIPcWkhtowMTZb90oNzu3r07swXHnC8ILF26NCfTbJa6yAuh0JYObJaD6awxIRtv3424YsUKdsouSmMuoJQDYJt0eOyxx9hXe/UcKi8hbx3hhj3Sp7wVXa+FbYL+HF5W4aURUNh13sm8G2VpF3qylInDhw+npUv+PzYzLRxS/q+x9yS/tAdLeW+nCmHSjNu+fTvPt99+e2aHkGMJUgXlvI1CVf4sTxfqSmp803VsjDJcqjgFkqWUK9pT80gAWRT0pD+L6EDdSjgoUmLp0NnwBKbzsVLF9qlw6UmdZhbNsunJa2y/UqY55mwTqaM8N4sn5VAp8OlGJuh9LSnA6UALqSuLgh2xSnknedM4+GpEmA42hXYk4tjYYCICkoTa22eaFiOC1OZYgnRS5Ry3jCXMFLbZO1RwDNgIYWWm/qLi8uXLy1iCpF6OJUgadi+99NLq1avvuuuuzZs3kzbaAwmSFjhTgrTQHex8Y3Osc01kY0ezQNKC5xUHSZJmh1ccJEnSXGVKkCRJdaYESZJUZ0qQJEl1pgRJklRnSpAkSXWmBEmSVGdKkCRJdaYESZJUZ0qQJEl1pgRJklRnSpAkSXWmBEmSVGdKkCRJdXPjX46WJGm+8l+OliRJc8+wjyVIkqTZ4liCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqjMlSJKkOlOCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqjMlSJKkOlOCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqjMlSJKkOlOCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqjMlSJKkOlOCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqjMlSJKkOlOCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqjMlSJKkOlOCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqjMlSJKkOlOCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqjMlSJKkOlOCJEmqMyVIkqQ6U4IkSaozJUiSpDpTgiRJqlm06P8BacuQj74ivF4AAAAASUVORK5CYII="></figure>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Arrêter les services susceptibles d'accéder au disk !!!!!</p>
+<p>umount /dev/sdb1</p>
+<p>sudo e2fsck -f /dev/sdb1 =&gt; remet tous les blocks de data au début du FS de la partition</p>
+<p>Si crash à la commande au-dessus faire : e2fsck -y /dev/sdb1</p>
+<p>sudo resize2fs /dev/sdb1 700M =&gt; on passe le FS de la partition sdb1 à 700Mo, il faut ensuite diminuer la partition</p>
+<p>sudo fdisk /dev/sdb</p>
+<p>d&nbsp; &nbsp;delete a partition</p>
+<p>n add a new partition (laisser par défaut pour le debut et choisir 800Mo pour la fin de la parttion)</p>
+<p>n add a new partition (se met automatiquement à la fin de la première partition pour le début de la deuxième et ensuite laisser par défaut pour la fin)</p>
+<p>v&nbsp; &nbsp;verify the partition table</p>
+<p>w write table to disk and exit</p>
+<p>sudo resize2fs /dev/sdb1 (Voilà l’astuce : sans indication de taille, resize2fs ajuste la taille du système de fichier à la taille disponible sur la partition. Ça vous évite de calculer à l’octet près l’espace à ajouter)</p>
+<p>sudo mkswap /dev/sdb2 si on veut faire de la nouvelle partition du SWAP par exemple</p>
+<p>Ou</p>
+<p>sudo mkfs.ext4 /dev/sdb2 si on veut faire une autre partition EXT4</p>
+<p>sudo blkid pour avoir UUID des nouvelle partition (celui de sdb1 à changer)</p>
+<p>sudo nano /etc/fstab</p>
+<p>Puis ajouter:</p>
+<p>/dev/sdb2&nbsp; &nbsp; none&nbsp; &nbsp;swap&nbsp; &nbsp; sw&nbsp; &nbsp; 0 0&nbsp; OU&nbsp; &nbsp;UUID=[UUID_FS_swap]&nbsp; &nbsp; none&nbsp; &nbsp;swap&nbsp; &nbsp; sw&nbsp; &nbsp; 0 0 POUR DU SWAP</p>
+<p>OU</p>
+<p>/dev/sdb1&nbsp; &nbsp;/media/data&nbsp; &nbsp; &nbsp;ext4&nbsp; &nbsp; defaults,&nbsp; &nbsp; &nbsp;0&nbsp; &nbsp; &nbsp;2&nbsp;OU&nbsp; UUID=[UUID_FS_sdb1] /media/data ext4 defaults 0 2</p>
+<p>&nbsp;</p>
+<figure class="image"><img src="data:image/png;base64,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"></figure>
+<p>&nbsp;mdadm --create /dev/md0 --level=5 --raid-device=6 /dev/sda /dev/sdb /dev/sdm /dev/sdn /dev/sdo /dev/sdp</p>
+<p>mdadm --create /dev/md1 --level=5 --raid-device=8 /dev/sde /dev/sdf /dev/sdg /dev/sdh /dev/sdi /dev/sdj /dev/sdk /dev/sdl</p>
+<p>mkfs.ext4 /dev/sde1 /dev/sdf1 /dev/sdg1 /dev/sdh1 /dev/sdi1 /dev/sdj1 /dev/sdk1 /dev/sdl1</p>
+<p>&nbsp;</p>
+<h1>LVM</h1>
+<p>Extension de root avec sdb :</p>
+<p>fdisk /dev/sdb</p>
+<p>g</p>
+<p>n e8</p>
+<p>w</p>
+<p>pvcreate /dev/sdb1</p>
+<p>vgextend test-vg /dev/sdb1&nbsp; (ou test est le nom de la machine)</p>
+<p>lvresize -L +999g /dev/test-vg/root</p>
+<p>resize2fs /dev/test-vg/root</p>
+<h1>CREATION RAID 1 :</h1>
+<p>sudo mdadm --create /dev/md0 --level=raid1 --raid-devices=2 /dev/sdb /dev/sdc --spare-devices=1 /dev/sdd</p>
+<p>sudo mdadm --query --detail /dev/md0 permet d'avoir l'UUID de la partition raid "md0"</p>
+<p>sudo update-initramfs -u pour mettre à jour le fichier mdam.conf =&gt; Le système de démarrage de votre système a sa propre copie du fichier/etc/mdadm/mdadm.conf. Taper cette commande pour que les modifications sur ce fichier soient prises en compte au prochain démarrage</p>
+<p>sudo mkdir /media/data</p>
+<p>sudo mkfs.ext4 /dev/md0</p>
+<p>sudo blkid&nbsp; &nbsp;pour avoir UUID des partition ou FS</p>
+<p>sudo nano /etc/fstab</p>
+<p>UUID=[UUID_FS_sdb1] /media/data ext4 defaults 0 2</p>
+<p>sudo mount -all</p>
+<h1>SIMULATION PANNE RAID&nbsp; 1 :</h1>
+<p>sudo mdadm --manage /dev/md0 --fail /dev/sdb&nbsp; &nbsp;permet de simuler la panne de sdb</p>
+<p>sudo mdadm --query --detail /dev/md pour voir l'état du raid et voir si le disque de spare "sdd" prend le relais en reconstruisant le RAID 1 dessus</p>
+<p>sudo mdadm --manage /dev/md0 --remove /dev/sdb permet de retirer le disque sdb du RAID "md0"</p>
+<p>sudo mdadm --manage /dev/md0 --add /dev/sdb permet de rajouter le nouveau disque qui a remplacer le disque "sdb" HS, une fois le RAID reconstruit sur le disque sdb, le disque sdd repasse en spare</p>

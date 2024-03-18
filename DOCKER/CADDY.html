@@ -1,0 +1,22 @@
+<!--
+title: CADDY
+description: 
+published: true
+date: 2024-01-08T09:23:59.637Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-08T09:23:59.637Z
+-->
+
+<p>Reverse Proxy et gestion certificat (<a href="https://blog.devarieux.net/2021/02/caddy-presentation.html">https://blog.devarieux.net/2021/02/caddy-presentation.html</a>)</p>
+<p>&nbsp;</p>
+<p>Configuration</p>
+<p>Caddy peut se configurer de deux manières. Via le fichier de configuration, appelé Caddyfile ou via son API avec un payload JSON. L'utilisation de l'API sera décrite dans un prochain article. J'utilise Caddy principalement pour ses fonctionnalités de reverse proxy. Voyons donc quelques exemples de configuration de Caddy via le Caddyfile.</p>
+<p>&nbsp;</p>
+<p>sub.domain.com {</p>
+<p>&nbsp; &nbsp; reverse_proxy 10.0.0.1:8000</p>
+<p>&nbsp; &nbsp; log {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; output file /var/log/caddy/sub.domain.com_access.log</p>
+<p>&nbsp; &nbsp; }</p>
+<p>}</p>
+<p>Bien, avec ça, nous avons un reverse proxy qui écoute sur le port 80 et 443, avec redirection automatique HTTP vers HTTPS. Les logs seront renvoyés vers un fichier. Avec cette configuration, le certificat Let's Encrypt est généré (si le DNS est bien configuré et que Caddy est accessible depuis l'exterieur) et seuls les protocoles TLS 1.2 et 1.3 sont supportés. Niveau sécurité, on est pas mal.</p>

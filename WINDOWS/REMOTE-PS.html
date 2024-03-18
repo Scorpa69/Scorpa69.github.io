@@ -1,0 +1,49 @@
+<!--
+title: REMOTE PS
+description: 
+published: true
+date: 2023-09-18T12:38:53.493Z
+tags: ps, powershell, commande, remote, à distance
+editor: ckeditor
+dateCreated: 2023-09-18T12:38:52.194Z
+-->
+
+<h1>CONFIGURER LA GESTION A DISTANCE</h1>
+<p>winrm quickconfig</p>
+<h1>EXECUTER COMMANDE A DISTANCE SUR UN OU PLUSIEURS SERVEURS :</h1>
+<p>Invoke-Command -ComputerName $PC -scriptblock {Get-Service -Name Zabbix*}</p>
+<p>Invoke-Command -ComputerName $PC -scriptblock {Start-Service -Name "Zabbix Agent 2"}</p>
+<p>Invoke-Command -ComputerName VDCSPAI01 -scriptblock {Restart-Service -Name "Zabbix Agent 2"}</p>
+<p>Invoke-Command -ComputerName SMARHYV01 -ScriptBlock {Restart-Service -Name "Zabbix Agent 2"}</p>
+<p>Invoke-Command -ComputerName VDCSFIC01, VDCSTAI01, VIDFMDT01, VDCSPRODLIC01, VIDFCPT01, VIDFGTW01 -scriptblock {Start-Service -Name "Zabbix Agent 2"}</p>
+<p>Invoke-Command -ComputerName vidfsav01,strphyv02,strphyv03,svdahyv01 -ScriptBlock {Restart-Service -Name "Zabbix Agent 2"}</p>
+<p>Invoke-Command -ComputerName nom -scriptblock {ipconfig /flushdns}</p>
+<p>Invoke-Command -ComputerName VDCSVISION01 -scriptblock {Get-WUIsPendingReboot}</p>
+<p>Invoke-Command -ComputerName Server01, Server02 -ScriptBlock {Get-UICulture}</p>
+<p>Exemple connaitre index carte reseau : Invoke-Command -ComputerName VIDFPAI02, VIDFNAVPRP -ScriptBlock {Get-netconnectionprofile}</p>
+<p>Invoke-Command -ComputerName VIDFCPT01, VIDFGTW01, VIDFBRK01 -scirpblock {Start-Service -name 'Zabbix Agent 2'}</p>
+<p>Invoke-Command -ComputerName VIDFPAI02, VIDFNAVPRP -ScriptBlock {Get-netconnectionprofile}</p>
+<p>Invoke-Command -ComputerName VIDFPAI02, VIDFNAVPRP -ScriptBlock {Get-DnsClientServerAddress -InterfaceIndex 12}</p>
+<p>Invoke-Command -ComputerName VIDFPAI02, VIDFNAVPRP -ScriptBlock {Get-NetIPConfiguration}</p>
+<p>Invoke-Command -ComputerName VIDFGTW01 -ScriptBlock {Get-NetIPConfiguration}</p>
+<p>Invoke-Command -ComputerName vidfsav01 -ScriptBlock {Restart-Computer -Force}</p>
+<p>Invoke-Command -ComputerName sbrehyv01 -ScriptBlock {Get-VM | Sort-Object Name | Select-Object Name, Notes, State, ProcessorCount, Path, Memoryassigned, Uptime, Automaticstartaction, Automaticstopaction | Export-Csv c:\users\A09_admin\desktop\sbrehyv01.csv}</p>
+<p>Invoke-Command -ComputerName slyohyv01 -ScriptBlock {Get-VM | Sort-Object Name | Select-Object Name, Notes, State, ProcessorCount, Path, Memoryassigned, Uptime, Automaticstartaction, Automaticstopaction | Export-Csv c:\users\A09_admin\desktop\slyohyv01.csv}</p>
+<p>Invoke-Command -ComputerName smarhyv01 -ScriptBlock {Get-VM | Sort-Object Name | Select-Object Name, Notes, State, ProcessorCount, Path, Memoryassigned, Uptime, Automaticstartaction, Automaticstopaction | Export-Csv c:\users\A09_admin\desktop\smarhyv01.csv}</p>
+<p>Invoke-Command -ComputerName smardev02 -ScriptBlock {Get-VM | Sort-Object Name | Select-Object Name, Notes, State, ProcessorCount, Path, Memoryassigned, Uptime, Automaticstartaction, Automaticstopaction | Export-Csv c:\users\A09_admin\desktop\smardev02.csv}</p>
+<p>Invoke-Command -ComputerName sbrehyv01 -ScriptBlock {Get-VM | Sort-Object Name | Select-Object Name, State, CPUUsage, Memoryassigned, Uptime}</p>
+<p>Invoke-Command -ComputerName sbrehyv01 -ScriptBlock {Remove-item c:\users\a09_admin\desktop\sbrehyv01.csv}</p>
+<p>Invoke-Command -ComputerName sbrehyv01 -ScriptBlock {Get-VM BF-SLX | Select-Object *}</p>
+<p>&nbsp;</p>
+<h1>Connexion PS distante:</h1>
+<p>&nbsp;</p>
+<p>Enter-PSSession agce-tlse-hpv3.arcadie-informatique.net -Credential dagobah\mbo_admin</p>
+<p>&nbsp;</p>
+<p>Enter-PSSession 10.31.51.13 -Credential dagobah\mbo_admin</p>
+<p>&nbsp;</p>
+<p>Exit-PSSession</p>
+<p>&nbsp;</p>
+<h1>Redémarrage à distance ou local :</h1>
+<p>Restart-Computer -ComputerName Server01, Server02, localhost</p>
+<p>&nbsp;</p>
+<p>Restart-Computer -ComputerName stlsmbo.arcadie-informatique.net</p>

@@ -1,0 +1,38 @@
+<!--
+title: LSI MEGARAID
+description: 
+published: true
+date: 2024-01-08T09:14:14.488Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-08T09:14:14.488Z
+-->
+
+<p>VOIR LE CONTROLLER:</p>
+<p>lspci | grep RAID</p>
+<p>&nbsp;</p>
+<p>AJOUTER LE DEPOT LSI:</p>
+<p>nano /etc/apt/sources.list puis ajouter la ligne : deb <a href="http://hwraid.le-vert.net/debian">http://hwraid.le-vert.net/debian</a> bullseye main</p>
+<p>&nbsp;</p>
+<p>SIGNATURE PAQUETS:</p>
+<p>wget -O - <a href="https://hwraid.le-vert.net/debian/hwraid.le-vert.net.gpg.key">https://hwraid.le-vert.net/debian/hwraid.le-vert.net.gpg.key</a> | apt-key add -</p>
+<p>&nbsp;</p>
+<p>INSTALL COMPOSANT:</p>
+<p>apt update</p>
+<p>apt install megacli</p>
+<p>apt install megaclisas-status</p>
+<p>&nbsp;</p>
+<p>Get all adapters status and config:</p>
+<p>megacli -AdpAllInfo -aAll</p>
+<p>&nbsp;</p>
+<p>Logical drive 0 on adapter 0 status and type</p>
+<p>megacli -LDInfo -L0 -a0</p>
+<p>&nbsp;</p>
+<p>Show physical disks from first controller:</p>
+<p>megacli -PDList -a0</p>
+<p>&nbsp;</p>
+<p>STATUT AVEC MEGACLISAS-STATUS:</p>
+<p>megaclisas-status</p>
+<p>&nbsp;</p>
+<p>STATUT EN 1 LIGNE :</p>
+<p>megaclisas-status --nagios</p>

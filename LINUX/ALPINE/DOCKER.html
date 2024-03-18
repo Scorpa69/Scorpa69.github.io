@@ -1,0 +1,29 @@
+<!--
+title: DOCKER
+description: 
+published: true
+date: 2023-09-18T12:40:15.549Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:40:14.520Z
+-->
+
+<p>apk add docker</p>
+<p>addgroup root docker</p>
+<p>rc-update add docker boot</p>
+<p>service docker start</p>
+<p>apk add docker-compose</p>
+<p>poweroff</p>
+<p>service docker status</p>
+<p>docker volume create portainer_data</p>
+<p>docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest</p>
+<p><a href="https://smbodok-t.scp.dom:9443">https://smbodok-t.scp.dom:9443</a></p>
+<p>créer mot de passe admin portainer</p>
+<p>FIN</p>
+<p>&nbsp;</p>
+<p>Update de Portainer en cli :</p>
+<p>docker ps</p>
+<p>docker stop dfd8b3ba1338</p>
+<p>docker rm dfd8b3ba1338</p>
+<p>docker pull portainer/portainer-ce:latest</p>
+<p>docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest</p>

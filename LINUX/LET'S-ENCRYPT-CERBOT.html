@@ -1,0 +1,42 @@
+<!--
+title: LET'S ENCRYPT CERBOT
+description: 
+published: true
+date: 2024-01-08T09:11:12.877Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-08T09:11:12.877Z
+-->
+
+<p>Créer le nouveau certification nom unique :&nbsp;</p>
+<p>certbot --agree-tos --apache --email itsupport@absyscyborg.com --preferred-challenges http -d updates.compagnons-arcadie.com</p>
+<p>&nbsp;</p>
+<p>SUPPRESSION LISTE CERTIFICAT</p>
+<p>sudo obligatoire pourle commande ci-dessous :</p>
+<p>&nbsp;</p>
+<p>sudo certbot delete --cert-name example.com</p>
+<p>&nbsp;</p>
+<p>sudo certbot delete --cert-name compagnons-arcadie.com</p>
+<p>&nbsp;</p>
+<p>ISSUER D'UN CERTIFICAT:</p>
+<p>echo | openssl s_client -servername updates.compagnons-arcadie.com -connect updates.compagnons-arcadie.com:443 2&gt;/dev/null | openssl x509 -noout -issuer | sed -e 's#issuer=C = US, O = ##' -e 's#, CN = R3##'</p>
+<p>&nbsp;</p>
+<p>echo | openssl s_client -servername <a href="http://www.editionscompagnons.com">www.editionscompagnons.com</a> -connect <a href="www.editionscompagnons.com:443">www.editionscompagnons.com:443</a> 2&gt;/dev/null | openssl x509 -noout -issuer | sed -e 's#issuer=C = US, O = ##' -e 's#, CN = R3##'</p>
+<p>&nbsp;</p>
+<p>Pour voir les proto SSL enabled :</p>
+<p>pour PS</p>
+<p>cd "\Program Files (x86)\Nmap"</p>
+<p>./nmap --script ssl-enum-ciphers -p 443 updates.compagnons-arcadie.com | select-string -pattern "TLSv"</p>
+<p>Pour Linux</p>
+<p>nmap --script ssl-enum-ciphers -p 443 update.comagnons-arcadie.com | grep TLSv</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>openssl x509 -noout -dates -in /etc/letsencrypt/live/example.com/cert.pem</p>
+<p>&nbsp;</p>
+<p>echo | openssl s_client -servername <a href="http://www.editionscompagnons.com">www.editionscompagnons.com</a> -connect <a href="www.editionscompagnons.com:443">www.editionscompagnons.com:443</a> 2&gt;/dev/null | openssl x509 -noout -dates</p>
+<p>&nbsp;</p>
+<p>echo | openssl s_client -servername cyberwatch.absyscyborg.com -connect cyberwatch.absyscyborg.com:443 2&gt;/dev/null | openssl x509 -noout -dates</p>
+<p>&nbsp;</p>
+<p>echo | openssl s_client -servername cyberwatch.absyscyborg.com -connect cyberwatch.absyscyborg.com:443 2&gt;/dev/null | openssl x509 -noout -issuer | sed -e 's#issuer=C = US, O = ##' -e 's#, CN = R3##'</p>

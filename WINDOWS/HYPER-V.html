@@ -1,0 +1,292 @@
+<!--
+title: HYPER-V
+description: 
+published: true
+date: 2023-09-18T12:38:23.902Z
+tags: windows, hpv, hyper-v, workgroup
+editor: ckeditor
+dateCreated: 2023-09-18T12:38:22.331Z
+-->
+
+<p>Penser à redémarrer le service Gestionnaire Hyper-V quant erreur inexpliqué lors de manipulation de vm ou de disque ou de réseaux, !!! ATTENTION UN REBOOT DU SERVEUR NE RESOUT PAS !!!</p>
+<h1>VMDK vers VHDX :&nbsp;</h1>
+<p>Soit avec Stardwind Converter ou MVMC en graphique ou en PS comme si-dessous</p>
+<p>Installer mvmc</p>
+<p>Import-Module "C:\Program Files\Microsoft Virtual Machine Converter\MvmcCmdlet.psd1"</p>
+<p>ConvertTo-MvmcVirtualHardDisk -SourceLiteralPath "path\source.vmdk" -DestinationLIteralPath "path\cible.vhdx"</p>
+<p>&nbsp;</p>
+<h1>RESEAUX HYPER-V:</h1>
+<p>Créer un vswitch external avec fonction teaming:</p>
+<p>New-VMSwitch -Name &lt;switch-name&gt;&nbsp; -NetAdapterName &lt;netadapter-name&gt; -EnableEmbeddedTeaming</p>
+<p>&nbsp;</p>
+<p>Ajouter une carte physique à un vswitch existant:</p>
+<p>Get-NetAdapter</p>
+<p>$VMSwitch = Get-VMSwitch -Name "Switch03"</p>
+<p>Add-VMSwitchTeamMember -VMSwitch $VMSwitch -NetAdapterName "Adapter01","Adapter04"</p>
+<p>&nbsp;</p>
+<h1>HYPER-V WORKGROUP :</h1>
+<p>On HPV</p>
+<p>Enable-PSRemoting</p>
+<p>Enable-WSManCredSSP -Role server</p>
+<p>On Client 10</p>
+<p>Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V-Tools-All -All</p>
+<p>Get-NetConnectionProfile</p>
+<p>Set-NetConnectionProfile -InterfaceAlias XXX -NetworkCategory Private</p>
+<p>Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "`n192.168.33.253`tSMBOHPV1"</p>
+<p>Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "`n192.168.103.152`tSHPVABR"</p>
+<p>Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "`n172.23.195.138`tvlabacs"</p>
+<p>Penser à desactiver les carte hyper-v ou vmware sinon plantage à cause de la carte en réseau public</p>
+<p>Winrm quickconfig</p>
+<p>Set-Item WSMan:\localhost\Client\TrustedHosts -Value "SMBOHPV1, SHPVABR"</p>
+<p>Enable-WSManCredSSP -Role client -DelegateComputer "SMBOHPV1, SHPVABR"</p>
+<p>New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\" -Name 'CredentialsDelegation'</p>
+<p>New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\" -Name 'AllowFreshCredentialsWhenNTLMOnly' -PropertyType DWord -Value "00000001"</p>
+<p>New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\" -Name 'ConcatenateDefaults_AllowFreshNTLMOnly' -PropertyType DWord -Value "00000001"</p>
+<p>New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\" -Name 'AllowFreshCredentialsWhenNTLMOnly'</p>
+<p>New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\AllowFreshCredentialsWhenNTLMOnly\" -Name '1' -Value "wsman/SMBOHPV1"</p>
+<p>New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CredentialsDelegation\AllowFreshCredentialsWhenNTLMOnly\" -Name '2' -Value "wsman/SHPVABR"</p>
+<p>&nbsp;</p>
+<p>Cl&nbsp; reg webdav : HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WebClient\Parameters\&nbsp; &nbsp; BasicAuthLevel=2&nbsp;</p>
+<p>&nbsp;</p>
+<p>Commande PowerShell :</p>
+<p>Afficher les comptes enregistr s ds windows : rundll32.exe keymgr.dll, KRShowKeyMgr</p>
+<p>Gestion Hyper-V&nbsp; &nbsp;distance sur workgroup - Ajouter un serveur sur le poste client:</p>
+<p>Get-netconnectionprofile =&gt;r cup rer le num ro de l'index de la carte r seaux<br>Set-Netconnectionprofile -InterfaceIndex 3 -networkcategory Private</p>
+<p>winrm quickconfig<br>winrm s winrm/config/client '@{TrustedHosts="SMBOHPV1,192.168.33.253,HPV19-TEST,192.168.33.168"}'<br>winrm s winrm/config/client '@{TrustedHosts="SMBOHPV1,192.168.33.253,shpvabr,192.168.103.152"}'</p>
+<p>&nbsp;</p>
+<p>cmdkey /delete /ras</p>
+<p>cmdkey /delete:nom_cible</p>
+<p>cmdkey /list</p>
+<p>cmdkey /add:192.168.33.170 /user:administrateur /pass<br>cmdkey /add:192.168.33.253 /user:administrateur /pass<br>cmdkey /add:192.168.103.152 /user:mboa /pass<br>cmdkey /add:192.168.33.253 /user:mboa /pass<br>cmdkey /add:shpvabr /user:mboa /pass<br>cmdkey /add:smbohpv1 /user:mboa /pass<br>cmdkey /add:smbohpv1 /user:administrateur /pass<br>cmdkey /add:smbohpv1 /user:mboa /pass<br>cmdkey /add:192.168.33.168 /user:administrateur /pass</p>
+<p>&nbsp;</p>
+<p>Pour WinRM :<br>Get-Item WSMan:\localhost\Client\TrustedHosts =&gt; pour avoir la liste des pc de confiance</p>
+<p>set-item wsman:\localhost\Client\TrustedHosts -value smbohpv1</p>
+<p>set-item wsman:\localhost\Client\TrustedHosts -value 192.168.33.253</p>
+<p>Enable-WSManCredSSP -Role "Client" -DelegateComputer "Server02.fabrikam.com"</p>
+<p>Enter-PSSession -ComputerName SMBOHPV1 -Credential SMBOHPV1\administrateur</p>
+<p>&nbsp;</p>
+<p>Gestion des pool de stockage:</p>
+<p>Voir les disques dispo pour un pool:<br>Get-StoragePool -IsPrimordial $true | Get-PhysicalDisk | Where-Object CanPool -eq $True</p>
+<p>Voir le nom du storageSubSystem:<br>Get-StorageSubSystem</p>
+<p>&nbsp;</p>
+<p>Cr ation d'un pool de stockage utilisant tous les disques dispo<br>New-StoragePool -FriendlyName NVMEPool -StorageSubsystemFriendlyName "Windows Storage*" -PhysicalDisks (Get-PhysicalDisk -CanPool $True)<br>New-StoragePool -FriendlyName HDDPool -StorageSubsystemFriendlyName "Windows Storage*" -PhysicalDisks (Get-PhysicalDisk -CanPool $True)</p>
+<p>&nbsp;</p>
+<p>Cr ation d'un Disque Virtuel utilisant le RAID 5 ou 6 selon le nombre de disk de parit&nbsp; (ici 1 disk de parit ):&nbsp;<br>New-VirtualDisk -StoragePoolFriendlyName HDDPool -FriendlyName HDD -ResiliencySettingName Parity -Size 1800GB -ProvisioningType Fixed -MediaType HDD -PhysicalDiskRedundancy 1</p>
+<p>&nbsp;</p>
+<p>Cr ation d'un disque virtuel utilisant RAID1 avec le max d'espace dispo:<br>New-VirtualDisk -StoragePoolFriendlyName NVMEPool -FriendlyName OSRaid1 -ResiliencySettingName Mirror -UseMaximumSize -ProvisioningType Fixed -MediaType SSD</p>
+<h1>HYPER-V SCVMM :</h1>
+<h2>WINRM : Increase the default values for WinRM</h2>
+<p>As a best practice, run the following command lines on the VMM host and all the Hyper-V hosts that are being managed by VMM (and press Enter after each line).</p>
+<p><code>winrm quickconfig</code></p>
+<p><code>winrm set winrm/config @{MaxTimeoutms="1800000"}</code></p>
+<p><code>winrm set winrm/config/Service @{MaxConcurrentOperationsPerUser="1500"}</code></p>
+<p><code>winrm set winrm/config/winrs @{MaxConcurrentUsers="100"}</code></p>
+<p><code>winrm set winrm/config/winrs @{MaxProcessesPerShell="100"}</code></p>
+<p><code>winrm set winrm/config/winrs @{MaxShellsPerUser="100"}</code></p>
+<p><code>set-item "WSMan:\localhost\Plugin\WMI Provider\Quotas\MaxConcurrentOperationsPerUser" 400</code></p>
+<p>You must restart WinRM (for the WINRM changes) and restart WMI (for the SC config setting), or reboot the server for the changes to take effect.</p>
+<p>When you add untrusted hosts or perimeter/workgroup hosts, make sure that the LocalAccountTokenFilterPolicy registry value under the following registry subkey is set to 1:</p>
+<p><code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System</code></p>
+<p>&nbsp;</p>
+<h2>SCVMM PS Check Point :</h2>
+<p>Get-SCVMCheckpoint&nbsp; -VM VDCSZAB01-DEV -MostRecent -Computername SCRBHYV03</p>
+<p>Get-SCVMCheckpoint&nbsp; -VM "VM01" -MostRecent</p>
+<p>Remove-SCVMCheckpoint -VMCheckpoint "nom_checkpoint"</p>
+<p>&nbsp;</p>
+<h2>SNAPSHOT et CHECKPOINT SUPPRESSION EN PS:</h2>
+<p>Get-VMSnapshot -VMName &lt;VMName&gt; | Remove-VMSnapshot</p>
+<p>Get-VMSnapshot -VMName SIDFDKS01 -Computername STRPHYV01</p>
+<p>Get-VMSnapshot -VMName VDCSZAB01-DEV -Computername SCRBHYV03</p>
+<p>&nbsp;</p>
+<h2>PROBLEME DROIT FICHIER VM : (Exemple suite à une restau DPM avec erreur 104 et 3111)</h2>
+<p>Le mieux est ce qui suit :</p>
+<p>copier les disques dans un dossier temporaire (attention à l'espace libre sur le volume !!!)</p>
+<p>supprimer la vm dans SCVMM</p>
+<p>supprimer le dossier de la vm si SCVMM ne la pas fait</p>
+<p>créer une vm sans disque avec le même nom du coup dans scvmm</p>
+<p>copier les disques dans le dossier de la vm</p>
+<p>reconnecter les disques à la vm</p>
+<p>démarrer la vm</p>
+<p>&nbsp;</p>
+<p>Sinon on peut déco/reco les disques&nbsp;</p>
+<p>OU</p>
+<p>Sinon remettre les droits à partir d'un fichier/dossier qui a les bon droit (cf : <a href="https://wiki.bmg.ovh/fr/WINDOWS/ACL">ACL</a>)</p>
+<p>&nbsp;</p>
+<h2>LIST/ETAT CSV SCVMM :</h2>
+<p>Get-ClusterSharedVolume -Cluster nomcluster</p>
+<p>Get-ClusterSharedVolumeState -Cluster nomcluster</p>
+<p>&nbsp;</p>
+<h2>CONVERSION VHDX :</h2>
+<p>Convert-VHD –Path c:\FixedDisk.vhdx –DestinationPath f:\FixedDisk.vhdx –VHDType Dynamic</p>
+<p>Convert-VHD –Path c:\FixedDisk.vhdx –DestinationPath f:\FixedDisk.vhdx –VHDType Fixed</p>
+<p>&nbsp;</p>
+<h2>CRÉATION VHDX :</h2>
+<p>New-VHD -Path C:\users\a09\documents\vm\debian_raid1\OS1.vhdx -Fixed -SizeBytes 16GB -ComputerName PC1, PC2&nbsp;</p>
+<p>New-VHD -Path C:\users\a09\documents\vm\debian_raid1\OS2.vhdx -Fixed -SizeBytes 16GB</p>
+<p>New-VHD -Path C:\HPV\VM\DEBDOK\debdok.vhdx -SizeBytes 16GB</p>
+<p>&nbsp;</p>
+<h2>CRÉATION VM :</h2>
+<p>New-VM -Name "deb_raid" -Generation 2 -BootDevice CD -NewVHDPath d:\vhd\base.vhdx -NewVHDSizeBytes 40GB -MemoryStartupBytes 4GB -Path C:\users\a09\documents\vm\debian_raid1\ -SwitchName "Default Switch"</p>
+<p>New-VM -Name "deb_raid" -Generation 2 -BootDevice CD -VHDPath C:\users\a09\documents\vm\debian_raid1\OS1.vhdx, C:\users\a09\documents\vm\debian_raid1\OS2.vhdx -MemoryStartupBytes 4GB -Path C:\users\a09\documents\vm\debian_raid1\ -SwitchName "Default Switch"</p>
+<p>New-VM -Name "debdok" -Generation 2 -BootDevice CD -VHDPath C:\HPV\VM\DEBDOK\debdok.vhdx -MemoryStartupBytes 4GB -Path C:\HPV\VM\DEBDOK -SwitchName "Default Switch"</p>
+<p>&nbsp;</p>
+<h2>Connexion à une console VM :</h2>
+<p>VMConnect.exe &lt;ServerName&gt; &lt;VMName&gt;</p>
+<p>VMConnect.exe scrbhyv01 vdcszab01-dev</p>
+<p>&nbsp;</p>
+<h2>Enabling SMT in guest virtual machines :</h2>
+<p>Set-VMProcessor -VMName &lt;VMName&gt; -HwThreadCountPerCore &lt;n&gt;</p>
+<p>&nbsp;</p>
+<h2>Mémoire hyper-v :</h2>
+<p>Get-VM | measure-object -property memoryassigned -sum ([ select-object sum)</p>
+<p>get-vm -ComputerName stlshyv01| format-list memoryassigned</p>
+<p>&nbsp;</p>
+<h2>ACTIVER VIRTU IMBRIQUE SUR UNE VM :</h2>
+<p>Set-VMProcessor -VMName NOM_DE_LA_MACHINE_VIRTUELLE -ExposeVirtualizationExtensions $True</p>
+<p>&nbsp;</p>
+<h2>REDUCTION DISQUE VIRTUEL :</h2>
+<p>Resize-VHD &lt;répertoireduvhd&gt;\Data.vhdx -ToMinimumSize</p>
+<p>&nbsp;</p>
+<h2>INFO VM AVEC SCVMM (dont le start action) :</h2>
+<p>Get-SCVirtualMachine | Where-Object { $_.Name -Eq "VIDFPAI02" } | Select-Object Name,Status,StartAction</p>
+<p>Get-SCVirtualMachine | Where-Object { $_.Name -Eq "VMDSM1K" } | Select-Object Name,Status,StartAction</p>
+<p>Get-SCVirtualMachine | Where-Object { $_.Name -Eq "VIDFBRK02" } | Select-Object Status,StartAction</p>
+<p>Get-SCVirtualMachine -Name "VIDFPAI02" | Select-Object Status,StartAction,Owner,VitualNetwork,VMNetwork</p>
+<p>&nbsp;Get-SCVirtualNetworkAdapter -VM "VIDFPAIE02"</p>
+<p>Get-SCVirtualMachine -Name "VIDFL1000SQL01"</p>
+<p>&nbsp;</p>
+<h2>SUPPRESSION D'UNE VM SCVMM: Attention l'option -Force implique la non suppression des fichiers de la VM sur l'hôte</h2>
+<p>Remove-SCVirtualMachine -VM VIDFETL01</p>
+<p>Remove-VM&nbsp;</p>
+<p>&nbsp;</p>
+<h2>INFO VM :</h2>
+<p>get-vm | format-list name, state, Generation, status, cpuusage, memoryassigned, virtualmachinetype, virtualmachinesubtype, status, version</p>
+<p>&nbsp;</p>
+<h2>VERSION VM sur un HPV ou VMM :</h2>
+<p>Get-VM * | Format-Table Name, Version</p>
+<p>&nbsp;</p>
+<h2>VERSION PRISE EN CHARGE PAR HYPERVISEUR : (ajouter -Default à la fin pour savoir la version par défaut à la création d'une vm)</h2>
+<p>Get-VMHostSupportedVersion</p>
+<p>&nbsp;</p>
+<h2>METTRE A JOUR UNE VESRION DE VM: (cela ce fait à froid ou vm éteinte !!!!)</h2>
+<p>Update-VMVersion \&lt;vmname\&gt;</p>
+<p>&nbsp;</p>
+<h2>DYSFONTIONNEMENT MIGRATION :</h2>
+<p>(Compare-VM -Name "VTLSTEST01" -DestinationHost "SCRBHYV01").Incompatibilities | Ft Message</p>
+<p>&nbsp;</p>
+<h2>MIGRATION VM ENTRE HPV STANDALONE :</h2>
+<p>Get-VM pour avoir le nom de la VM</p>
+<p>puis</p>
+<p>Move-VM "Nom VM" Nom_Serveur_Destination -IncludeStorage -DestinationStoragePath D:\TestVM</p>
+<p>&nbsp;</p>
+<h2>LISTE TOUTES LES INFOS DISPO D'UNE VM HPV :</h2>
+<p>Get-VM BF-SLX | Select-Object *</p>
+<p>&nbsp;</p>
+<h2>IP D'UNE VM :</h2>
+<pre><code class="language-plaintext">Get-VM deb_dok | Get-VMNetworkAdapter | ft VMName,IPAddresses,SwitchName</code></pre>
+<p>&nbsp;</p>
+<h2>LISTE VM HYPER-V :</h2>
+<p>Get-VM -ComputerName SDCSCHV01 -Name VDCSZAB* | Sort-Object Hostname | Select-Object HostName, Name, ComputerName, Status&nbsp; &nbsp;pour connaitre l'hote</p>
+<p>Get-SCVirtualMachine | Sort-Object Location | Select-Object Name, TotalSize, Location, VirtualHardDisks | Export-Csv c:\users\A09_admin\desktop\sbrehyv01.csv -NoTypeInformation</p>
+<p>Get-VM -ComputerName vbrehyv01.cyborg.dom | Sort-Object Hostname | Select-Object HostName, Name, ComputerName, Status, MemoryAssignedMB, VirtualHardDisks, TotalSize | Export-Csv c:\users\A09_admin\desktop\sbrehyv01.csv -NoTypeInformation</p>
+<p>Get-VM -VMMServer vdcscvmm01.cyborg.dom | Sort-Object Hostname | Select-Object HostName, Name, ComputerName, Status, StopAction, StartAction | Export-Csv .\desktop\vm-list.csv -NoTypeInformation</p>
+<p>Get-SCVirtualMachine | Select-object Name,ComputerName,CPUCount,MemoryAssignedMB,TotalSize,VMHost,Status,IsHighlyAvailable,StopAction,StartAction | Sort-Object -Property Name | Export-Csv .\vm-list.csv</p>
+<p>Get-VM -ComputerName SDCSCHV01 -Name VDCSZAB*| Sort-Object Hostname | Select-Object HostName, Name, ComputerName, Status</p>
+<p>Get-VM -VMMServer vdcscvmm01.cyborg.dom | Select-object Name,ComputerName,CPUCount,MemoryAssignedMB,TotalSize,VMHost,Status,IsHighlyAvailable,StopAction,StartAction | Sort-Object -Hostname | Export-Csv .\vm-list.csv</p>
+<p>Get-VM -ComputerName SIDFHYV01 | Select-object Name,ComputerName,CPUCount,MemoryAssignedMB,TotalSize,VMHost,Status,IsHighlyAvailable,StopAction,StartAction | Sort-Object -Property Name | Export-Csv .\vm-list01.csv</p>
+<p>Get-VM -ComputerName SIDFHYV02 | Select-object Name,ComputerName,CPUCount,MemoryAssignedMB,TotalSize,VMHost,Status,IsHighlyAvailable,StopAction,StartAction | Sort-Object -Property Name | Export-Csv .\vm-list02.csv</p>
+<p>Get-VM -ComputerName SIDFHYV03 | Select-object Name,ComputerName,CPUCount,MemoryAssignedMB,TotalSize,VMHost,Status,IsHighlyAvailable,StopAction,StartAction | Sort-Object -Property Name | Export-Csv .\vm-list03.csv</p>
+<p>Get-VM -ComputerName SIDFHYV04 | Select-object Name,ComputerName,MemoryAssignedMB,TotalSize,VMHost,Status,IsHighlyAvailable,StopAction,StartAction | Sort-Object -Property Name | Export-Csv .\vm-list04.csv</p>
+<p>Get-VM -ComputerName SIDFMER01 | Select-object Name,ComputerName,CPUCount,MemoryAssignedMB,TotalSize,VMHost,Status,IsHighlyAvailable,StopAction,StartAction | Sort-Object -Property Name | Export-Csv .\vm-list05.csv</p>
+<p>Get-VM | Sort-Object Hostname | Select-Object HostName, Name, ComputerName, Status, OperatingSystem, NetworkAddress | Export-Csv .\desktop\vm-list.csv -NoTypeInformation</p>
+<p>&nbsp;</p>
+<h2>LISTE VHD :</h2>
+<p>Get-ChildItem -Path C:\test -Recurse -Include *.vhd, *.vhdx, *.vhds, *.avhd, *.avhdx | Get-VHD</p>
+<p>Get-VHD -Path C:\test\testvhdx.vhdx</p>
+<p>Get-VM -VMName SIDFDKS01 | Select-Object VMId | Get-VHD</p>
+<p>Get-VM -VMName VDCSZAB01 | Select-Object VMId</p>
+<p>Get-VM -ComputerName SDCSCHV01 -Name VDCSZAB* | Sort-Object Hostname | Select-Object HostName, Name, ComputerName, Status, VMId</p>
+<p>Get-VM | Select-Object VMId | Get-VHD | select vhdtype,path,@{label='Size(GB)';expression={$_.filesize/1gb -as [int]}}</p>
+<p>Get-VM -ComputerName (Get-ClusterNode) | ForEach-Object {Get-VHD -ComputerName $_.ComputerName -VMId $_.VMId} | Select -Property path,computername,vhdtype,@{label='Size(GB)';expression={$_.filesize/1gb -as [int]}}</p>
+<p>Get-SCVirtualMachine -ComputerName (Get-ClusterNode) | ForEach-Object {Get-VHD -ComputerName $_.ComputerName -VMId $_.VMId} | Select -Property path,computername,vhdtype,@{label='Size(GB)';expression={$_.filesize/1gb -as [int]}}</p>
+<p>&nbsp;</p>
+<h2>Redemarrage vm :&nbsp;</h2>
+<p>restart-vm nom_vm</p>
+<p>&nbsp;</p>
+<h2>Rôles Exécutable en Cluster :</h2>
+<p>&nbsp;</p>
+<figure class="table">
+  <table style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;">
+    <tbody>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;"><strong>Rôle en cluster</strong></td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;"><strong>Rôle ou fonctionnalité prérequis</strong></td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Serveur d'espace de noms</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Espaces de noms (partie du rôle de serveur de fichiers)</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Serveur d'espace de noms DFS</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Rôle de serveur DHCP</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Distributed Transaction Coordinator (DTC)</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">None</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Serveur de fichiers</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Rôle de serveur de fichiers</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Application générique</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Non applicable</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Script générique</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Non applicable</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Service générique</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Non applicable</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Service Broker de réplication Hyper-V</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Rôle Hyper-V</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">iSCSI Target Server</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Serveur cible iSCSI (partie du rôle de serveur de fichiers)</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Serveur iSNS</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Fonctionnalité Service serveur iSNS</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Message Queuing</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Fonctionnalité Services Message Queuing</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Autre serveur</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">None</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Machine virtuelle</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Rôle Hyper-V</td>
+      </tr>
+      <tr>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Serveur WINS</td>
+        <td style="background-color:hsl(0, 0%, 100%);border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;">Fonctionnalité Serveur WINS</td>
+      </tr>
+    </tbody>
+  </table>
+</figure>
+<h1>INVENTAIRE VHDX CLUSTER DCS</h1>
+<p>Test2</p>
+<p>Import-Excel 'c:\users\a09\desktop\test2.xlsx'&nbsp;-worksheetname VM -importcolumns @(1) -noheader -startrow 2 | foreach ("p1") | Get-VM -computername SDCSCHV01 | ForEach-Object {Get-VHD -ComputerName $_.ComputerName -VMId $_.VMId} | Select -Property path,computername,vhdtype,@{label='Size(GB)';expression={$_.filesize/1gb -as [int]}} | Export-Excel 'c:\users\a09\desktop\test2.xlsx' -WorksheetName VHD&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;== FONCTIONNEL !!!!</p>
+<p>&nbsp;</p>
+<p>Départ ou MAJ liste Serveur Prod</p>
+<p>Import-Excel 'C:\Users\A09\Absys Cyborg\Teams DSI - Infra - DSI - Infra\Réseaux\List_VM_PROD.xlsx' -worksheetname LIST&nbsp; -importcolumns @(1) -noheader -startrow 2 | foreach ("p1") | Get-VM -ComputerName SDCSCHV01 | Sort-Object Hostname | Select-Object Name, ComputerName, Status | Export-Excel 'C:\Users\A09\Absys Cyborg\Teams DSI - Infra - DSI - Infra\Réseaux\List_VM_PROD.xlsx' -WorksheetName VM&nbsp; &nbsp; &nbsp; == FONCTIONNEL !!!!</p>
+<p>&nbsp;</p>
+<p>Prod</p>
+<p>Import-Excel 'C:\Users\A09\Absys Cyborg\Teams DSI - Infra - DSI - Infra\Réseaux\List_VM_PROD.xlsx' -worksheetname LIST -importcolumns @(1) -noheader -startrow 2 | foreach ("p1") | Get-VM -computername SDCSCHV01 | ForEach-Object {Get-VHD -ComputerName $_.ComputerName -VMId $_.VMId} | Select -Property path,computername,vhdtype,@{label='Size(GB)';expression={$_.filesize/1gb -as [int]}} | Export-Excel 'C:\Users\A09\Absys Cyborg\Teams DSI - Infra - DSI - Infra\Réseaux\List_VM_PROD.xlsx' -WorksheetName VHD</p>

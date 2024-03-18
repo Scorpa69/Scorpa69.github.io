@@ -1,0 +1,66 @@
+<!--
+title: AD_OBJECT
+description: 
+published: true
+date: 2024-01-16T09:21:19.894Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-15T13:59:36.164Z
+-->
+
+<h1>User, PC</h1>
+<h2>AJOUTER USER AU GROUPE AD</h2>
+<p>Get-ADGroup -</p>
+<pre><code class="language-plaintext">Add-ADGroupMember -Identity "CN=GS_Users_MYPASS,OU=_Groupes de sécurité,OU=Cyborg,DC=cyborg,DC=dom" -Members XXX</code></pre>
+<h2>LISTE NOM DES MEMBRES D'UN GROUPE AD</h2>
+<pre><code class="language-plaintext">Get-ADGroupMember -Identity "CN=GS_Users_MYPASS,OU=_Groupes de sécurité,OU=Cyborg,DC=cyborg,DC=dom" -server vdcsads02.cyborg.dom | select name</code></pre>
+<h2>COMPTE AD BLOQUÉ ?? :</h2>
+<pre><code class="language-plaintext">Get-ADUser -Identity XXX -Properties LockedOut,AccountLockoutTime | Select name,LockedOut,AccountLockoutTime</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">Get-ADUser -Filter "Name -eq 'Pren Nom'" -properties LockedOut,AccountLockoutTime | Select samaccountname,LockedOut,AccountLockoutTime</code></pre>
+<h2>DERNIER CHGT DE MDP :</h2>
+<pre><code class="language-plaintext">Get-ADUser -Filter "Name -eq 'Pren Nom'" -properties PasswordLastSet | select name, PasswordLastSet</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">Get-ADUser -Identity XXX -properties PasswordLastSet | select name, PasswordLastSet</code></pre>
+<h2>DEBLOQUER COMPTE AD :</h2>
+<pre><code class="language-plaintext">Unlock-ADAccount -Identity XXX</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">Unlock-ADAccount -Filter “Name -eq ‘Pren Nom’”</code></pre>
+<h2>Ajouter/Enlever un user AD du groupe administrateur local d'une machine :</h2>
+<pre><code class="language-plaintext">Add-LocalGroupMember -Group 'Administrators' -Member cyborg\c72</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">Add-LocalGroupMember -Group 'Administrateurs' -Member cyborg\c72</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">Remove-LocalGroupMember -Group 'Administrateurs' -Member cyborg\c72 </code></pre>
+<h2>Info Compte AD :</h2>
+<p>Get-ADUser -Identity b44</p>
+<p>Get-ADUser -Identity "ceo" -Properties *</p>
+<p>&nbsp;</p>
+<h2>Compte AD Désactivé ou pas :</h2>
+<p>Get-ADUser -Identity xxxx | Select samaccountname,Enabled</p>
+<p>Get-ADUser -Identity Sys_NAV_Synergie_TAL | Select samaccountname,Enabled</p>
+<p>&nbsp;</p>
+<h2>TOUTES LES INFOS D'UN PC :</h2>
+<p>Get-ADComputer -Identity "SIDFDKS01" -Properties *</p>
+<p>&nbsp;</p>
+<h2>TOUT LES SERVEUR AVEC MSSQL :</h2>
+<p>Get-ADComputer -filter 'serviceprincipalname -like "*mssql*" -and operatingsystem -like "Windows Server*"' -properties ipv4address | ft name,ipv4address</p>
+<p>&nbsp;</p>
+<h2>TOUT LES USERS AVEC UNE DESCRITPION QUI CONTIENT CONSULANT</h2>
+<p>Get-ADUser -filter 'description -like "*consultant*" -and Enabled -eq "True"' -properties cn,mail,description | select cn,description,mail,distinguishedName | Export-Csv c:\users\A09\desktop\usersconsultantsAC3.csv</p>
+<p>Get-ADUser -filter 'description -like "chef de projet" -or description -like "directeur de projet" -and Enabled -eq "True"' -properties cn,mail,description | select cn,description,mail,distinguishedName | Export-Csv c:\users\A09\desktop\usersotherconsultantAC.csv</p>
+<p>&nbsp;</p>
+<h2>FAIRE UNE SYNCHRO AD AZURE :</h2>
+<ul>
+  <li>Enter-PSSession -ComputerName vrbxaad01.cyborg.dom -Credential CYBORG\A09_Admin</li>
+  <li>Start-ADSyncSyncCycle –PolicyType Delta</li>
+  <li>FIN</li>
+</ul>
+<p>&nbsp;</p>
+<h2>LAST LOGON</h2>
+<p>Get-ADUser -filter {enabled -eq $true} -Properties * | Select-Object Name, LastlogonDate, @{N='LastLogon'; E={[DateTime]::FromFileTime($_.LastLogon)}}|Sort-Object LastLogonDate -Descending</p>
+<p>Get-ADComputer -Filter 'Name -like "DEV-SAGE100CV*"' -Properties * | Sort LastLogonDate | Select Name, LastLogonDate</p>
+<p>Get-ADComputer -Filter * -Properties * | Sort LastLogonDate | Select Name, LastLogonDate</p>
+<p>Get-ADComputer -Filter * -Properties * | Sort LastLogon | Select Name, LastLogonDate,@{Name='LastLogon';Expression={[DateTime]::FromFileTime($_.LastLogon)}} | Export-Csv C:\adcomputers-last-logon.csv -NoTypeInformation</p>
+<p>Get-ADComputer -Filter 'Name -like "DEV-SAGE100CV*"' -Properties * | Sort LastLogonDate | Select Name, LastLogonDate,@{Name='LastLogon';Expression={[DateTime]::FromFileTime($_.LastLogon)}}</p>
+<p>&nbsp;</p>

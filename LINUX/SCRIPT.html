@@ -1,0 +1,33 @@
+<!--
+title: SCRIPT
+description: 
+published: true
+date: 2024-02-09T15:39:54.261Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-30T13:28:08.478Z
+-->
+
+<h1>Suppression fichiers et dossiers dans un répertoire donné :</h1>
+<h2><br>Sans rétention</h2>
+<pre><code class="language-plaintext">#!/bin/sh
+for fu in user1 user2 user3 user4
+do
+find /home/"$fu"/ -mindepth 1 -type d -exec rm -rf {} \;
+find /home/"$fu"/ -type f -exec rm {} \;
+done
+</code></pre>
+<h2>Avec rétention 4 heures</h2>
+<pre><code class="language-plaintext">#!/bin/sh
+for fu in user1 user2 user3 user4
+do
+find /home/"$fu"/ -mindepth 1 -type d -mmin +240 -exec rm -rf {} \;
+find /home/"$fu"/ -type f -mmin +240 -exec rm {} \;
+done</code></pre>
+<h2>Avec rétention 8 jours</h2>
+<pre><code class="language-plaintext">#!/bin/sh
+for fu in user1 user2 user3 user4
+do
+find /home/"$fu"/ -mindepth 1 -type d -mtime +7 -exec rm -rf {} \;
+find /home/"$fu"/ -type f -mtime +7 -exec rm {} \;
+done</code></pre>

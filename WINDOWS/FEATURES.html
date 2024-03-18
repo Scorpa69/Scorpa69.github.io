@@ -1,0 +1,44 @@
+<!--
+title: FEATURES
+description: 
+published: true
+date: 2023-09-18T12:38:11.958Z
+tags: ps, windows, powershell, fonction, features, w10, excel, module
+editor: ckeditor
+dateCreated: 2023-09-18T12:38:10.677Z
+-->
+
+<h1>installation du Net Framework 3.5,l'option /LimitAccess permet d'interdire la vérif et l'install du composants depuis windows update</h1>
+<p>DISM /Online /Enable-Feature /FeatureName:NetFx3 /All /LimitAccess /Source:D:\Sources\SxS</p>
+<p>&nbsp;</p>
+<h1>Installation de IIS6 compatibility pour la console d'admin Exchange 2010,l'option /LimitAccess permet d'interdire la vérif et l'install du composants depuis windows update</h1>
+<p>dism /online /Enable-Feature /FeatureName:IIS-IIS6ManagementCompatibility /all /LimitAccess /Source:D:\Sources\SxS&nbsp;</p>
+<p>&nbsp;</p>
+<h1>pour avoir la liste des features présents sur l'image local du PC</h1>
+<p>Dism /online /Get-Features</p>
+<p>&nbsp;</p>
+<h1>commande de base pour activer un composants windows, l'option /LimitAccess permet d'interdire la vérif et l'install du composants depuis windows update</h1>
+<p>Dism /online /enable-feature /FeatureName:[yourfeaturehere]&nbsp;</p>
+<p>&nbsp;</p>
+<h1>MODULE IMPORT-EXCEL POWERSHELL :</h1>
+<p>Install-Module -Name ImportExcel</p>
+<p>Exemples :</p>
+<p>Verification si le compute et les disques d'une vm sont bien au même DCS:</p>
+<p>Import-Excel 'C:\Users\A09\Absys Cyborg\Teams DSI - Infra - DSI - Infra\Réseaux\List_VM_PROD.xlsx' -worksheetname LIST -importcolumns @(1) -noheader -startrow 2 | foreach ("p1") | Get-VM -computername SDCSCHV01 | ForEach-Object {Get-VHD -ComputerName $_.ComputerName -VMId $_.VMId} | Select -Property path,computername,vhdtype,@{label='Size(GB)';expression={$_.filesize/1gb -as [int]}} | Export-Excel 'C:\Users\A09\Absys Cyborg\Teams DSI - Infra - DSI - Infra\Réseaux\List_VM_PROD.xlsx' -WorksheetName VHD</p>
+<p>&nbsp;</p>
+<h1>INTERFACE GRAPHIQUE SUR SERVER CORE</h1>
+<h2>Installer l'interface graphique sur un serveur core</h2>
+<p>Dism /online /enable-feature /featurename:NetFx3 /All /Source:X:\sources\sxs /LimitAccess =&gt; permet d'intaller net framework 3.5 qui nécessaire pour la suite</p>
+<p>copy d:\sources\install.wim c:\sources\install.wim</p>
+<p>attrib.exe -r c:\sources\install.wim (=&gt;enlève la lecture seule sur le fichier)</p>
+<p>Dism /get-wiminfo /wimfile:c:\sources\install.wim =&gt; pour connaitre le numéro d'index de fichier wim</p>
+<p>Install-WindowsFeature Server-Gui-Mgmt-Infra,Server-Gui-Shell –Source wim:c:\sources\install.wim:2 (est le numéro de l'index voulu)</p>
+<p>&nbsp;</p>
+<h2>Installer l'interface graphique sur un serveur core (sans licence volume): (les roles sont présents mais pas activer)</h2>
+<p>Add-WindowsFeature Server-Gui-Shell, Server-Gui-Mgmt-Infra</p>
+<p>&nbsp;</p>
+<h1>LISTE FEATURES</h1>
+<p>Get-WindowsFeature</p>
+<p>Get-WindowsFeature | Where-Object {$_.InstallState -eq "Removed"}</p>
+<p>Get-WindowsFeature | Where-Object {$_.InstallState -eq "Available"}</p>
+<p>Get-WindowsFeature | Where-Object {$_.InstallState -eq "Installed"}</p>

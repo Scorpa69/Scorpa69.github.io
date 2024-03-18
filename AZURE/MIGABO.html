@@ -1,0 +1,102 @@
+<!--
+title: MIGABO
+description: 
+published: true
+date: 2024-02-23T14:58:27.164Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-02-22T10:15:56.037Z
+-->
+
+<h1>MIGRATION DES RESSOURCES D'UN ABONNEMENT AZURE à UN AUTRE (Cas de Factory AC)</h1>
+<h2>Inventaire</h2>
+<ul>
+  <li>Front Door</li>
+  <li>Front Door WAF</li>
+  <li>Plan App Service (Function et Web App)</li>
+  <li>Virtual Network</li>
+  <li>Storage Account</li>
+  <li>Serveur SQL</li>
+  <li>Key Vault</li>
+  <li>NAT Gateway</li>
+  <li>IP Publique</li>
+  <li>Log Analytics</li>
+  <li>Cosmo DB</li>
+  <li>Runbook</li>
+  <li>Service Bus</li>
+</ul>
+<h2>Bilan Orga Ressources dans les différents RG et Deploy depuis Devops</h2>
+<p>Le tenant Factory AC a des Web App qui ne sont pas dans le RG du Plan sur lequel elles sont hébergé, en l'état les ressources ne sont pas migrable</p>
+<p>Les Front Door étant classic, elles ne seront pas migrées, nous allons créer une Front Door Prenium sur l'abo INFRA</p>
+<p>Le déploiement depuis DevOps</p>
+<h2>Futur Structure</h2>
+<figure class="table">
+  <table>
+    <tbody>
+      <tr>
+        <td>RG</td>
+        <td>Ressource</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>rg-app-back-env-xx</td>
+        <td>Plan App Back + Web App Back + Function</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>rg-app-front-env-xx</td>
+        <td>Plan App Front + Web App Front</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>rg-sql-env</td>
+        <td>Serveur SQL + BDD</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>rg-network-storage-env</td>
+        <td>Key Vault + Virtual Network + Nat Gateway + IP Publique + Storage Account</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>rg-cosmodb-env</td>
+        <td>Cosmo DB</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>rg-log-env</td>
+        <td>Log Analytics</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;rg-sbus-env</td>
+        <td>Service Bus</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;(rg-func-env) à voir</td>
+        <td>&nbsp;Function sur plan Y1 (A la conso) https://azure.microsoft.com/en-us/pricing/details/functions/</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    </tbody>
+  </table>
+</figure>
+<p>&nbsp;</p>

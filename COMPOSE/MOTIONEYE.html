@@ -1,0 +1,43 @@
+<!--
+title: MOTIONEYE
+description: 
+published: true
+date: 2023-09-18T12:35:57.192Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:35:55.818Z
+-->
+
+<h1>Docker Compose file that uses an IPvlan L3 network mode for the MotionEyeOS container:</h1>
+<pre><code class="language-plaintext">version: "3"
+
+services:
+  motioneye:
+    image: ccrisan/motioneye:latest
+    container_name: motioneye
+    restart: always
+    environment:
+      - TZ=America/New_York
+    ports:
+      - 8765:8765
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/motioneye:/etc/motioneye
+      - /var/lib/motioneye:/var/lib/motioneye
+      - /dev/video0:/dev/video0
+    networks:
+      motioneye_net:
+        ipv4_address: 192.168.0.2
+
+networks:
+  motioneye_net:
+    driver: ipvlan
+    driver_opts:
+      parent: eth0
+      ipvlan_mode: l3
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24</code></pre>
+<p>In this Compose file, an IPvlan L3 network called <code>motioneye_net</code> is created with a subnet of <code>192.168.0.0/24</code>. The MotionEyeOS container is configured to use this network and is assigned an IP address of <code>192.168.0.2</code>.</p>
+<p>To access the MotionEyeOS web interface, you can connect to <code>http://192.168.0.2:8765</code> in your web browser. The MotionEyeOS container will be able to access the video device at <code>/dev/video0</code> as long as it is mapped into the container as a volume.</p>

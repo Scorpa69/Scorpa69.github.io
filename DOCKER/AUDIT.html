@@ -1,0 +1,19 @@
+<!--
+title: AUDIT
+description: 
+published: true
+date: 2023-10-10T13:12:28.855Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-28T10:30:22.415Z
+-->
+
+<pre><code class="language-plaintext">docker run -it --net host --pid host --userns host --cap-add audit_control \
+    -e DOCKER_CONTENT_TRUST=$DOCKER_CONTENT_TRUST \
+    -v /var/lib:/var/lib \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v /usr/lib/systemd:/usr/lib/systemd \
+    -v /etc:/etc --label docker_bench_security \
+    docker/docker-bench-security</code></pre>
+<p>ou</p>
+<pre><code class="language-plaintext">docker run -it --net host --pid host --userns host --cap-add audit_control -e DOCKER_CONTENT_TRUST=$DOCKER_CONTENT_TRUST -v /var/lib:/var/lib -v /var/run/docker.sock:/var/run/docker.sock -v /usr/lib/systemd:/usr/lib/systemd -v /etc:/etc --label docker_bench_security docker/docker-bench-security</code></pre>

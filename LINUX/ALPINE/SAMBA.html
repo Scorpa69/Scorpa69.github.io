@@ -1,0 +1,42 @@
+<!--
+title: SAMBA
+description: 
+published: true
+date: 2023-09-18T12:40:22.029Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:40:20.996Z
+-->
+
+<h1>Installation</h1>
+<p>Install packages:</p>
+<p># apk add samba</p>
+<h1>Create a share directory</h1>
+<p>This will be the directory that's shared to clients. You can create as many of these as you wish.</p>
+<p># mkdir /media/storage</p>
+<p># chmod 0777 /media/storage</p>
+<h1>Create smb.conf</h1>
+<p>Alpine provides an example configuration file located at /etc/samba/smb.conf. The following is a simple example to get you up and running.</p>
+<p><strong>Contents of </strong>/etc/samba/smb.conf</p>
+<p># /etc/samba/smb.conf&nbsp;</p>
+<p>[global]&nbsp;</p>
+<p>#to allow symlinks from everywhere allow insecure wide links = yes&nbsp;</p>
+<p>workgroup = WORKGROUP&nbsp;</p>
+<p>dos charset = cp866&nbsp;</p>
+<p>unix charset = utf-8 force&nbsp;</p>
+<p>user = username&nbsp;</p>
+<p>[storage]&nbsp;</p>
+<p># to follow symlinks follow symlinks = yes&nbsp;</p>
+<p># to allow symlinks from outside wide links = yes&nbsp;</p>
+<p>browseable = yes&nbsp;</p>
+<p>writeable = yes&nbsp;</p>
+<p>path = /media/storage</p>
+<p><strong>Note: </strong>For each directory share, you'll need to add a subsection to <strong>smb.conf</strong></p>
+<h1>Create a system user and Samba user</h1>
+<p>Create a user on the system. Create a Samba user. Give both users the same password.</p>
+<p># adduser username</p>
+<p># smbpasswd -a username</p>
+<h1>Configure the Samba service</h1>
+<p>Run these two commands to start the service on boot and to start the service right now.</p>
+<p># rc-update add samba</p>
+<p># rc-service samba start</p>

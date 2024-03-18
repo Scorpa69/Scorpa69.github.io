@@ -1,0 +1,50 @@
+<!--
+title: BUILD
+description: 
+published: true
+date: 2023-11-17T09:00:38.613Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-11-16T15:48:45.184Z
+-->
+
+<h1>Build an image in compose : (remplace image)</h1>
+<h2>Changement dans le compose :</h2>
+<h3>Origine avec image :</h3>
+<pre><code class="language-plaintext">services:
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:alpine-6.4.8</code></pre>
+<h3>Modifié avec Build:</h3>
+<pre><code class="language-plaintext">services:
+  zabbix-server
+    build:
+      context: /compose/build/zbxa648
+      dockerfile: Dockerfile</code></pre>
+<h2>Fichier Dockerfile :</h2>
+<pre><code class="language-plaintext">FROM zabbix/zabbix-server-mysql:alpine-6.4.8
+
+#Voir si besoin de spécifier le user root et de switcher sur le user zabbix
+
+# Install Microsoft ODBC driver
+RUN apk --no-cache add --virtual .build-deps curl gnupg \
+    &amp;&amp; curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/msodbcsql18_18.3.2.1-1_amd64.apk \
+    &amp;&amp; curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/mssql-tools18_18.3.1.1-1_amd64.apk \
+    &amp;&amp; curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/msodbcsql18_18.3.2.1-1_amd64.sig \
+    &amp;&amp; curl -O https://download.microsoft.com/download/3/5/5/355d7943-a338-41a7-858d-53b259ea33f5/mssql-tools18_18.3.1.1-1_amd64.sig \
+    &amp;&amp; curl https://packages.microsoft.com/keys/microsoft.asc  | gpg --import - \
+    &amp;&amp; gpg --verify msodbcsql18_18.3.2.1-1_$architecture.sig msodbcsql18_18.3.2.1-1_amd64.apk \
+    &amp;&amp; gpg --verify mssql-tools18_18.3.1.1-1_$architecture.sig mssql-tools18_18.3.1.1-1_amd64.apk \
+    &amp;&amp; apk add --allow-untrusted msodbcsql18_18.3.2.1-1_amd64.apk \
+    &amp;&amp; apk add --allow-untrusted mssql-tools18_18.3.1.1-1_amd64.apk \
+    &amp;&amp; apk del --purge .build-deps \
+    &amp;&amp; rm -rf /var/cache/apk/*</code></pre>
+<p>&nbsp;</p>
+<h2>Fichiers de conf :</h2>
+<p><strong>/etc/odbc.ini</strong></p>
+<pre><code class="language-plaintext">[$MSSQL.DSN] =&gt; c'est arbitraire l'important est que cela corresponde entre le fichier ODBC.INI et la macros dans Zabbix (Attention n'accepte pas le caractère " \ ")
+Driver = ODBC Driver 18 for SQL Server
+Server = tcp:FQDN_SERVEUR,port_sql</code></pre>
+<p>Example:</p>
+<pre><code class="language-plaintext">[VDCSADMIN/SQL2019]
+Driver = ODBC Driver 17 for SQL Server
+Server = tcp:VDCSADMIN.cyborg.dom,50101</code></pre>

@@ -1,0 +1,56 @@
+<!--
+title: IPERF
+description: 
+published: true
+date: 2023-09-18T12:35:12.786Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:35:11.546Z
+-->
+
+<h1>WINDOWS :</h1>
+<p>1 Lancer iperf d'un côté en mode serveur : iperf -s&nbsp;</p>
+<p>2 Lancer ipref de l'autre en mode client : iperf -c nom_cible -r</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Mesure de la bande passante bidirectionnelle: (argument -r)</p>
+<p>&nbsp;</p>
+<p>Le serveur Iperf se connecte en retour sur le client permettant la mesure de la bande passante bidirectionnelle. Par défaut, seule la bande passante du client au serveur est mesurée.</p>
+<p>Si vous voulez mesurer la bande passante bidirectionnelle de manière simultanée, utilisez l'argument -d. (Voir le test suivant)</p>
+<p>&nbsp;</p>
+<p>&nbsp;Côté client:</p>
+<p>&nbsp;</p>
+<p>#iperf -c 10.1.1.1 -r</p>
+<p>------------------------------------------------------------</p>
+<p>Server listening on TCP port 5001</p>
+<p>TCP window size: 85.3 KByte (default)</p>
+<p>------------------------------------------------------------</p>
+<p>------------------------------------------------------------</p>
+<p>Client connecting to 10.1.1.1, TCP port 5001</p>
+<p>TCP window size: 16.0 KByte (default)</p>
+<p>------------------------------------------------------------</p>
+<p>[ 5] local 10.6.2.5 port 35726 connected with 10.1.1.1 port 5001</p>
+<p>[ 5]&nbsp; &nbsp;0.0-10.0 sec&nbsp; &nbsp;1.12 MBytes&nbsp; 936 Kbits/sec</p>
+<p>[ 4] local 10.6.2.5 port 5001 connected with 10.1.1.1 port 1640</p>
+<p>[ 4]&nbsp; &nbsp;0.0-10.1 sec&nbsp; &nbsp;74.2 MBytes&nbsp; 61.7 Mbits/sec</p>
+<p>&nbsp;</p>
+<p>&nbsp;Côté serveur:</p>
+<p>&nbsp;</p>
+<p>#iperf -s</p>
+<p>------------------------------------------------------------</p>
+<p>Server listening on TCP port 5001</p>
+<p>TCP window size: 8.00 KByte (default)</p>
+<p>------------------------------------------------------------</p>
+<p>[852] local 10.1.1.1 port 5001 connected with 10.6.2.5 port 54355</p>
+<p>[ ID]&nbsp; &nbsp;Interval&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Transfer&nbsp; &nbsp; &nbsp; &nbsp; Bandwidth</p>
+<p>[852]&nbsp; &nbsp;0.0-10.1 sec&nbsp; &nbsp;1.15 MBytes&nbsp; 956 Kbits/sec</p>
+<p>------------------------------------------------------------</p>
+<p>Client connecting to 10.6.2.5, TCP port 5001</p>
+<p>TCP window size: 8.00 KByte (default)</p>
+<p>------------------------------------------------------------</p>
+<p>[824] local 10.1.1.1 port 1646 connected with 10.6.2.5 port 5001</p>
+<p>[ ID]&nbsp; &nbsp;Interval&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Transfer&nbsp; &nbsp; &nbsp; &nbsp; Bandwidth</p>
+<p>[824]&nbsp; &nbsp;0.0-10.0 sec&nbsp; &nbsp;73.3 MBytes&nbsp; 61.4 Mbits/sec</p>

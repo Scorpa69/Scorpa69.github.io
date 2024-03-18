@@ -1,0 +1,51 @@
+<!--
+title: CONFIG
+description: 
+published: true
+date: 2024-01-08T09:22:05.535Z
+tags: mysql, bdd, configuration
+editor: ckeditor
+dateCreated: 2023-09-18T12:37:33.777Z
+-->
+
+<p>MODIFICATION DU PARAMETRE MAX_CONNECTIONS :</p>
+<p>mysql -u root</p>
+<p>SHOW VARIABLES LIKE "max_connections";</p>
+<p>set global max_connections = 250;</p>
+<p>exit</p>
+<p>Puis modifier le fichier pour rendre le paramètre persistent</p>
+<p>nano /etc/my.cnf&nbsp;</p>
+<p>&nbsp;</p>
+<p>nano /etc/mysql/mysql.conf.d/mysqld.cnf</p>
+<p>Exemple zabbix :</p>
+<p>[mysqld]</p>
+<p># En général 40% du total de RAM si Apache et Zabbix sur la même machine, Si Mysql seule alors passer à 70% de la RAM)</p>
+<p>innodb_buffer_pool_size = 4G&nbsp;</p>
+<p># Il faut que le pool size divisé par le nb d'instance soit supérieur à 1G&nbsp;</p>
+<p>innodb_buffer_pool_instances = 16</p>
+<p>innodb_flush_log_at_trx_commit = 0&nbsp;</p>
+<p>innodb_flush_method = O_DIRECT</p>
+<p># innodb_flushing_avg_loops = 10&nbsp; # from 30 to reduce loop delay</p>
+<p># innodb-flush-log-at-trx-commit = 2</p>
+<p># innodb-log-file-size = 128M&nbsp; # from 50M to extend minutes to next log rotation</p>
+<p># innodb-log-buffer-size = 128M # from 16M to support ~ 30 minutes of logging</p>
+<p># POUR les SSD on peut mettre 2000 pour les autres entre 500 et 800 selon le type (Meca SAS = 800 ou SATA= 500).</p>
+<p>innodb_io_capacity = 2000&nbsp;</p>
+<p># Retention log 1 Jours (86400seconds)</p>
+<p>binlog_expire_logs_seconds = 86400</p>
+<p># tmp_table_size = 96M&nbsp; # from 16M to reduce created_tmp_tables RPS</p>
+<p># max_heap_table_size = 96M&nbsp; # from 16M to reduce created_tmp_disk_tables RPS</p>
+<p>max_connections = 250 # depend du nombre de Dbsyncers et de Proxy Zabbix</p>
+<p># max_connect_errors = 1000000</p>
+<p># connect_timeout = 60</p>
+<p># open_files_limit = 65535</p>
+<p># thread_cache_size = 100&nbsp; # from 10 to reduce threads_created and CAP at 100 per refman</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Exemple VDSDEVTPM01:</p>
+<p>[mysqld]</p>
+<p>innodb_buffer_pool_size = 6M</p>
+<p>&nbsp;</p>
+<p>Exemple VDSTPM01:</p>
+<p>[mysqld]</p>
+<p>innodb_buffer_pool_size = 150M</p>

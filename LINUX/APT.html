@@ -1,0 +1,55 @@
+<!--
+title: APT
+description: 
+published: true
+date: 2023-09-18T12:36:39.494Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-09-18T12:36:38.160Z
+-->
+
+<h1>REPOSITORIES</h1>
+<p><code>nano /etc/apt/sources.list</code> et vérifier qu'il y a bien ce qui suit :</p>
+<p><code>deb http://deb.debian.org/debian bullseye main contrib non-free</code></p>
+<p><code>deb-src http://deb.debian.org/debian bullseye main contrib non-free</code></p>
+<p><code>deb http://deb.debian.org/debian-security/ bullseye-security main contrib non-free</code></p>
+<p><code>deb-src http://deb.debian.org/debian-security/ bullseye-security main contrib non-free</code></p>
+<p><code>deb http://deb.debian.org/debian bullseye-updates main contrib non-free</code></p>
+<p><code>deb-src http://deb.debian.org/debian bullseye-updates main contrib non-free</code></p>
+<h1>SIMULER MAJ OS COMPLETE :</h1>
+<p><code>apt full-upgrade -s</code></p>
+<h1>Paquet ont étés conservé : pour installer quand même faire</h1>
+<p><code>apt dist-upgrade</code></p>
+<p>/!\ Faire un point de contrôle AVANT !!!!!!!!!!!!!</p>
+<h1>PROBLEME CLE GPG ABSENTE:</h1>
+<p><code>apt install gnupg</code></p>
+<p><code>gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 467B942D3A79BD29</code></p>
+<p><code>gpg --export --armor 467B942D3A79BD29 | apt-key add -</code></p>
+<h1>LISTER PAQUET INSTALLé:</h1>
+<p><code>dpkg -l</code></p>
+<h1>CHERCHER PROGRAMME INSTALLé</h1>
+<p><code>dpkg -l | grep selinux</code> ou <code>dpkg -l | grep grafana</code></p>
+<h1>SUPPRIMER LE LIEN REPOS AJOUTÉ POUR UNE APPLI :&nbsp;</h1>
+<p>A faire après le "apt remove"</p>
+<p><code>dpkg --purge zabbix-release</code> ou <code>dpkg --purge grafana-enterprise</code></p>
+<h1>INSTALLATION APPLICATION:</h1>
+<p><code>apt install nom_paquet</code></p>
+<h1>REINSTALLER UN PAQUET:</h1>
+<p><code>apt reinstall nom_paquet</code></p>
+<h1>SUPPRIMER PAQUET SIMPLE:</h1>
+<p><code>apt remove nom_paquet</code></p>
+<h1>SUPPRIMER PAQUET ET DEPENDENCES:</h1>
+<p><code>apt-get remove --auto-remove grafana-enterprise</code></p>
+<h1>SUPPRIMER PAQUET COMPLET: incluant les fichiers de configuration</h1>
+<p><code>apt purge nom_paquet</code></p>
+<h1>SUPPRESSION&nbsp; ARCHIVES PAQUET EN GARDANT LA VERSION ACTUEL:</h1>
+<p><code>apt autoclean</code></p>
+<h1>SUPPRESSION ARCHIVES TOUS LES PAQUET:</h1>
+<p><code>apt clean</code></p>
+<p>&nbsp;</p>
+<h1>RECHERCHE D'UN PAQUET:</h1>
+<p><code>apt search nom_paquet</code></p>
+<h1>INFOS PAQUET:</h1>
+<p><code>apt show nom_paquet</code></p>
+<h1>RAISONS PAQUET QUI NE VEUT PAS S'INSTALLER:</h1>
+<p><code>apt why-not nom_paquet</code></p>

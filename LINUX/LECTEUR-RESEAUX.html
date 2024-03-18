@@ -1,0 +1,21 @@
+<!--
+title: LECTEUR RESEAUX
+description: 
+published: true
+date: 2024-01-09T10:19:09.677Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-09T10:19:09.677Z
+-->
+
+<h1>SMB :</h1>
+<h2>Installer les paquets suivant pour pour voir monter un partage smb ou cifs:</h2>
+<pre><code class="language-plaintext">yum install autofs cifs-utils</code></pre>
+<p>OU</p>
+<pre><code class="language-plaintext">apt install autofs cifs-utils</code></pre>
+<h2>Monter un lecteur réseaux:</h2>
+<pre><code class="language-plaintext">mount -t cifs -o username=administrateur,password=mdp //192.168.0.10/Data&nbsp; /media/Windows/Data</code></pre>
+<pre><code class="language-plaintext">mount -t cifs -o username=movebackup,password=mdp //nidfnas01.cyborg.dom/movebackup&nbsp; /media/movebackup</code></pre>
+<h3>Avec un fichier pour les cred :</h3>
+<pre><code class="language-plaintext">mount -t cifs -o credentials=/root/.smbcreds //nidfnas01.cyborg.dom/movebackup&nbsp; /media/movebackup</code></pre>
+<h1>NFS : A Faire</h1>

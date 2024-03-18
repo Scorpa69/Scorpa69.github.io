@@ -1,0 +1,250 @@
+<!--
+title: PROFTPD
+description: 
+published: true
+date: 2024-02-01T10:51:58.680Z
+tags: 
+editor: ckeditor
+dateCreated: 2023-10-18T14:45:05.033Z
+-->
+
+<h1>INSTALLATION</h1>
+<pre><code class="language-plaintext">apt install proftpd proftpd-mod-crypto certbot pwgen</code></pre>
+<p>puis on passe à la création des certificats avec un certificat autosignés ou un certificat let's encrypt selon le besoin :</p>
+<p>En Autosignés</p>
+<pre><code class="language-plaintext">openssl req -x509 -newkey rsa:3072 -keyout /etc/ssl/private/proftpd.key -out /etc/ssl/certs/proftpd.crt -nodes -days 365</code></pre>
+<p>En Let's Encrypt</p>
+<pre><code class="language-plaintext">certbot certonly --standalone --email itsupport@absyscyborg.com --agree-tos --preferred-challenges http -d yourdomain.com</code></pre>
+<p>Editer la liste des users interdit</p>
+<pre><code class="language-plaintext">nano /etc/ftpusers</code></pre>
+<p>Config des modules</p>
+<pre><code class="language-plaintext">nano /etc/proftpd/modules.conf</code></pre>
+<p>et activer les modules / décommenter les lignes :</p>
+<pre><code class="language-plaintext">LoadModule mod_tls.c
+LoadModule mod_tls_fscache.c
+LoadModule mod_tls_shmcache.c
+LoadModule mod_tls_memcache.c
+LoadModule mod_sftp.c
+LoadModule mod_sftp_pam.c (à valider lors de l'utilisation de clé sinon à désactiver/commenter)</code></pre>
+<p>et désactiver / commenter :</p>
+<pre><code class="language-plaintext">#LoadModule mod_wrap2_sql.c
+#LoadModule mod_dynmasq.c
+#LoadModule mod_exec.c
+#LoadModule mod_shaper.c
+#LoadModule mod_ratio.c
+#LoadModule mod_site_misc.c
+#LoadModule mod_radius.c
+#LoadModule mod_quotatab.c
+#LoadModule mod_quotatab_file.c</code></pre>
+<p>Config de proftpd selon l'exemple si dessous :</p>
+<pre><code class="language-plaintext">nano /etc/proftpd/proftpd.conf</code></pre>
+<p>Création des mdp et des users :</p>
+<pre><code class="language-plaintext">pwgen 32 4 -sy</code></pre>
+<pre><code class="language-plaintext">adduser ftpes49871 --home /home/ftpes49871 --shell /bin/false</code></pre>
+<pre><code class="language-plaintext">adduser ftpis45987 --home /home/ftpis45987 --shell /bin/false</code></pre>
+<pre><code class="language-plaintext">adduser sftpass26571 --home /home/sftpass26571 --shell /bin/false</code></pre>
+<pre><code class="language-plaintext">adduser sftpkey86135 --home /home/sftpkey86135 --shell /bin/false</code></pre>
+<p>Monter le lecteur Veracrypt sur la lettre a:</p>
+<p>Création de la clé depuis mon poste en PS :</p>
+<pre><code class="language-plaintext">ssh-keygen -t Ed25519 -f a:\ftplecuserprivkey\sftpkey86135</code></pre>
+<p>Copie de la clé publique depuis mon poste sur la vm :</p>
+<pre><code class="language-plaintext">scp a:\ftplecuserprivkey\sftpkey86135.pub ftplec:/home/admin/sftpkey86135.pub</code></pre>
+<p>Conversion de la clé pub en mode compréhensible pour proftpd :</p>
+<pre><code class="language-plaintext">ssh-keygen -e -f sftpkey86135.pub &gt; sftpkey86135</code></pre>
+<p>Copie au bon endroit :</p>
+<pre><code class="language-plaintext">mkdir /etc/proftpd/authorized_keys</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">mv sftpkey86135 /etc/proftpd/authorized_keys/sftpkey86135</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">rm sftpkey86135 &amp;&amp; rm sftpkey86135.pub</code></pre>
+<p>Récupération de la clé racine let's encrypt :</p>
+<pre><code class="language-plaintext">wget -O /etc/ssl/certs/isrg-root-x1-cross-signed.pem 'https://letsencrypt.org/certs/isrg-root-x1-cross-signed.pem'</code></pre>
+<p>Restart et activation du service au démarrage :</p>
+<pre><code class="language-plaintext">systemctl restart proftpd</code></pre>
+<p>&nbsp;</p>
+<pre><code class="language-plaintext">systemctl enable proftpd</code></pre>
+<h1>FTPeS + FTPiS + SFTP pass + SFTP key en mode Vhost</h1>
+<pre><code class="language-plaintext">#Server Config
+ServerType standalone
+DefaultServer off
+UseReverseDNS off
+UseIPv6 off
+MultilineRFC2228        off
+ShowSymlinks    on
+TimeoutNoTransfer       600
+TimeoutStalled  600
+TimeoutIdle     1200
+DisplayLogin    welcome.msg
+DisplayChdir    .message true
+DenyFilter      \*.*/
+Include /etc/proftpd/modules.conf
+Port 0
+SystemLog       /var/log/proftpd/proftpd.log
+MaxInstances    30
+User    proftpd
+Group   nogroup
+Umask   022 022
+
+#Conf Global à tous les VHost
+&lt;Global&gt;
+   &lt;Directory /proc&gt;
+   &lt;Limit ALL&gt;
+   DenyAll
+   &lt;/Limit&gt;
+   &lt;/Directory&gt;
+&lt;/Global&gt;
+
+#FTPES
+&lt;VirtualHost 0.0.0.0&gt;
+   ServerName "FTPESLEC"
+   MasqueradeAddress lecftptest.francecentral.cloudapp.azure.com
+   Port 21
+   PassivePorts    61000 61025
+   DefaultServer on
+   RequireValidShell       off
+   AllowOverwrite on
+   DefaultRoot /home/ftpes49871
+   &lt;Directory /home/ftpes49871&gt;
+       AllowOverwrite on
+       &lt;Limit ALL&gt;
+           AllowUser ftpes49871
+           DenyAll
+       &lt;/Limit&gt;
+   &lt;/Directory&gt;
+   &lt;Limit LOGIN&gt;
+      DenyAll
+      AllowUser ftpes49871
+   &lt;/Limit&gt;
+   &lt;IfModule mod_tls.c&gt;
+      TLSEngine       on
+      TLSLog  /var/log/proftpd/tls.log
+      TLSProtocol     TLSv1.3
+      TLSRSACertificateFile   /etc/letsencrypt/live/lecftptest.francecentral.cloudapp.azure.com/fullchain.pem
+      TLSRSACertificateKeyFile        /etc/letsencrypt/live/lecftptest.francecentral.cloudapp.azure.com/privkey.pem
+      TLSCACertificateFile    /etc/ssl/certs/isrg-root-x1-cross-signed.pem
+      TLSOptions      EnableDiags NoSessionReuseRequired
+      TLSVerifyClient off
+      TLSRequired     on
+      TLSRenegotiate  none
+   &lt;/IfModule&gt;
+&lt;/VirtualHost&gt;
+
+#FTPIS
+&lt;VirtualHost 0.0.0.0&gt;
+   ServerName "FTPISLEC"
+   MasqueradeAddress lecftptest.francecentral.cloudapp.azure.com
+   Port 990
+   PassivePorts    61026 61050
+   DefaultServer off
+   DefaultRoot /home/ftpis45987
+   RequireValidShell       off
+   &lt;Directory /home/ftpis45987&gt;
+       AllowOverwrite on
+       &lt;Limit ALL&gt;
+           AllowUser ftpis45987
+           DenyAll
+       &lt;/Limit&gt;
+   &lt;/Directory&gt;
+   &lt;Limit LOGIN&gt;
+      DenyAll
+      AllowUser ftpis45987
+   &lt;/Limit&gt;
+   &lt;IfModule mod_tls.c&gt;
+      TLSEngine       on
+      TLSLog  /var/log/proftpd/tls.log
+      TLSProtocol     TLSv1.3
+      TLSRSACertificateFile   /etc/letsencrypt/live/lecftptest.francecentral.cloudapp.azure.com/fullchain.pem
+      TLSRSACertificateKeyFile        /etc/letsencrypt/live/lecftptest.francecentral.cloudapp.azure.com/privkey.pem
+      TLSCACertificateFile    /etc/ssl/certs/isrg-root-x1-cross-signed.pem
+      TLSOptions      UseImplicitSSL EnableDiags NoSessionReuseRequired
+      TLSVerifyClient off
+      TLSRequired     on
+      TLSRenegotiate  none
+   &lt;/IfModule&gt;
+&lt;/VirtualHost&gt;
+
+#SFTP PASSWORD
+&lt;VirtualHost 0.0.0.0&gt;
+   ServerName "SFTPLEC_PASS"
+   Port 2222
+   PassivePorts    61051 61075
+   DefaultServer off
+   RequireValidShell       off
+   SFTPEngine on
+   SFTPLog /var/log/proftpd/sftp.log
+   SFTPHostKey  /etc/ssh/ssh_host_rsa_key
+   SFTPHostKey  /etc/ssh/ssh_host_dsa_key
+   SFTPHostKey  /etc/ssh/ssh_host_rsa_key
+   SFTPHostKey  /etc/ssh/ssh_host_ecdsa_key
+   SFTPHostKey  /etc/ssh/ssh_host_ed25519_key
+   DefaultRoot /home/sftpass26571
+   SFTPAuthMethods  password
+   SFTPCompression delayed
+   MaxLoginAttempts  6
+   &lt;Directory /home/sftpass26571&gt;
+       AllowOverwrite on
+       &lt;Limit ALL&gt;
+           AllowUser sftpass26571
+           DenyAll
+       &lt;/Limit&gt;
+   &lt;/Directory&gt;
+   &lt;Limit LOGIN&gt;
+      DenyAll
+      AllowUser sftpass26571
+   &lt;/Limit&gt;
+&lt;/VirtualHost&gt;
+
+#SFTP KEY
+&lt;VirtualHost 0.0.0.0&gt;
+   ServerName "SFTPLEC_KEY"
+   Port 2223
+   PassivePorts    61076 61100
+   DefaultServer off
+   RequireValidShell       off
+   SFTPEngine on
+   SFTPLog /var/log/proftpd/sftp.log
+   SFTPHostKey  /etc/ssh/ssh_host_rsa_key
+   SFTPHostKey  /etc/ssh/ssh_host_dsa_key
+   SFTPHostKey  /etc/ssh/ssh_host_rsa_key
+   SFTPHostKey  /etc/ssh/ssh_host_ecdsa_key
+   SFTPHostKey  /etc/ssh/ssh_host_ed25519_key
+   DefaultRoot /home/sftpkey86135
+   SFTPAuthMethods  publickey
+   SFTPAuthorizedUserKeys  file:/etc/proftpd/authorized_keys/%u
+   SFTPCompression delayed
+   MaxLoginAttempts  6
+   &lt;Directory /home/sftpkey86135&gt;
+       AllowOverwrite on
+       &lt;Limit ALL&gt;
+           AllowUser sftpkey86135
+           DenyAll
+       &lt;/Limit&gt;
+   &lt;/Directory&gt;
+   &lt;Limit LOGIN&gt;
+      DenyAll
+      AllowUser sftpkey86135
+   &lt;/Limit&gt;
+&lt;/VirtualHost&gt;
+</code></pre>
+<h1>Sécurisation avec fail2ban : à finaliser</h1>
+<pre><code class="language-plaintext">apt install fail2ban</code></pre>
+<p>puis config du filtre fail2ban :</p>
+<pre><code class="language-plaintext">nano /etc/fail2ban/filter.d/ftps.conf</code></pre>
+<p>puis ajouter :</p>
+<pre><code class="language-plaintext">[Definition]
+failregex = .* proftpd[\d+.\d+.\d+.\d+] (.) TLSv[12] session initialization failed.
+ignoreregex =</code></pre>
+<p>puis config du jail fail2ban :</p>
+<pre><code class="language-plaintext">nano /etc/fail2ban/jail.local</code></pre>
+<p>puis ajouter :</p>
+<pre><code class="language-plaintext">[ftps]
+enabled = true
+port = ftp,ftps
+filter = proftpd-ftps
+logpath = /var/log/proftpd/proftpd.log
+maxretry = 3
+findtime = 3600
+bantime = 14400</code></pre>
+<p>puis reboot service fail2ban :</p>
+<pre><code class="language-plaintext">systemctl restart fail2ban &amp;&amp; systemctl enable fail2ban</code></pre>
+<p>&nbsp;</p>

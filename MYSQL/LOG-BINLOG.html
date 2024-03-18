@@ -1,0 +1,25 @@
+<!--
+title: LOG et BINLOG
+description: 
+published: true
+date: 2024-01-08T09:19:55.931Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-08T09:19:55.931Z
+-->
+
+<p>Purge LOG BDD :&nbsp;</p>
+<p>PURGE BINARY LOGS BEFORE NOW();</p>
+<p>&nbsp;</p>
+<p>PURGE BINARY LOGS TO 'mysql-bin.010';</p>
+<p>&nbsp;</p>
+<p>mysql -u root -p$(cat /root/.sqlrcreds) -e "PURGE BINARY LOGS BEFORE '2022-07-11 08:00:00';"</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Voir les fichier de log et leur taille:</p>
+<p>ls -l --block-size=M /var/lib/mysql/</p>
+<p>ls -l --block-size=M /media/bdd/mysql/</p>
+<p>&nbsp;</p>
+<p>LOG ERROR MYSQL:</p>
+<p>tail -f /var/log/mysql/error.log pour voir en live</p>
+<p>tail -n 20 /var/log/mysql/error.log pour voir les vingts dernières lignes</p>

@@ -1,0 +1,105 @@
+<!--
+title: CRON
+description: 
+published: true
+date: 2024-02-06T13:25:18.203Z
+tags: 
+editor: ckeditor
+dateCreated: 2024-01-09T10:29:39.334Z
+-->
+
+<h1>Log CRON</h1>
+<pre><code class="language-plaintext">grep CRON /var/log/syslog</code></pre>
+<h1>Crontab du User en cours</h1>
+<pre><code class="language-plaintext">crontab -e</code></pre>
+<h1>Liste des cron du user en cours :</h1>
+<pre><code class="language-plaintext">crontab -l</code></pre>
+<h1>Contab d'un autre user</h1>
+<pre><code class="language-plaintext">crontab -u autre_user -e</code></pre>
+<h1>Exemple de crontab :</h1>
+<h2>Extinction machine tous les soirs à 20h (hiver) et 19h (été) et redirige l'output de la commande dans le fichier /var/log/cron.log</h2>
+<pre><code class="language-plaintext">00 19 * * * /sbin/poweroff &gt;&gt;/var/log/cron.log 2&lt;&amp;1</code></pre>
+<h2>Exécution du script removedata8j.sh toutes les heures à la minute 00 et redirige l'output de la commande dans le fichier /var/log/cron.log</h2>
+<pre><code class="language-plaintext">0 * * * * sh /etc/scrpit/removedata8j.sh &gt;&gt;/var/log/cron.log 2&lt;&amp;1</code></pre>
+<p>ou</p>
+<pre><code class="language-plaintext">@hourly sh /etc/scrpit/removedata8j.sh &gt;&gt;/var/log/cron.log 2&lt;&amp;1</code></pre>
+<h2>Exécution du script backup.cmd tous les jours à 23h59 et redirige l'output dans le vide en précisant le user root (pas crontab -e)</h2>
+<pre><code class="language-plaintext">59 23 * * * root /home/backup/backup.cmd &amp;&gt; /dev/null</code></pre>
+<h1>Paramétrage :</h1>
+<p>&nbsp; &nbsp; * : représente chaque unité de temps ;</p>
+<p>&nbsp; &nbsp; 5 : représente une unité de temps particulière, ici la cinquième ;</p>
+<p>&nbsp; &nbsp; 5-10 : représente un intervale, chaque unités entre 5 et 10 soit 5,6,7,8,9,10 ;</p>
+<p>&nbsp; &nbsp; */5 : représente un cycle défini, ici toutes les toutes les 5 unités soit 0,5,10,15... ;</p>
+<p>&nbsp; &nbsp; 5,10 : représente une série définie, 5 et 10 ;</p>
+<p>Le tableau suivant montre quelques exemples :</p>
+<figure class="table">
+  <table style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;">
+    <tbody>
+      <tr>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">Min</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">Heure</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.8472in;">&nbsp;jour/mois</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">Mois</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:1.1958in;">jour/semaine</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:3.8854in;">Périodicité</td>
+      </tr>
+      <tr>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">*</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">*</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.8277in;">*</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">*</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:1.1958in;">*</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:3.9048in;">Toutes les minutes</td>
+      </tr>
+      <tr>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">30</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">0</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.8277in;">1</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">1,6,12</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:1.1958in;">*</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:3.9048in;">à 00:30 le premier janvier, juin et décembre</td>
+      </tr>
+      <tr>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">0</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">20</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.8277in;">*</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">10</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:1.1958in;">1-5</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:4.2868in;">à 20:00 chaque jour de la semaine (du lundi au vendredi) d’octobre</td>
+      </tr>
+      <tr>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">0</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">0</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.8277in;">1,10,15</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">*</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:1.1958in;">*</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:4.2868in;">à minuit les premiers, dixièmes, et quinzième jours de chaque mois</td>
+      </tr>
+      <tr>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">5,10</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">0</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.8277in;">10</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:.6673in;">*</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:1.1958in;">1</td>
+        <td style="border-bottom:1pt solid #A3A3A3;border-left:1pt solid #A3A3A3;border-right:1pt solid #A3A3A3;border-top:1pt solid #A3A3A3;padding:4pt;vertical-align:top;width:3.9048in;">à 00:05 et 00:10 chaque lundi et le 10 de chaque mois</td>
+      </tr>
+    </tbody>
+  </table>
+</figure>
+<p>&nbsp;</p>
+<h1>Raccourci Crontab :</h1>
+<pre><code class="language-plaintext">Raccourcis  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Équivalent
+@reboot  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Au démarrage du système  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Aucun
+@yearly  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tous les ans  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 0 1 1 *
+@annually  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tous les ans  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 0 1 1 *
+@monthly  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tous les mois  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 0 1 * *
+@weekly  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Toutes les semaines  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 0 * * 0
+@daily  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tous les jours  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 0 * * *
+@midnight  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tous les jours  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 0 * * *
+@hourly  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Toutes les heures  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0 * * * *</code></pre>
+<h1>Limitation User à Crontab :</h1>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; /etc/cron.allow qui, s’il existe limitera la possibilité d’avoir des tâches cron aux utilisateurs listés ;</p>
+<p>&nbsp; &nbsp; /etc/cron.deny qui, s’il existe interdira la possibilité d’avoir des tâches cron aux utilisateurs listés ;</p>
+<p>&nbsp;</p>
+<p>Ces deux fichiers n’existent pas à l’installation, il est donc nécessaire de les créer manuellement si besoin.</p>
