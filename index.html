@@ -31,17 +31,44 @@
                         background-color: #ccc;
                         color: white;
                 }
+
+                .folder {
+                        list-style-image: url('folder-icon.png'); /* adjust this to your folder icon image */
+                        margin-left: 20px;
+                        padding-bottom: 10px;
+                        border-bottom: 1px solid #ccc;
+                }
+
+                .folder:hover {
+                        background-color: #f0f0f0;
+                }
+
+                .page {
+                        list-style-image: url('page-icon.png'); /* adjust this to your page icon image */
+                        margin-left: 30px;
+                }
         </style>
 </head>
 <body>
         <h1>BMG Wiki</h1>
         <nav id="menu">
                 <ul>
-                        <li><a href="/wiki/home.html">HOME</a></li>
-                        <li><a href="/wiki/test.html">TEST</a></li>
-                        <li><a href="page3.html">Page 3</a></li>
-                        <li><a href="page4.html">Page 4</a></li>
-                        <li><a href="page5.html">Page 5</a></li>
+                        <li class="folder">
+                                <a href="#">Projects <span style="font-size: 12px; font-weight: bold;">+</span></a>
+                                <ul>
+                                        <li><a href="project1/page1.html">Project 1 - Page 1</a></li>
+                                        <li><a href="project1/page2.html">Project 1 - Page 2</a></li>
+                                        <li class="folder">
+                                                <a href="#">Sub-project <span style="font-size: 12px; font-weight: bold;">+</span></a>
+                                                <ul>
+                                                        <li><a href="subproject/page3.html">Sub-project Page 1</a></li>
+                                                        <li><a href="subproject/page4.html">Sub-project Page 2</a></li>
+                                                </ul>
+                                        </li>
+                                </ul>
+                        </li>
+                        <li class="page"><a href="about.html">About Us</a></li>
+                        <li class="page"><a href="contact.html">Contact Us</a></li>
                 </ul>
         </nav>
 
