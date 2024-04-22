@@ -1,71 +1,159 @@
-<p>example of an Ansible playbook that can be used to deploy multiple instances of Percona Server for MySQL on Debian 11:</p>
-<pre><code class="language-plaintext">---
-- name: Deploy Percona Server for MySQL
-  hosts: all
-  become: true
+<!DOCTYPE html>
+<html>
+<head>
+        <title>BMG Wiki</title>
+        <style>
+                body {
+                        font-family: Arial, sans-serif;
+                        background-color: #878383;
+                }
 
-  vars:
-    instance_names:
-      - instance1
-      - instance2
-      - instance3
-    percona_version: "8.0"
+                #menu {
+                        margin-left: 10px;
+                        padding-top: 20px;
+                        list-style: none;
+                        padding-bottom: 20px;
+                        border-bottom: 1px solid #797676;
+                        font-size: 16px;
+                        color: blue;
+                }
 
-  tasks:
-    - name: Install Percona Server for MySQL
-      apt:
-        name: "{{ ['wget', 'gnupg2', 'percona-server-server-' + percona_version] }}"
-        state: present
-        update_cache: yes
+                #menu li {
+                        margin-bottom: 10px;
+                }
 
-    - name: Create data directories
-      file:
-        path: "/var/lib/mysql-{{ item }}"
-        state: directory
-        mode: "0700"
-      with_items: "{{ instance_names }}"
+                #menu a {
+                        text-decoration: none;
+                        color: blue;
+                }
 
-    - name: Create configuration files
-      template:
-        src: "my-instance.j2"
-        dest: "/etc/mysql/my-{{ item }}.cnf"
-        mode: "0644"
-      with_items: "{{ instance_names }}"
+                #menu a:hover {
+                        background-color: #ccc;
+                        color: white;
+                }
 
-    - name: Copy systemd service file
-      copy:
-        src: "mysql.service"
-        dest: "/etc/systemd/system/mysql-{{ item }}.service"
-        mode: "0644"
-      with_items: "{{ instance_names }}"
+                .folder {
+                        list-style-image: url('folder-icon.png'); /* adjust this to your folder icon image */
+                        margin-left: 20px;
+                        padding-bottom: 10px;
+                        border-bottom: 1px solid #ccc;
+                }
 
-    - name: Edit systemd service file
-      lineinfile:
-        path: "/etc/systemd/system/mysql-{{ item }}.service"
-        line: "ExecStart=/usr/sbin/mysqld --defaults-file=/etc/mysql/my-{{ item }}.cnf --datadir=/var/lib/mysql-{{ item }}"
-      with_items: "{{ instance_names }}"
+                .folder:hover {
+                        background-color: #f0f0f0;
+                }
 
-    - name: Reload systemd
-      systemd:
-        daemon_reload: yes
+                .page {
+                        list-style-image: url('page-icon.png'); /* adjust this to your page icon image */
+                        margin-left: 30px;
+                }
+        </style>
+</head>
+<body>
+    <h1>BMG Wiki</h1>
+    <nav id="menu">
+            <ul>
+                    <li class="folder">
+                            <a href="#">AUTOMATION <span style="font-size: 12px; font-weight: bold;">+</span></a>
+                            <ul>
+                                    <li class="folder">
+                                            <a href="#">ANSIBLE <span style="font-size: 12px; font-weight: bold;">+</span></a>
+                                            <ul>
+                                                    <li><a href="/AUTOMATION/ANSIBLE/PERCONA_INSTANCE_MULTIPLE.html">PERCONA INSTANCE MULTIPLE</a></li>
+                                            </ul>
+                                    </li>
+                            </ul>
+                    </li>
+                    <li class="folder">
+                      <a href="#">AZURE <span style="font-size: 12px; font-weight: bold;">+</span></a>
+                      <ul>
+                              <li><a href="project1/page1.html">Project 1 - Page 1</a></li>
+                              <li><a href="project1/page2.html">Project 1 - Page 2</a></li>
+                              <li class="folder">
+                                      <a href="#">Sub-project <span style="font-size: 12px; font-weight: bold;">+</span></a>
+                                      <ul>
+                                              <li><a href="subproject/page3.html">Sub-project Page 1</a></li>
+                                              <li><a href="subproject/page4.html">Sub-project Page 2</a></li>
+                                      </ul>
+                              </li>
+                      </ul>
+              </li>
+                    <li class="page"><a href="about.html">About Us</a></li>
+                    <li class="page"><a href="contact.html">Contact Us</a></li>
+            </ul>
+    </nav>
 
-    - name: Start Percona Server for MySQL instances
-      systemd:
-        name: "mysql-{{ item }}"
-        state: started
-        enabled: yes
-      with_items: "{{ instance_names }}"</code></pre>
-<p>This playbook performs the following tasks:</p>
-<ol>
-  <li>Installs Percona Server for MySQL on the target host.</li>
-  <li>Creates the data directories for each instance.</li>
-  <li>Creates the configuration files for each instance.</li>
-  <li>Copies the systemd service file for each instance.</li>
-  <li>Edits the systemd service file to use the appropriate configuration file and data directory for each instance.</li>
-  <li>Reloads the systemd configuration.</li>
-  <li>Starts and enables each instance of Percona Server for MySQL to run on boot.</li>
-</ol>
-<p>The <code>my-instance.j2</code> template file should contain the configuration options for each instance of Percona Server for MySQL. You can specify different options for each instance by using variables in the template file.</p>
-<p>You can run this playbook using the following command:</p>
-<pre><code class="language-plaintext">ansible-playbook -i &lt;inventory_file&gt; deploy_percona.yml</code></pre>
-<p>Replace <code>&lt;inventory_file&gt;</code> with the path to your Ansible inventory file.</p>
+    <p>example of an Ansible playbook that can be used to deploy multiple instances of Percona Server for MySQL on Debian 11:</p>
+    <pre><code class="language-plaintext">---
+    - name: Deploy Percona Server for MySQL
+      hosts: all
+      become: true
+    
+      vars:
+        instance_names:
+          - instance1
+          - instance2
+          - instance3
+        percona_version: "8.0"
+    
+      tasks:
+        - name: Install Percona Server for MySQL
+          apt:
+            name: "{{ ['wget', 'gnupg2', 'percona-server-server-' + percona_version] }}"
+            state: present
+            update_cache: yes
+    
+        - name: Create data directories
+          file:
+            path: "/var/lib/mysql-{{ item }}"
+            state: directory
+            mode: "0700"
+          with_items: "{{ instance_names }}"
+    
+        - name: Create configuration files
+          template:
+            src: "my-instance.j2"
+            dest: "/etc/mysql/my-{{ item }}.cnf"
+            mode: "0644"
+          with_items: "{{ instance_names }}"
+    
+        - name: Copy systemd service file
+          copy:
+            src: "mysql.service"
+            dest: "/etc/systemd/system/mysql-{{ item }}.service"
+            mode: "0644"
+          with_items: "{{ instance_names }}"
+    
+        - name: Edit systemd service file
+          lineinfile:
+            path: "/etc/systemd/system/mysql-{{ item }}.service"
+            line: "ExecStart=/usr/sbin/mysqld --defaults-file=/etc/mysql/my-{{ item }}.cnf --datadir=/var/lib/mysql-{{ item }}"
+          with_items: "{{ instance_names }}"
+    
+        - name: Reload systemd
+          systemd:
+            daemon_reload: yes
+    
+        - name: Start Percona Server for MySQL instances
+          systemd:
+            name: "mysql-{{ item }}"
+            state: started
+            enabled: yes
+          with_items: "{{ instance_names }}"</code></pre>
+    <p>This playbook performs the following tasks:</p>
+    <ol>
+      <li>Installs Percona Server for MySQL on the target host.</li>
+      <li>Creates the data directories for each instance.</li>
+      <li>Creates the configuration files for each instance.</li>
+      <li>Copies the systemd service file for each instance.</li>
+      <li>Edits the systemd service file to use the appropriate configuration file and data directory for each instance.</li>
+      <li>Reloads the systemd configuration.</li>
+      <li>Starts and enables each instance of Percona Server for MySQL to run on boot.</li>
+    </ol>
+    <p>The <code>my-instance.j2</code> template file should contain the configuration options for each instance of Percona Server for MySQL. You can specify different options for each instance by using variables in the template file.</p>
+    <p>You can run this playbook using the following command:</p>
+    <pre><code class="language-plaintext">ansible-playbook -i &lt;inventory_file&gt; deploy_percona.yml</code></pre>
+    <p>Replace <code>&lt;inventory_file&gt;</code> with the path to your Ansible inventory file.</p>
+</body>
+</html>
+
