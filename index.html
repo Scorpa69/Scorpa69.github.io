@@ -1,88 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-        <title>BMG Wiki</title>
-        <style>
-                body {
-                        font-family: Arial, sans-serif;
-                        background-color: #878383;
-                }
-
-                #menu {
-                        margin-left: 10px;
-                        padding-top: 20px;
-                        list-style: none;
-                        padding-bottom: 20px;
-                        border-bottom: 1px solid #797676;
-                        font-size: 16px;
-                        color: blue;
-                }
-
-                #menu li {
-                        margin-bottom: 10px;
-                }
-
-                #menu a {
-                        text-decoration: none;
-                        color: blue;
-                }
-
-                #menu a:hover {
-                        background-color: #ccc;
-                        color: white;
-                }
-
-                .folder {
-                        list-style-image: url('folder-icon.png'); /* adjust this to your folder icon image */
-                        margin-left: 20px;
-                        padding-bottom: 10px;
-                        border-bottom: 1px solid #ccc;
-                }
-
-                .folder:hover {
-                        background-color: #f0f0f0;
-                }
-
-                .page {
-                        list-style-image: url('page-icon.png'); /* adjust this to your page icon image */
-                        margin-left: 30px;
-                }
-        </style>
-</head>
-<body>
-        <h1>BMG Wiki</h1>
-        <nav id="menu">
-                <ul>
-                        <li class="folder">
-                                <a href="#">AUTOMATION <span style="font-size: 12px; font-weight: bold;">+</span></a>
-                                <ul>
-                                        <li class="folder">
-                                                <a href="#">ANSIBLE <span style="font-size: 12px; font-weight: bold;">+</span></a>
-                                                <ul>
-                                                        <li><a href="/AUTOMATION/ANSIBLE/PERCONA_INSTANCE_MULTIPLE.html">PERCONA INSTANCE MULTIPLE</a></li>
-                                                </ul>
-                                        </li>
-                                </ul>
-                        </li>
-                        <li class="folder">
-                          <a href="#">AZURE <span style="font-size: 12px; font-weight: bold;">+</span></a>
-                          <ul>
-                                  <li><a href="project1/page1.html">Project 1 - Page 1</a></li>
-                                  <li><a href="project1/page2.html">Project 1 - Page 2</a></li>
-                                  <li class="folder">
-                                          <a href="#">Sub-project <span style="font-size: 12px; font-weight: bold;">+</span></a>
-                                          <ul>
-                                                  <li><a href="subproject/page3.html">Sub-project Page 1</a></li>
-                                                  <li><a href="subproject/page4.html">Sub-project Page 2</a></li>
-                                          </ul>
-                                  </li>
-                          </ul>
-                  </li>
-                        <li class="page"><a href="about.html">About Us</a></li>
-                        <li class="page"><a href="contact.html">Contact Us</a></li>
-                </ul>
-        </nav>
-
-        <!-- Your website content goes here -->
-</body>
-</html>
+javascript
+function buildMenu() {
+  var menu = document.getElementById("menu");
+  var dirs = [];
+  function traverseDir(path) {
+    var dir = new Directory(path);
+    for (var file in dir.getFiles()) {
+      if (file.isDirectory()) {
+        dirs.push({
+          name: file.getName(),
+          path: file.getPath(),
+          children: []
+        });
+        traverseDir(file.getPath());
+      } else {
+        menu.appendChild(new MenuItem(file.getName(), file.getPath()));
+      }
+    }
+  }
+  traverseDir("/"); // start traversing from the root directory
+}
