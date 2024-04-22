@@ -1,21 +1,22 @@
-javascript
+php
+<?php
 function buildMenu() {
-  var menu = document.getElementById("menu");
-  var dirs = [];
-  function traverseDir(path) {
-    var dir = new Directory(path);
-    for (var file in dir.getFiles()) {
-      if (file.isDirectory()) {
-        dirs.push({
-          name: file.getName(),
-          path: file.getPath(),
-          children: []
-        });
-        traverseDir(file.getPath());
+  $menu = array();
+  function traverseDir($path) {
+    $dir = scandir($path);
+    foreach ($dir as $file) {
+      if (is_dir($path . '/' . $file)) {
+        $menu[] = array(
+          'name' => $file,
+          'path' => $path . '/' . $file,
+          'children' => []
+        );
+        traverseDir($path . '/' . $file);
       } else {
-        menu.appendChild(new MenuItem(file.getName(), file.getPath()));
+        $menu[] = array('name' => $file, 'path' => $path . '/' . $file);
       }
     }
   }
-  traverseDir("/"); // start traversing from the root directory
+  traverseDir('/'); // start traversing from the root directory
 }
+?>
