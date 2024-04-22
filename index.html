@@ -1,22 +1,82 @@
-php
-<?php
-function buildMenu() {
-  $menu = array();
-  function traverseDir($path) {
-    $dir = scandir($path);
-    foreach ($dir as $file) {
-      if (is_dir($path . '/' . $file)) {
-        $menu[] = array(
-          'name' => $file,
-          'path' => $path . '/' . $file,
-          'children' => []
-        );
-        traverseDir($path . '/' . $file);
-      } else {
-        $menu[] = array('name' => $file, 'path' => $path . '/' . $file);
-      }
-    }
-  }
-  traverseDir('/'); // start traversing from the root directory
-}
-?>
+<!DOCTYPE html>
+<html>
+<head>
+        <title>My Website</title>
+        <style>
+                body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f0f0f0;
+                }
+
+                #menu {
+                        margin-left: 10px;
+                        padding-top: 20px;
+                        list-style: none;
+                        padding-bottom: 20px;
+                        border-bottom: 1px solid #ccc;
+                        font-size: 16px;
+                        color: blue;
+                }
+
+                #menu li {
+                        margin-bottom: 10px;
+                }
+
+                #menu a {
+                        text-decoration: none;
+                        color: blue;
+                }
+
+                #menu a:hover {
+                        background-color: #ccc;
+                        color: white;
+                }
+
+                .folder {
+                        list-style-image: url('folder-icon.png'); /* adjust this to your folder icon image */
+                        margin-left: 20px;
+                        padding-bottom: 10px;
+                        border-bottom: 1px solid #ccc;
+                }
+
+                .folder:hover {
+                        background-color: #f0f0f0;
+                }
+
+                .page {
+                        list-style-image: url('page-icon.png'); /* adjust this to your page icon image */
+                        margin-left: 30px;
+                }
+        </style>
+</head>
+<body>
+        <h1>My Website</h1>
+        <nav id="menu">
+                <ul id="menu-list"></ul>
+        </nav>
+
+        <script>
+                function buildMenu() {
+                        var menuList = document.getElementById("menu-list");
+                        var files = [];
+                        for (var file of files) {
+                                if (file.isDirectory()) {
+                                        menuList.appendChild(createFolderElement(file));
+                                        files.push(file); // add subdirectories to the list
+                                } else {
+                                        menuList.appendChild(createPageElement(file));
+                                }
+                        }
+                }
+
+                function createFolderElement(folder) {
+                        var folderElement = document.createElement("li");
+                        folderElement.className = "folder";
+                        var link = document.createElement("a");
+                        link.href = "#" + folder.getName();
+                        link.textContent = folder.getName() + " <span style='font-size: 12px; font-weight: bold;'>+</span>";
+                        folderElement.appendChild(link);
+                        return folderElement;
+                }
+        </script>
+</body>
